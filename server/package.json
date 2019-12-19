@@ -6,5 +6,9 @@
   "repository": "https://github.com/DorothyHana/App.git",
   "author": "Hana <momenthana@kakao.com>",
   "license": "MIT",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "koa": "^2.11.0",
+    "koa-router": "^7.4.0"
+  }
 }
