@@ -1,7 +1,19 @@
-const AuthCodes = require('models/auth_code')
+const AuthCode = require('models/auth_code')
 
-exports.validateUser = async (ctx) => {
+exports.generateCode = async (ctx) => {
   let studentInfo = ctx.request.body
-  console.log(studentInfo)
-  ctx.body = (await AuthCodes.findOne({ 'studentInfo.grade': studentInfo.grade }).exec()).code
+
+  ctx.body = await AuthCode.generateCode(studentInfo)
+}
+
+exports.validateCode = async (ctx) => {
+  let code = ctx.request.body.code
+
+  ctx.body = await AuthCode.validateCode(code)
+}
+
+exports.revokeCode = async (ctx) => {
+  let code = ctx.request.body.code
+
+  ctx.body = await AuthCode.revokeCode(code)
 }
