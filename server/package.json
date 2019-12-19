@@ -1,0 +1,10 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Dorothy Server",
+  "main": "main.js",
+  "repository": "https://github.com/DorothyHana/App.git",
+  "author": "Hana <momenthana@kakao.com>",
+  "license": "MIT",
+  "private": true
+}
