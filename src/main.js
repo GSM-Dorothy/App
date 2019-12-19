@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import './plugins/axios'
-import App from './App.vue'
+import Main from './Main.vue'
 import './registerServiceWorker'
 import router from './router'
 import store from './store'
@@ -12,5 +12,5 @@ new Vue({
   router,
   store,
   vuetify,
-  render: h => h(App)
+  render: h => h(Main)
 }).$mount('#app')
