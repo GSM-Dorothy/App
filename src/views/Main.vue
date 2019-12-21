@@ -1,45 +1,55 @@
 <template>
-  <v-app id="sandbox">
+  <v-app>
     <v-navigation-drawer
-      v-model="Drawer.model"
-      :permanent="Drawer.type === 'permanent'"
-      :temporary="Drawer.type === 'temporary'"
-      floating=true
       app
-      overflow
+      floating
+      permanent
       touchless
-      mobile-break-point=800
+      :mini-variant="$vuetify.breakpoint.xsOnly"
     >
-
-    <v-list dense three-line>
-      <v-list-item>
-        <v-img
-          :src="require('../assets/Dorothy.svg')"
-          class="mx-auto"
-          contain
-          height="30"
-        ></v-img>
-      </v-list-item>
-    </v-list>
-
-      <v-list dense rounded>
-        <v-list-item link>
-          <v-list-item-action>
-            <v-icon>mdi-view-dashboard</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Dashboard</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item link>
-          <v-list-item-action>
-            <v-icon>mdi-settings</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Settings</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
+      <template #prepend>
+        <v-list two-line >
+          <v-list-item>
+            <v-img
+              contain
+              height="24"
+              :src="require('../assets/Dorothy.svg')"
+            >
+            </v-img>
+          </v-list-item>
+          <v-list-item>
+          </v-list-item>
+          <v-list-item>
+          </v-list-item>
+        </v-list>
+      </template>
+      <template>
+        <v-list flat>
+          <v-list-item-group v-model="item" color="primary">
+            <v-list-item
+              v-for="(item, i) in items"
+              :key="i"
+              :to="item.link"
+            >
+              <v-list-item-icon>
+                <v-btn color="primary"
+                  tag
+                  fab
+                  outlined
+                  elevation=6
+                  :small="$vuetify.breakpoint.smAndUp"
+                  :x-small="$vuetify.breakpoint.xsOnly"
+                >
+                  <v-icon v-text="item.icon"></v-icon>
+                </v-btn>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title v-text="item.text"></v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
+      </template>
     </v-navigation-drawer>
 
     <v-content>
@@ -53,11 +63,21 @@
 <script>
 export default {
   data: () => ({
-    Drawer: {
-      model: null,
-      type: 'Permanent',
-      floating: true
-    }
-  })
+    item: 1,
+    items: [
+      { text: '급식', icon: 'mdi-clock', link: '/' },
+      { text: '세탁기', icon: 'mdi-account', link: '/washer' },
+      { text: '학사일정', icon: 'mdi-clock', link: '/schedule' },
+      { text: '상벌점', icon: 'mdi-account', link: '/point' }
+    ]
+  }),
+
+  mounted () {
+    const dark = window.matchMedia('(prefers-color-scheme: dark)')
+    this.$vuetify.theme.dark = dark.matches
+    dark.addEventListener('change', () => {
+      this.$vuetify.theme.dark = dark.matches
+    })
+  }
 }
 </script>
