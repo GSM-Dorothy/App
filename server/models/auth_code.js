@@ -3,10 +3,24 @@ const cryptoRandomString = require('crypto-random-string')
 const Schema = mongoose.Schema
 
 const AuthCode = new Schema({
-  studentInfo: {
-    grade: Number,
-    class: Number,
-    name: String
+  name: String,
+  userInfo: {
+    type: String,
+    email: String,
+    password: String,
+    phone: String,
+    name: String,
+    fingerprint: Array,
+    NFC: String,
+    studentInfo: {
+      grade: String,
+      class: String,
+      number: String,
+      room: String
+    },
+    administratorInfo: {
+      responsibility: String
+    }
   },
   code: String
 })
@@ -25,7 +39,7 @@ AuthCode.statics.generateCode = async function (studentInfo) {
 }
 
 AuthCode.statics.validateCode = async function (code) {
-  let foundUser = (await this.findOne({ code: code }).exec()).studentInfo
+  let foundUser = (await this.findOne({ code: code }).exec()).userInfo
 
   return foundUser
 }

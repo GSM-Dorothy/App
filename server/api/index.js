@@ -6,7 +6,7 @@ const user = require('./user')
 const school = require('./school')
 
 api.use('/auth', auth.routes())
-api.use('/auth', user.routes())
+api.use('/user', user.routes())
 api.use('/school', school.routes())
 
 module.exports = api
