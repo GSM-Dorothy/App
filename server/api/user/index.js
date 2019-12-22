@@ -2,7 +2,7 @@ const Router = require('koa-router')
 const user = new Router()
 const userCtrl = require('./user.controller')
 
-user.get('/student/:id', userCtrl.findUserByID)
+user.get('/student/:id', userCtrl.findStudentByID)
 user.post('/create', userCtrl.createUser)
 
 user.get('/point_archive/:grade/:class/:number/:name', userCtrl.findPointArchiveByStudentInfo)

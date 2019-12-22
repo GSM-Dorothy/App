@@ -2,29 +2,56 @@ const User = require('models/user')
 const AuthCode = require('models/auth_code')
 const PointArchive = require('models/point_archive')
 
+const AuthCodeType = require('actions/auth_code')
+
 const _ = require('lodash')
 
 exports.createUser = async (ctx) => {
   let userInfo = ctx.request.body
+  let enteredCode = userInfo.code
 
-  let foundUser = await AuthCode.validateCode(userInfo.code)
+  delete userInfo.code
+
+  let foundUser = await AuthCode.validateCode(enteredCode)
+
+  let enteredUserInfo = {
+    userType: userInfo.userType,
+    email: userInfo.email,
+    password: userInfo.password,
+    phone: userInfo.phone,
+    name: userInfo.name
+  }
 
   let foundUserInfo = {
+    userType: foundUser.userType,
     email: foundUser.email,
     password: foundUser.password,
     phone: foundUser.phone,
     name: foundUser.name
   }
 
-  if (_.isEqual(userInfo, foundUserInfo)) {
+  if (_.isEqual(enteredUserInfo, foundUserInfo)) {
+    await AuthCode.revokeCode(enteredCode)
+
     ctx.body = await User.createUser(userInfo)
   } else {
     ctx.body = 'User can\'t be created!'
   }
 }
 
-exports.findUserByID = async (ctx) => {
-  ctx.body = await User.findUserByID(ctx.params.id)
+exports.findStudentByID = async (ctx) => {
+  let foundUser = await User.findUserByID(ctx.params.id)
+
+  if (foundUser.userType !== AuthCodeType.STUDENT) {
+    ctx.body = 'This user is not student!'
+    return
+  }
+
+  foundUser = JSON.parse(JSON.stringify(foundUser))
+
+  delete foundUser.password
+
+  ctx.body = foundUser
 }
 
 exports.findPointArchiveByStudentInfo = async (ctx) => {

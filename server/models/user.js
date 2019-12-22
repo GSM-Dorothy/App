@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const User = new Schema({
-  type: String,
+  userType: String,
   email: String,
   password: String,
   phone: String,
@@ -22,10 +22,13 @@ const User = new Schema({
 
 User.statics.createUser = async function (userInfo) {
   let userData = {
+    userType: userInfo.userType,
     email: userInfo.email,
     password: userInfo.password,
     phone: userInfo.phone,
-    name: userInfo.name
+    name: userInfo.name,
+    studentInfo: userInfo.studentInfo,
+    administratorInfo: userInfo.administratorInfo
   }
 
   let user = new this(userData)
