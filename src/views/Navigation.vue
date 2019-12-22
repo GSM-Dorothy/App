@@ -13,7 +13,7 @@
             <v-img
               contain
               height="24"
-              :src="require('../assets/Dorothy.svg')"
+              :src="$vuetify.theme.dark ? require('../assets/Dorothy.dark.svg') : require('../assets/Dorothy.svg')"
             >
             </v-img>
           </v-list-item>
@@ -70,14 +70,6 @@ export default {
       { text: '학사일정', icon: 'mdi-clock', link: '/schedule' },
       { text: '상벌점', icon: 'mdi-account', link: '/point' }
     ]
-  }),
-
-  mounted () {
-    const dark = window.matchMedia('(prefers-color-scheme: dark)')
-    this.$vuetify.theme.dark = dark.matches
-    dark.addEventListener('change', () => {
-      this.$vuetify.theme.dark = dark.matches
-    })
-  }
+  })
 }
 </script>
