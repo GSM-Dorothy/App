@@ -22,10 +22,10 @@ const User = new Schema({
 
 User.statics.createUser = async function (userInfo) {
   let userData = {
-    'email': userInfo.email,
-    'password': userInfo.password,
-    'phone': userInfo.phone,
-    'name': userInfo.name
+    email: userInfo.email,
+    password: userInfo.password,
+    phone: userInfo.phone,
+    name: userInfo.name
   }
 
   let user = new this(userData)

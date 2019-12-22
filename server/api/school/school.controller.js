@@ -26,19 +26,15 @@ exports.getMeal = async (ctx) => {
   delete meals.day
   delete meals.today
 
-  if (ctx.params.day) {
-    let mealJSON = {}
-
-    mealJSON[ctx.params.day] = meals[ctx.params.day]
-
-    meals = mealJSON
-  }
-
   for (let i in meals) {
     meals[i] = jsonifyMeal(meals[i])
   }
 
-  ctx.body = meals
+  if (ctx.params.day) {
+    ctx.body = meals[ctx.params.day]
+  } else {
+    ctx.body = meals
+  }
 }
 
 exports.getSchedule = async (ctx) => {

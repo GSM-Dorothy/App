@@ -10,10 +10,10 @@ exports.createUser = async (ctx) => {
   let foundUser = await AuthCode.validateCode(userInfo.code)
 
   let foundUserInfo = {
-    'email': foundUser.email,
-    'password': foundUser.password,
-    'phone': foundUser.phone,
-    'name': foundUser.name
+    email: foundUser.email,
+    password: foundUser.password,
+    phone: foundUser.phone,
+    name: foundUser.name
   }
 
   if (_.isEqual(userInfo, foundUserInfo)) {
@@ -29,10 +29,10 @@ exports.findUserByID = async (ctx) => {
 
 exports.findPointArchiveByStudentInfo = async (ctx) => {
   let studentInfo = {
-    'grade': ctx.params.grade,
-    'class': ctx.params.class,
-    'number': ctx.params.number,
-    'name': ctx.params.name
+    grade: ctx.params.grade,
+    class: ctx.params.class,
+    number: ctx.params.number,
+    name: ctx.params.name
   }
 
   ctx.body = await PointArchive.findAllPointArchive(studentInfo)

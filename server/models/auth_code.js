@@ -7,7 +7,7 @@ const AuthCodeType = require('actions/auth_code')
 const AuthCode = new Schema({
   type: String,
   userInfo: {
-    type: String,
+    userType: String,
     email: String,
     password: String,
     phone: String,
@@ -28,7 +28,7 @@ const AuthCode = new Schema({
 AuthCode.statics.generateStudentCode = async function (studentInfo) {
   let authCode = new this({
     userInfo: {
-      type: studentInfo.type,
+      userType: studentInfo.type,
       email: studentInfo.email,
       password: studentInfo.password,
       phone: studentInfo.phone,
@@ -51,7 +51,7 @@ AuthCode.statics.generateStudentCode = async function (studentInfo) {
 AuthCode.statics.generateAdministratorCode = async function (administratorInfo) {
   let authCode = new this({
     userInfo: {
-      type: administratorInfo.type,
+      userType: administratorInfo.type,
       email: administratorInfo.email,
       password: administratorInfo.password,
       phone: administratorInfo.phone,

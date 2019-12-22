@@ -3,7 +3,6 @@ const AuthCode = require('models/auth_code')
 exports.generateStudentCode = async (ctx) => {
   let studentInfo = ctx.request.body
 
-  console.log(studentInfo)
   ctx.body = await AuthCode.generateStudentCode(studentInfo)
 }
 
