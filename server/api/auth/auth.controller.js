@@ -1,9 +1,16 @@
 const AuthCode = require('models/auth_code')
 
-exports.generateCode = async (ctx) => {
+exports.generateStudentCode = async (ctx) => {
   let studentInfo = ctx.request.body
 
-  ctx.body = await AuthCode.generateCode(studentInfo)
+  console.log(studentInfo)
+  ctx.body = await AuthCode.generateStudentCode(studentInfo)
+}
+
+exports.generateAdministratorCode = async (ctx) => {
+  let administratorInfo = ctx.request.body
+
+  ctx.body = await AuthCode.generateAdministratorCode(administratorInfo)
 }
 
 exports.validateCode = async (ctx) => {

@@ -10,10 +10,10 @@ const User = new Schema({
   fingerprint: Array,
   NFC: String,
   studentInfo: {
-    grade: String,
-    class: String,
-    number: String,
-    room: String
+    grade: Number,
+    class: Number,
+    number: Number,
+    room: Number
   },
   administratorInfo: {
     responsibility: String

@@ -3,7 +3,7 @@ const SchoolAPI = require('node-school-kr')
 const School = new SchoolAPI()
 const RemainAdministrator = require('models/remain_administrator')
 
-School.init(School.Type.HIGH, School.Region.GWANGJU, 'F100000120')
+School.init(SchoolAPI.Type.HIGH, SchoolAPI.Region.GWANGJU, 'F100000120')
 
 exports.getMeal = async (ctx) => {
   let year = ctx.params.year
