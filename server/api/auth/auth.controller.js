@@ -12,6 +12,14 @@ exports.generateAdministratorCode = async (ctx) => {
   ctx.body = await AuthCode.generateAdministratorCode(administratorInfo)
 }
 
+exports.findStudentCode = async (ctx) => {
+  ctx.body = await AuthCode.findStudentCode()
+}
+
+exports.findAdministratorCode = async (ctx) => {
+  ctx.body = await AuthCode.findAdministratorCode()
+}
+
 exports.validateCode = async (ctx) => {
   let code = ctx.request.body.code
 

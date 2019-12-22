@@ -74,6 +74,18 @@ AuthCode.statics.validateCode = async function (code) {
   return foundUser
 }
 
+AuthCode.statics.findStudentCode = async function () {
+  let studentCode = await this.find({ 'userInfo.userType': AuthCodeType.STUDENT }).exec()
+
+  return studentCode
+}
+
+AuthCode.statics.findAdministratorCode = async function () {
+  let administratorCode = await this.find({ 'userInfo.userType': AuthCodeType.ADMINISTRATOR }).exec()
+
+  return administratorCode
+}
+
 AuthCode.statics.revokeCode = async function (code) {
   return { code: (await this.findOneAndDelete({ code: code }).exec()).code }
 }
