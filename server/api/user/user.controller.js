@@ -10,8 +10,6 @@ exports.createUser = async (ctx) => {
   let userInfo = ctx.request.body
   let enteredCode = userInfo.code
 
-  delete userInfo.code
-
   let foundUser = await AuthCode.validateCode(enteredCode)
 
   let enteredUserInfo = {
@@ -32,6 +30,7 @@ exports.createUser = async (ctx) => {
 
   if (_.isEqual(enteredUserInfo, foundUserInfo)) {
     await AuthCode.revokeCode(enteredCode)
+    delete userInfo.code
 
     ctx.body = await User.createUser(userInfo)
   } else {
