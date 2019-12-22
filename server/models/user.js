@@ -39,7 +39,9 @@ User.statics.createUser = async function (userInfo) {
 }
 
 User.statics.findUserByID = async function (id) {
-  return (await this.findById(id)).exec()
+  let foundUser = await this.findById(id).exec()
+
+  return foundUser
 }
 
 const _user = mongoose.model('User', User, 'User')
