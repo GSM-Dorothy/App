@@ -59,5 +59,5 @@ exports.addFingerprint = async (ctx) => {
 }
 
 exports.findAllFingerprints = async (ctx) => {
-  ctx.body = await User.findAllFingerprintsAndID()
+  ctx.body = await User.findAllFingerprints()
 }

@@ -44,7 +44,7 @@ User.statics.findUserByID = async function (id) {
   return foundUser
 }
 
-User.statics.findAllFingerprintsAndID = async function () {
+User.statics.findAllFingerprints = async function () {
   let results = await this.find({}, { fingerprint: 1 }).exec()
 
   return results
