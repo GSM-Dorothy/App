@@ -14,17 +14,11 @@ exports.createUser = async (ctx) => {
 
   let enteredUserInfo = {
     userType: userInfo.userType,
-    email: userInfo.email,
-    password: userInfo.password,
-    phone: userInfo.phone,
     name: userInfo.name
   }
 
   let foundUserInfo = {
     userType: foundUser.userType,
-    email: foundUser.email,
-    password: foundUser.password,
-    phone: foundUser.phone,
     name: foundUser.name
   }
 

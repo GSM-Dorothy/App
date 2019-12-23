@@ -13,10 +13,11 @@ const PointArchive = new Schema({
 
 PointArchive.statics.findAllPointArchive = async function (studentInfo) {
   return (await this.findOne({ $and: [
-    { 'grade': studentInfo.grade },
-    { 'class': studentInfo.class },
-    { 'number': studentInfo.number },
-    { 'name': studentInfo.name }
+    { userID: studentInfo.userID },
+    { grade: studentInfo.grade },
+    { class: studentInfo.class },
+    { number: studentInfo.number },
+    { name: studentInfo.name }
   ] }).exec()).archive
 }
 

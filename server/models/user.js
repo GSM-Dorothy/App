@@ -44,6 +44,18 @@ User.statics.findUserByID = async function (id) {
   return foundUser
 }
 
+User.statics.findAllFingerprintsAndID = async function () {
+  let results = await this.find({}, { fingerprint: 1 }).exec()
+
+  return results
+}
+
+User.statics.updateFingerprint = async function (id, fingerprints) {
+  let results = await this.updateOne({ _id: id }, { $set: { fingerprint: fingerprints } }).exec()
+
+  return results
+}
+
 const _user = mongoose.model('User', User, 'User')
 
 module.exports = _user

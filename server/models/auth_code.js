@@ -6,6 +6,7 @@ const AuthCodeType = require('actions/auth_code')
 
 const AuthCode = new Schema({
   type: String,
+  userID: String,
   userInfo: {
     userType: String,
     email: String,
@@ -27,20 +28,17 @@ const AuthCode = new Schema({
 
 AuthCode.statics.generateStudentCode = async function (studentInfo) {
   let authCode = new this({
+    type: AuthCodeType.STUDENT,
     userInfo: {
       userType: studentInfo.type,
-      email: studentInfo.email,
-      password: studentInfo.password,
-      phone: studentInfo.phone,
       name: studentInfo.name,
       studentInfo: {
         grade: studentInfo.grade,
         class: studentInfo.class,
-        number: studentInfo.number,
-        room: studentInfo.room
+        number: studentInfo.number
       }
     },
-    code: studentInfo.type === AuthCodeType.DEVICE ? cryptoRandomString({ length: 6, characters: '1234567890' }) : cryptoRandomString({ length: 6 })
+    code: cryptoRandomString({ length: 6 })
   })
 
   await authCode.save()
@@ -50,17 +48,24 @@ AuthCode.statics.generateStudentCode = async function (studentInfo) {
 
 AuthCode.statics.generateAdministratorCode = async function (administratorInfo) {
   let authCode = new this({
+    type: AuthCodeType.ADMINISTRATOR,
     userInfo: {
       userType: administratorInfo.type,
-      email: administratorInfo.email,
-      password: administratorInfo.password,
-      phone: administratorInfo.phone,
-      name: administratorInfo.name,
-      administratorInfo: {
-        responsibility: administratorInfo.responsibility
-      }
+      name: administratorInfo.name
     },
-    code: administratorInfo.type === AuthCodeType.DEVICE ? cryptoRandomString({ length: 6, characters: '1234567890' }) : cryptoRandomString({ length: 6 })
+    code: cryptoRandomString({ length: 6 })
+  })
+
+  await authCode.save()
+
+  return authCode
+}
+
+AuthCode.statics.generateDeviceCode = async function (deviceInfo) {
+  let authCode = new this({
+    type: AuthCodeType.DEVICE,
+    userID: deviceInfo.userID,
+    code: cryptoRandomString({ length: 6, characters: '1234567890' })
   })
 
   await authCode.save()
@@ -69,21 +74,27 @@ AuthCode.statics.generateAdministratorCode = async function (administratorInfo) 
 }
 
 AuthCode.statics.validateCode = async function (code) {
-  let foundUser = (await this.findOne({ code: code }).exec()).userInfo
+  let foundUser = await this.findOne({ code: code }).exec()
 
   return foundUser
 }
 
 AuthCode.statics.findStudentCode = async function () {
-  let studentCode = await this.find({ 'userInfo.userType': AuthCodeType.STUDENT }).exec()
+  let studentCode = await this.find({ type: AuthCodeType.STUDENT }).exec()
 
   return studentCode
 }
 
 AuthCode.statics.findAdministratorCode = async function () {
-  let administratorCode = await this.find({ 'userInfo.userType': AuthCodeType.ADMINISTRATOR }).exec()
+  let administratorCode = await this.find({ type: AuthCodeType.ADMINISTRATOR }).exec()
 
   return administratorCode
+}
+
+AuthCode.statics.findDeviceCode = async function () {
+  let deviceCode = await this.find({ type: AuthCodeType.DEVICE }).exec()
+
+  return deviceCode
 }
 
 AuthCode.statics.revokeCode = async function (code) {
