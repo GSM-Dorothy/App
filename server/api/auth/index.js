@@ -15,7 +15,7 @@ auth.delete('/code', authCtrl.revokeCode)
 auth.get('/fingerprint', authCtrl.findAllFingerprints)
 auth.post('/fingerprint', authCtrl.addFingerprint)
 
-auth.get('/device/enroll', authCtrl.validateFingerprintCode)
-auth.post('/device/enroll', authCtrl.generateFingerprintCode)
+auth.get('/device/enroll', authCtrl.deleteFingerprintCode)
+auth.post('/device/enroll', authCtrl.validateFingerprintCode)
 
 module.exports = auth

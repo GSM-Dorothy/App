@@ -1,6 +1,8 @@
 const AuthCode = require('models/auth_code')
 const User = require('models/user')
-// const DeviceEnroll = require('models/device_enroll')
+const DeviceEnroll = require('models/device_enroll')
+
+const AuthCodeType = require('actions/auth_code')
 
 exports.generateStudentCode = async (ctx) => {
   let studentInfo = ctx.request.body
@@ -63,13 +65,25 @@ exports.findAllFingerprints = async (ctx) => {
   ctx.body = await User.findAllFingerprints()
 }
 
-exports.generateFingerprintCode = async (ctx) => {
+exports.validateFingerprintCode = async (ctx) => {
+  ctx.req.setTimeout(5 * 60 * 1000)
+
+  let enrollInfo = ctx.request.body
+  let foundUser = await AuthCode.validateCode(enrollInfo.code)
+
+  if (foundUser && foundUser.type === AuthCodeType.DEVICE) {
+    await DeviceEnroll.addDeviceInfo(enrollInfo)
+    ctx.response.status = 200
+  } else {
+    ctx.body = 'Entered device code is invalid!'
+  }
 }
 
-exports.validateFingerprintCode = async (ctx) => {
-  let currentIP = ctx.request.ip
-  console.log(currentIP)
+exports.deleteFingerprintCode = async (ctx) => {
+  let currentIP = ctx.request.ip.substr(7)
+  let forwardedCode = (await DeviceEnroll.getDeviceInfo(currentIP)).code
 
-  console.log(ctx.req.headers)
-  ctx.body = ctx.request
+  await DeviceEnroll.deleteDeviceInfo(currentIP)
+
+  ctx.body = forwardedCode
 }

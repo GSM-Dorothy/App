@@ -6,16 +6,23 @@ const DeviceEnroll = new Schema({
   code: String
 })
 
-DeviceEnroll.statics.addDeviceInfo = async function (deviceInfo) {
-  let results = await this.insertOne({
-    IP: deviceInfo.IP,
-    code: deviceInfo.code
-  }).exec()
-
-  return results
-}
 DeviceEnroll.statics.getDeviceInfo = async function (ip) {
   let result = await this.findOne({ IP: ip }).exec()
+
+  return result
+}
+DeviceEnroll.statics.addDeviceInfo = async function (deviceInfo) {
+  let deviceInfoData = new this({
+    IP: deviceInfo.IP,
+    code: deviceInfo.code
+  })
+
+  await deviceInfoData.save()
+
+  return deviceInfo
+}
+DeviceEnroll.statics.deleteDeviceInfo = async function (ip) {
+  let result = await this.deleteOne({ IP: ip }).exec()
 
   return result
 }
