@@ -11,4 +11,12 @@ school.get('/remain/administrator/:year/:month/:day', schoolCtrl.getRemainAdmini
 school.post('/remain/administrator', schoolCtrl.addRemainAdministrator)
 school.put('/remain/administrator', schoolCtrl.replaceRemainAdministrator)
 
+school.get('/remain/enroll/:id', schoolCtrl.findRemainEnrollByUser)
+school.post('/remain/enroll', schoolCtrl.addEnrollList)
+school.delete('/remain/enroll', schoolCtrl.deleteEnrollList)
+
+school.get('/remain/archive/:id', schoolCtrl.findRemainArchiveByUser)
+school.post('/remain/archive', schoolCtrl.addRemainArchive)
+school.delete('/remain/archive', schoolCtrl.deleteRemainArchive)
+
 module.exports = school

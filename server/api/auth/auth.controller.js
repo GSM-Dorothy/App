@@ -1,5 +1,6 @@
 const AuthCode = require('models/auth_code')
 const User = require('models/user')
+// const DeviceEnroll = require('models/device_enroll')
 
 exports.generateStudentCode = async (ctx) => {
   let studentInfo = ctx.request.body
@@ -60,4 +61,15 @@ exports.addFingerprint = async (ctx) => {
 
 exports.findAllFingerprints = async (ctx) => {
   ctx.body = await User.findAllFingerprints()
+}
+
+exports.generateFingerprintCode = async (ctx) => {
+}
+
+exports.validateFingerprintCode = async (ctx) => {
+  let currentIP = ctx.request.ip
+  console.log(currentIP)
+
+  console.log(ctx.req.headers)
+  ctx.body = ctx.request
 }

@@ -39,7 +39,13 @@ User.statics.createUser = async function (userInfo) {
 }
 
 User.statics.findUserByID = async function (id) {
-  let foundUser = await this.findById(id).exec()
+  let foundUser = {}
+
+  try {
+    foundUser = await this.findById(id).exec()
+  } catch (e) {
+    console.log(e)
+  }
 
   return foundUser
 }
