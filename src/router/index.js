@@ -6,37 +6,61 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    component: () => import('../views/Navigation.vue'),
+    component: () => import('../views/home.vue'),
     children: [
       {
         path: '',
-        name: 'Meals',
-        component: () => import('../views/Meals.vue')
-      },
+        component: () => import('../views/login.vue')
+      }
+    ]
+  },
+  {
+    path: '/meals',
+    component: () => import('../views/meals.vue'),
+    children: [
       {
-        path: 'washer',
-        name: 'Washer',
-        component: () => import('../views/Washer.vue')
-      },
+        path: '',
+        component: () => import('../views/navigation.vue')
+      }
+    ]
+  },
+  {
+    path: '/point',
+    component: () => import('../views/point.vue'),
+    children: [
       {
-        path: 'schedule',
-        name: 'Schedule',
-        component: () => import('../views/Schedule.vue')
-      },
+        path: '',
+        component: () => import('../views/navigation.vue')
+      }
+    ]
+  },
+  {
+    path: '/remain',
+    component: () => import('../views/remain.vue'),
+    children: [
       {
-        path: 'point',
-        name: 'Point',
-        component: () => import('../views/Point.vue')
-      },
+        path: '',
+        component: () => import('../views/navigation.vue')
+      }
+    ]
+  },
+  {
+    path: '/schedule',
+    component: () => import('../views/schedule.vue'),
+    children: [
       {
-        path: 'remain',
-        name: 'Remain',
-        component: () => import('../views/Remain.vue')
-      },
+        path: '',
+        component: () => import('../views/navigation.vue')
+      }
+    ]
+  },
+  {
+    path: '/washer',
+    component: () => import('../views/washer.vue'),
+    children: [
       {
-        path: 'setting',
-        name: 'Setting',
-        component: () => import('../views/Setting.vue')
+        path: '',
+        component: () => import('../views/navigation.vue')
       }
     ]
   }
