@@ -47,9 +47,16 @@ exports.getMeal = async (ctx) => {
 exports.getSchedule = async (ctx) => {
   let year = ctx.params.year
   let month = ctx.params.month
-  const schedule = (await School.getCalendar(year, month))[ctx.params.day]
+  const schedule = await School.getCalendar(year, month)
 
-  ctx.body = schedule // TO-DO: JSON 반환 후 ctx.body에 할당
+  delete schedule.year
+  delete schedule.month
+
+  if (ctx.params.day) {
+    ctx.body = { today: schedule[ctx.params.day] }
+  } else {
+    ctx.body = schedule
+  }
 }
 
 exports.getRemainAdministrator = async (ctx) => {
