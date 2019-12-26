@@ -50,6 +50,18 @@ User.statics.findUserByID = async function (id) {
   return foundUser
 }
 
+User.statics.findUserByEmailAndPassword = async function (loginData) {
+  let foundUser = {}
+
+  try {
+    foundUser = await this.findOne({ email: loginData.email, password: loginData.password }).exec()
+  } catch (e) {
+    console.log(e)
+  }
+
+  return foundUser
+}
+
 User.statics.findAllFingerprints = async function () {
   let results = await this.find({}, { fingerprint: 1 }).exec()
 

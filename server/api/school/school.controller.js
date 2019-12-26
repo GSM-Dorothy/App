@@ -64,13 +64,16 @@ exports.getRemainAdministrator = async (ctx) => {
 }
 
 exports.getRemainAdministratorByDate = async (ctx) => {
-  let year = ctx.params.year
-  let month = ctx.params.month
-  let day = ctx.params.day
+  let year = parseInt(ctx.params.year)
+  let month = parseInt(ctx.params.month) - 1
+  let day = parseInt(ctx.params.day) + 1
 
-  let date = new Date(year, month, day)
+  console.log(year, month, day)
 
-  ctx.body = await RemainAdministrator.findByDate(date)
+  let start = new Date(year, month, day)
+  let end = new Date(year, month, day + 1)
+
+  ctx.body = await RemainAdministrator.findByDate(start, end)
 }
 
 exports.addRemainAdministrator = async (ctx) => {
@@ -83,7 +86,13 @@ exports.replaceRemainAdministrator = async (ctx) => {
   let administrator = ctx.request.body.administrator
   let replacedAdministrator = ctx.request.body.replacedAdministrator
 
-  ctx.body = await RemainAdministrator.replaceAdministrator(administrator, replacedAdministrator)
+  let result = await RemainAdministrator.replaceAdministrator(administrator, replacedAdministrator)
+
+  if (result.n === 1 && result.nModified === 1 && result.ok === 1) {
+    ctx.body = 'Remain administrator has just completely replaced!'
+  } else {
+    ctx.body = "Remain administrator hasn't just completely replaced."
+  }
 }
 
 exports.findRemainEnrollByUser = async (ctx) => {

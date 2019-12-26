@@ -1,8 +1,13 @@
+const jwt = require('jsonwebtoken')
+
 const AuthCode = require('models/auth_code')
 const User = require('models/user')
 const DeviceEnroll = require('models/device_enroll')
 
 const AuthCodeType = require('actions/auth_code')
+const { TOKEN_NON_EXIST } = require('actions/token')
+
+var refreshTokens = {}
 
 exports.generateStudentCode = async (ctx) => {
   let studentInfo = ctx.request.body
@@ -52,10 +57,19 @@ exports.addFingerprint = async (ctx) => {
 
   let foundUser = await AuthCode.validateCode(code)
 
+  console.log(foundUser)
+
   if (foundUser) {
     await AuthCode.revokeCode(code)
 
-    ctx.body = await User.updateFingerprint(foundUser.userID, fingerprints)
+    let result = await User.updateFingerprint(foundUser.userID, fingerprints)
+
+    console.log(result)
+    if (result.n === 1 && result.nModified === 1 && result.ok === 1) {
+      ctx.body = 'Your fingerprint datas are successfully forwarded!'
+    } else {
+      ctx.body = "Your fingerprint datas weren't successfully forwarded."
+    }
   } else {
     ctx.body = 'Provided device code is invaild.'
   }
@@ -86,4 +100,38 @@ exports.deleteFingerprintCode = async (ctx) => {
   await DeviceEnroll.deleteDeviceInfo(currentIP)
 
   ctx.body = forwardedCode
+}
+
+exports.grantToken = async (ctx) => {
+  let userData = ctx.request.body.userData
+
+  if (await User.findUserByEmailAndPassword(userData)) {
+    let refreshToken = ctx.request.body.refreshToken
+    let response = {}
+
+    console.log(refreshTokens, refreshToken)
+
+    let accessToken = jwt.sign(userData, process.env.SECRET, { algorithm: 'HS256', expiresIn: 60 * 1000 })
+
+    if (refreshToken && refreshToken in refreshTokens) {
+      response = {
+        accessToken: accessToken
+      }
+
+      refreshTokens[refreshToken].accessToken = accessToken
+    } else {
+      refreshToken = jwt.sign(userData, process.env.SECRET, { algorithm: 'HS256', expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN })
+
+      response = {
+        accessToken: accessToken,
+        refreshToken: refreshToken
+      }
+
+      refreshTokens[refreshToken] = response
+    }
+
+    ctx.body = response
+  } else {
+    ctx.body = TOKEN_NON_EXIST
+  }
 }

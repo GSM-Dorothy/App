@@ -18,4 +18,6 @@ auth.post('/fingerprint', authCtrl.addFingerprint)
 auth.get('/device/enroll', authCtrl.deleteFingerprintCode)
 auth.post('/device/enroll', authCtrl.validateFingerprintCode)
 
+auth.post('/token', authCtrl.grantToken)
+
 module.exports = auth

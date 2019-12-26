@@ -1,25 +1,27 @@
-const Router = require('koa-router');
+const Router = require('koa-router')
 
-const index = new Router();
+const index = new Router()
 
-index.get('/', (ctx, next) => {
-    ctx.body = 'GET ' + ctx.request.path;
-});
+const { jwtVerifyMiddleware } = require('lib/decode_token')
 
-index.get('/meals', (ctx, next) => {
-    ctx.body = 'GET ' + ctx.request.path;
-});
+index.get('/', jwtVerifyMiddleware, (ctx, next) => {
+  ctx.body = 'GET ' + ctx.request.path
+})
 
-index.get('/washer', (ctx, next) => {
-    ctx.body = 'GET ' + ctx.request.path;
-});
+index.get('/meals', jwtVerifyMiddleware, (ctx, next) => {
+  ctx.body = 'GET ' + ctx.request.path
+})
 
-index.get('/schedule', (ctx, next) => {
-    ctx.body = 'GET ' + ctx.request.path;
-});
+index.get('/washer', jwtVerifyMiddleware, (ctx, next) => {
+  ctx.body = 'GET ' + ctx.request.path
+})
 
-index.get('/point', (ctx, next) => {
-    ctx.body = 'GET ' + ctx.request.path;
-});
+index.get('/schedule', jwtVerifyMiddleware, (ctx, next) => {
+  ctx.body = 'GET ' + ctx.request.path
+})
 
-module.exports = index;
+index.get('/point', jwtVerifyMiddleware, (ctx, next) => {
+  ctx.body = 'GET ' + ctx.request.path
+})
+
+module.exports = index

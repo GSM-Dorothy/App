@@ -24,15 +24,20 @@ RemainAdministrator.statics.addAdministrator = async function (administrator) {
 }
 
 RemainAdministrator.statics.findAll = async function () {
-  return (await this.find()).exec()
+  let results = await this.find().exec()
+
+  return results
 }
 
-RemainAdministrator.statics.findByDate = async function (date) {
-  return (await this.find({ startDate: date })).exec()
+RemainAdministrator.statics.findByDate = async function (start, end) {
+  console.log(start, end)
+  let results = await this.find({}).exec()
+
+  return results
 }
 
-RemainAdministrator.replaceAdministrator = async function (administrator, replacedAdministrator) {
-  return (await this.findOneAndUpdate({ $and: [
+RemainAdministrator.statics.replaceAdministrator = async function (administrator, replacedAdministrator) {
+  let results = await this.updateOne({ $and: [
     { 'name': administrator.name },
     { 'phone': administrator.phone },
     { 'startDate': administrator.startDate }
@@ -41,7 +46,9 @@ RemainAdministrator.replaceAdministrator = async function (administrator, replac
     phone: replacedAdministrator.phone,
     startDate: replacedAdministrator.startDate,
     endDate: replacedAdministrator.endDate
-  } })).exec()
+  } }).exec()
+
+  return results
 }
 
 const _remainAdministrator = mongoose.model('RemainAdministrator', RemainAdministrator, 'RemainAdministrator')

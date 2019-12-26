@@ -18,8 +18,8 @@ exports.createUser = async (ctx) => {
   }
 
   let foundUserInfo = {
-    userType: foundUser.userType,
-    name: foundUser.name
+    userType: foundUser.userInfo.userType,
+    name: foundUser.userInfo.name
   }
 
   if (_.isEqual(enteredUserInfo, foundUserInfo)) {

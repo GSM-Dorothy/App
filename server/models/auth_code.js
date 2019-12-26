@@ -30,7 +30,7 @@ AuthCode.statics.generateStudentCode = async function (studentInfo) {
   let authCode = new this({
     type: AuthCodeType.STUDENT,
     userInfo: {
-      userType: studentInfo.type,
+      userType: AuthCodeType.STUDENT,
       name: studentInfo.name,
       studentInfo: {
         grade: studentInfo.grade,
@@ -50,8 +50,11 @@ AuthCode.statics.generateAdministratorCode = async function (administratorInfo) 
   let authCode = new this({
     type: AuthCodeType.ADMINISTRATOR,
     userInfo: {
-      userType: administratorInfo.type,
-      name: administratorInfo.name
+      userType: AuthCodeType.ADMINISTRATOR,
+      name: administratorInfo.name,
+      administratorInfo: {
+        responsibility: administratorInfo.responsibility
+      }
     },
     code: cryptoRandomString({ length: 6 })
   })
