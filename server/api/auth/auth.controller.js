@@ -111,7 +111,7 @@ exports.grantToken = async (ctx) => {
 
     console.log(refreshTokens, refreshToken)
 
-    let accessToken = jwt.sign(userData, process.env.SECRET, { algorithm: 'HS256', expiresIn: 60 * 1000 })
+    let accessToken = jwt.sign(userData, process.env.SECRET, { algorithm: 'HS256', expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN })
 
     if (refreshToken && refreshToken in refreshTokens) {
       response = {
