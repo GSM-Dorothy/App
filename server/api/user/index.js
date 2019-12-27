@@ -5,7 +5,7 @@ const userCtrl = require('./user.controller')
 user.get('/student/:id', userCtrl.findStudentByID)
 user.post('/create', userCtrl.createUser)
 
-user.get('/point_archive/:grade/:class/:number/:name', userCtrl.findPointArchiveByStudentInfo)
+user.get('/point_archive/:grade/:class/:number', userCtrl.findPointArchiveByStudentInfo)
 user.post('/point_archive', userCtrl.addPointArchive)
 user.put('/point_archive', userCtrl.updatePointArchive)
 user.delete('/point_archive', userCtrl.deletePointArchive)

@@ -55,20 +55,59 @@ exports.findPointArchiveByStudentInfo = async (ctx) => {
     name: ctx.params.name
   }
 
-  ctx.body = await PointArchive.findAllPointArchive(studentInfo)
+  ctx.body = await PointArchive.findPointArchive(studentInfo)
 }
 
 exports.addPointArchive = async (ctx) => {
-  let pointArchive = ctx.request.body
-  ctx.body = await PointArchive.addPointArchive(pointArchive)
+  let userInfo = ctx.request.body
+
+  let foundUser = await User.findUserByID(userInfo.userID)
+
+  if (foundUser && foundUser.userType === AuthCodeType.STUDENT) {
+    let enteredUserInfo = {
+      grade: userInfo.grade,
+      class: userInfo.class,
+      number: userInfo.number
+    }
+
+    let foundUserInfo = {
+      grade: foundUser.studentInfo.grade,
+      class: foundUser.studentInfo.class,
+      number: foundUser.studentInfo.number
+    }
+
+    if (_.isEqual(enteredUserInfo, foundUserInfo)) {
+      ctx.body = await PointArchive.addPointArchive(userInfo)
+    } else {
+      ctx.body = 'Student information you provided is invalid.'
+    }
+  } else {
+    ctx.body = 'This user is not exist(or is not student)!'
+  }
 }
 
 exports.updatePointArchive = async (ctx) => {
-  let pointArchive = ctx.request.body
-  ctx.body = await PointArchive.updatePointArchive(pointArchive)
+  let studentInfo = ctx.request.body.studentInfo
+  let archive = ctx.request.body.archive
+
+  let result = await PointArchive.updatePointArchive(studentInfo, archive)
+
+  if (result.n === 1 && result.nModified === 1 && result.ok === 1) {
+    ctx.body = 'This student\'s point archive has successfully added/updated.'
+  } else {
+    ctx.body = 'This student\'s point archive wasn\'t successfully added/updated.'
+  }
 }
 
 exports.deletePointArchive = async (ctx) => {
-  let pointArchive = ctx.request.body
-  ctx.body = await PointArchive.deletePointArchive(pointArchive)
+  let studentInfo = ctx.request.body.studentInfo
+  let archive = ctx.request.body.archive
+
+  let result = await PointArchive.deletePointArchive(studentInfo, archive)
+
+  if (result.n === 1 && result.nModified === 1 && result.ok === 1) {
+    ctx.body = 'Part of the archive of point was deleted as you requested.'
+  } else {
+    ctx.body = 'Part of the archive of point wasn\'t deleted properly.'
+  }
 }

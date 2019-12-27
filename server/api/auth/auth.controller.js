@@ -109,8 +109,6 @@ exports.grantToken = async (ctx) => {
     let refreshToken = ctx.request.body.refreshToken
     let response = {}
 
-    console.log(refreshTokens, refreshToken)
-
     let accessToken = jwt.sign(userData, process.env.SECRET, { algorithm: 'HS256', expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN })
 
     if (refreshToken && refreshToken in refreshTokens) {
