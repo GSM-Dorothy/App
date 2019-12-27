@@ -11,7 +11,7 @@ const WasherArchive = require('models/washer_archive')
 const User = require('models/user')
 
 const AuthCodeType = require('actions/auth_code')
-const { OCCUPIED, RESERVED } = require('actions/washer')
+const { OCCUPIED, RESERVED, INOPERABLE } = require('actions/washer')
 
 School.init(SchoolAPI.Type.HIGH, SchoolAPI.Region.GWANGJU, 'F100000120')
 
@@ -188,6 +188,11 @@ exports.changeStatus = async (ctx) => {
     status = foundWasher.status
   } else {
     ctx.body = 'This washer is not exist!'
+    return
+  }
+
+  if (status === INOPERABLE) {
+    ctx.body = { status: status }
     return
   }
 
