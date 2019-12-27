@@ -1,14 +1,17 @@
-
 const SchoolAPI = require('node-school-kr')
 const School = new SchoolAPI()
-
-const User = require('models/user')
 
 const RemainAdministrator = require('models/remain_administrator')
 const RemainEnroll = require('models/remain_enroll')
 const RemainArchive = require('models/remain_archive')
 
+const Washer = require('models/washer')
+const WasherArchive = require('models/washer_archive')
+
+const User = require('models/user')
+
 const AuthCodeType = require('actions/auth_code')
+const { OCCUPIED, RESERVED } = require('actions/washer')
 
 School.init(SchoolAPI.Type.HIGH, SchoolAPI.Region.GWANGJU, 'F100000120')
 
@@ -25,6 +28,7 @@ let jsonifyMeal = meal => {
     석식: menus.slice(dinnerIndex + 1)
   }
 }
+
 exports.getMeal = async (ctx) => {
   let meals = await School.getMeal(ctx.params.year, ctx.params.month)
 
@@ -156,4 +160,57 @@ exports.deleteRemainArchive = async (ctx) => {
   let archiveInfo = ctx.request.body
 
   ctx.body = await RemainArchive.deleteArchive(archiveInfo)
+}
+
+exports.findWasher = async (ctx) => {
+  let washer = {
+    'floor': ctx.params.floor,
+    'location': ctx.params.location
+  }
+
+  ctx.body = await Washer.findByInfo(washer)
+}
+
+exports.addWasher = async (ctx) => {
+  let washerInfo = ctx.request.body
+
+  ctx.body = await Washer.addWasher(washerInfo)
+}
+
+exports.changeStatus = async (ctx) => {
+  let washer = ctx.request.body.washer
+  let userID = ctx.request.body.userID
+  let status
+
+  let foundWasher = await Washer.findByInfo(washer)
+
+  if (foundWasher) {
+    status = foundWasher.status
+  } else {
+    ctx.body = 'This washer is not exist!'
+    return
+  }
+
+  let foundUser = await User.findUserByID(userID)
+
+  if (foundUser && foundUser.userType === AuthCodeType.STUDENT) {
+    let latestArchive = (await WasherArchive.latestArchive(foundWasher))[0]
+    let startTime
+
+    if (latestArchive) {
+      startTime = latestArchive.finishTime
+      status = RESERVED
+    } else {
+      startTime = Date.now()
+      status = OCCUPIED
+    }
+
+    await WasherArchive.useWasher(foundWasher, userID, startTime)
+
+    await Washer.changeStatus(washer, status)
+
+    ctx.body = { status: status }
+  } else {
+    ctx.body = 'This user is not exist(or is not student)!'
+  }
 }

@@ -20,4 +20,8 @@ school.get('/remain/archive/:id', schoolCtrl.findRemainArchiveByUser)
 school.post('/remain/archive', schoolCtrl.addRemainArchive)
 school.delete('/remain/archive', schoolCtrl.deleteRemainArchive)
 
+school.get('/washer/:floor/:location', schoolCtrl.findWasher)
+school.post('/washer', schoolCtrl.addWasher)
+school.put('/washer', schoolCtrl.changeStatus)
+
 module.exports = school
