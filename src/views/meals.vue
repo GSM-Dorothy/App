@@ -3,17 +3,48 @@
     <router-view></router-view>
     <v-content>
       <v-container fluid>
-        <v-flex mb-4>
-          <h1 class="display-2 font-weight-bold mb-3">
-            Meals
-          </h1>
-          <p class="subheading font-weight-regular">
-            For help and collaboration with other Vuetify developers,
-            <br>please join our online
-            <a href="https://community.vuetifyjs.com" target="_blank">Discord Community</a>
-          </p>
-        </v-flex>
+        <v-row dense>
+          <v-col
+            v-for="title in Object.keys(posts)"
+            :key="title"
+            :cols="4"
+          >
+            <v-card>
+              <v-card-text>
+                <p
+                  class="display-1 text--primary"
+                >
+                  {{title}}
+                </p>
+                <div
+                  class="text--primary"
+                  v-for="menu in posts[title]"
+                  :key="menu"
+                >
+                  {{menu}}
+                </div>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
       </v-container>
     </v-content>
   </v-app>
 </template>
+
+<script>
+import axios from 'axios'
+
+export default {
+  data () {
+    return {
+      posts: []
+    }
+  },
+  created () {
+    axios.get('http://api.dorothy.gsmhs.kr/school/meal/2019/12/27').then((response) => {
+      this.posts = response.data
+    })
+  }
+}
+</script>

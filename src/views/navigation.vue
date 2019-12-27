@@ -35,7 +35,7 @@
                 tag
                 fab
                 outlined
-                elevation=6
+                elevation=12
                 :small="$vuetify.breakpoint.smAndUp"
                 :x-small="$vuetify.breakpoint.xsOnly"
               >
