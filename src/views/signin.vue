@@ -6,9 +6,10 @@
       permanent
       touchless
       :mini-variant="$vuetify.breakpoint.xsOnly"
+      mini-variant-width="100vh"
     >
       <template #prepend>
-        <v-list two-line >
+        <v-list two-line>
           <v-list-item>
             <v-img
               contain
@@ -41,8 +42,10 @@
             <v-list-item>
               <v-text-field
                 v-model="password"
+                :rules="passwordRules"
                 :color="$vuetify.theme.dark ? 'white' : 'black'"
                 label="비밀번호"
+                type="password"
                 required
                 outlined
                 dense
@@ -51,16 +54,26 @@
             <v-list-item>
               <v-btn
                 :disabled="!valid"
-                color="purple accent-4"
-                class="mr-4"
+                :outlined="!valid"
+                color="red"
                 @click="validate"
-                outlined
-                large
+                width="60"
+                height="60"
               >
-                <v-icon>mdi-arrow-right</v-icon>
+                <v-icon color="white">mdi-arrow-right</v-icon>
               </v-btn>
             </v-list-item>
           </v-form>
+        </v-list>
+      </template>
+      <template>
+        <v-list flat>
+          <v-list-item>
+            <p @click="signup">계정 생성</p>
+          </v-list-item>
+          <v-list-item>
+            <p>로그인이 안 되시나요?</p>
+          </v-list-item>
         </v-list>
       </template>
     </v-navigation-drawer>
@@ -73,8 +86,13 @@ export default {
   data: () => ({
     valid: true,
     lazy: false,
+    name: '',
     nameRules: [
       v => (v && v.length >= 2) || '2자 이상이어야 합니다.'
+    ],
+    password: '',
+    passwordRules: [
+      v => (v && v.length >= 2)
     ]
   }),
 
@@ -83,6 +101,9 @@ export default {
       if (this.$refs.form.validate()) {
         this.snackbar = true
       }
+    },
+    signup () {
+      this.$router.push({ name: 'navigation' })
     }
   }
 }
