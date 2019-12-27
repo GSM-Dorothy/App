@@ -1,6 +1,4 @@
 <template>
-  <v-app>
-    <router-view></router-view>
     <v-content>
       <v-container fluid>
         <v-flex mb-4>
@@ -15,5 +13,4 @@
         </v-flex>
       </v-container>
     </v-content>
-  </v-app>
 </template>

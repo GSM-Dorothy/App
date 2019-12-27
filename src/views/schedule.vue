@@ -1,6 +1,4 @@
 <template>
-  <v-app>
-    <router-view></router-view>
     <v-content>
       <v-row class="fill-height">
         <v-col>
@@ -105,7 +103,6 @@
         </v-col>
       </v-row>
     </v-content>
-  </v-app>
 </template>
 
 <script>

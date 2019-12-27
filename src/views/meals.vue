@@ -1,35 +1,32 @@
 <template>
-  <v-app>
-    <router-view></router-view>
-    <v-content>
-      <v-container fluid>
-        <v-row dense>
-          <v-col
-            v-for="title in Object.keys(posts)"
-            :key="title"
-            :cols="4"
-          >
-            <v-card>
-              <v-card-text>
-                <p
-                  class="display-1 text--primary"
-                >
-                  {{title}}
-                </p>
-                <div
-                  class="text--primary"
-                  v-for="menu in posts[title]"
-                  :key="menu"
-                >
-                  {{menu}}
-                </div>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-content>
-  </v-app>
+  <v-content>
+    <v-container fluid>
+      <v-row dense>
+        <v-col
+          v-for="title in Object.keys(posts)"
+          :key="title"
+          :cols="4"
+        >
+          <v-card>
+            <v-card-text>
+              <p
+                class="display-1 text--primary"
+              >
+                {{title}}
+              </p>
+              <div
+                class="text--primary"
+                v-for="menu in posts[title]"
+                :key="menu"
+              >
+                {{menu}}
+              </div>
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-content>
 </template>
 
 <script>

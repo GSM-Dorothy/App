@@ -6,61 +6,31 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    component: () => import('../views/home.vue'),
+    component: () => import('../views/login.vue'),
     children: [
       {
         path: '',
-        component: () => import('../views/login.vue')
-      }
-    ]
-  },
-  {
-    path: '/meals',
-    component: () => import('../views/meals.vue'),
-    children: [
+        component: () => import('../views/home.vue')
+      },
       {
-        path: '',
-        component: () => import('../views/navigation.vue')
-      }
-    ]
-  },
-  {
-    path: '/point',
-    component: () => import('../views/point.vue'),
-    children: [
+        path: 'meals',
+        component: () => import('../views/meals.vue')
+      },
       {
-        path: '',
-        component: () => import('../views/navigation.vue')
-      }
-    ]
-  },
-  {
-    path: '/remain',
-    component: () => import('../views/remain.vue'),
-    children: [
+        path: 'point',
+        component: () => import('../views/point.vue')
+      },
       {
-        path: '',
-        component: () => import('../views/navigation.vue')
-      }
-    ]
-  },
-  {
-    path: '/schedule',
-    component: () => import('../views/schedule.vue'),
-    children: [
+        path: 'remain',
+        component: () => import('../views/remain.vue')
+      },
       {
-        path: '',
-        component: () => import('../views/navigation.vue')
-      }
-    ]
-  },
-  {
-    path: '/washer',
-    component: () => import('../views/washer.vue'),
-    children: [
+        path: 'schedule',
+        component: () => import('../views/schedule.vue')
+      },
       {
-        path: '',
-        component: () => import('../views/navigation.vue')
+        path: 'washer',
+        component: () => import('../views/washer.vue')
       }
     ]
   }
