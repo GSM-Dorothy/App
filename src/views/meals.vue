@@ -9,10 +9,10 @@
         <v-btn fab text small @click="prev">
           <v-icon small>mdi-chevron-left</v-icon>
         </v-btn>
-        <v-toolbar-title>{{ title }}</v-toolbar-title>
         <v-btn fab text small @click="next">
           <v-icon small>mdi-chevron-right</v-icon>
         </v-btn>
+        <v-toolbar-title>{{ title }}</v-toolbar-title>
       </v-toolbar>
     </v-sheet>
     <v-row>
