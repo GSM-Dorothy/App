@@ -30,10 +30,10 @@
           >
             <v-list-item>
               <v-text-field
-                v-model="name"
-                :rules="nameRules"
+                v-model="email"
+                :rules="emailRules"
                 :color="$vuetify.theme.dark ? 'white' : 'black'"
-                label="계정이름"
+                label="이메일"
                 required
                 outlined
                 dense
@@ -51,12 +51,34 @@
                 dense
               ></v-text-field>
             </v-list-item>
+             <v-list-item>
+              <v-text-field
+                v-model="phone"
+                :rules="phoneRules"
+                :color="$vuetify.theme.dark ? 'white' : 'black'"
+                label="전화번호"
+                required
+                outlined
+                dense
+              ></v-text-field>
+            </v-list-item>
+             <v-list-item>
+              <v-text-field
+                v-model="code"
+                :rules="codeRules"
+                :color="$vuetify.theme.dark ? 'white' : 'black'"
+                label="인증번호"
+                required
+                outlined
+                dense
+              ></v-text-field>
+            </v-list-item>
             <v-list-item>
               <v-btn
                 :disabled="!valid"
                 :outlined="!valid"
                 color="red"
-                @click="validate"
+                @click="signup"
                 width="60"
                 height="60"
               >
@@ -68,8 +90,8 @@
       </template>
       <template>
         <v-list flat>
-          <v-list-item>
-            <p @click="signup">로그인</p>
+          <v-list-item to="/">
+            로그인
           </v-list-item>
         </v-list>
       </template>
@@ -79,28 +101,47 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   data: () => ({
     valid: true,
     lazy: false,
-    name: '',
-    nameRules: [
-      v => (v && v.length >= 2) || '2자 이상이어야 합니다.'
+    email: '',
+    emailRules: [
+      v => !!v || '',
+      v => /.+@.+/.test(v) || ''
     ],
     password: '',
     passwordRules: [
-      v => (v && v.length >= 2)
+      v => !!v || ''
+    ],
+    phone: '',
+    phoneRules: [
+      v => !!v || ''
+    ],
+    code: '',
+    codeRules: [
+      v => !!v || ''
     ]
   }),
-
   methods: {
-    validate () {
-      if (this.$refs.form.validate()) {
-        this.snackbar = true
-      }
-    },
     signup () {
-      this.$router.push({ name: 'navigation' })
+      const email = this.email
+      const password = this.password
+      const phone = this.phone
+      const code = this.code
+
+      if (!email || !password || !phone || !code) {
+        return false
+      }
+
+      axios.post('http://api.dorothy.gsmhs.kr/user/create', { email, password, phone, code })
+        .then(res => {
+          if (res.status === 200) {
+            this.$router.push('/')
+          }
+        })
     }
   }
 }

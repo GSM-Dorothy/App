@@ -6,12 +6,28 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    component: () => import('../views/default.vue'),
+    component: () => import('../views/signin.vue'),
     children: [
       {
         path: '',
         component: () => import('../views/home.vue')
-      },
+      }
+    ]
+  },
+  {
+    path: '/signup',
+    component: () => import('../views/signup.vue'),
+    children: [
+      {
+        path: '',
+        component: () => import('../views/home.vue')
+      }
+    ]
+  },
+  {
+    path: '/',
+    component: () => import('../views/navigation.vue'),
+    children: [
       {
         path: 'meals',
         component: () => import('../views/meals.vue')

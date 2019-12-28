@@ -68,11 +68,11 @@
       </template>
       <template>
         <v-list flat>
-          <v-list-item>
-            <p @click="signup">계정 생성</p>
+          <v-list-item to="/signup">
+            계정 생성
           </v-list-item>
           <v-list-item>
-            <p>로그인이 안 되시나요?</p>
+            로그인이 안 되시나요?
           </v-list-item>
         </v-list>
       </template>
@@ -92,19 +92,11 @@ export default {
     ],
     password: '',
     passwordRules: [
-      v => (v && v.length >= 2)
+      v => !!v || ''
     ]
   }),
 
   methods: {
-    validate () {
-      if (this.$refs.form.validate()) {
-        this.snackbar = true
-      }
-    },
-    signup () {
-      this.$router.push({ name: 'navigation' })
-    }
   }
 }
 </script>
