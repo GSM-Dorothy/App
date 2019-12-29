@@ -50,11 +50,14 @@ User.statics.findUserByID = async function (id) {
   return foundUser
 }
 
-User.statics.findUserByEmailAndPassword = async function (loginData) {
-  let foundUser = {}
+User.statics.findUserWithLoginData = async function (loginData) {
+  let foundUser
 
   try {
-    foundUser = await this.findOne({ email: loginData.email, password: loginData.password }).exec()
+    foundUser = await this.findOne({ $or: [
+      { email: loginData.ID, password: loginData.password },
+      { phone: loginData.ID, password: loginData.password }
+    ] }).exec()
   } catch (e) {
     console.log(e)
   }

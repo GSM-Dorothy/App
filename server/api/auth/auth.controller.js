@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken')
 const AuthCode = require('models/auth_code')
 const User = require('models/user')
 const DeviceEnroll = require('models/device_enroll')
+const Token = require('models/token')
 
 const AuthCodeType = require('actions/auth_code')
 const { TOKEN_EXPIRED, TOKEN_NON_EXIST } = require('actions/token')
@@ -103,11 +104,27 @@ exports.deleteFingerprintCode = async (ctx) => {
 }
 
 exports.grantToken = async (ctx) => {
-  let userData = ctx.request.body.userData
+  let loginData = ctx.request.body.userData
 
-  if (await User.findUserByEmailAndPassword(userData)) {
-    let accessToken = jwt.sign(userData, process.env.SECRET, { algorithm: 'HS256', expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN })
-    let refreshToken = jwt.sign(userData, process.env.SECRET, { algorithm: 'HS256', expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN })
+  let foundUser = await User.findUserWithLoginData(loginData)
+
+  if (foundUser) {
+    let userID = foundUser._id
+
+    let accessToken = jwt.sign({}, process.env.SECRET, { expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN })
+    let refreshToken = jwt.sign({}, process.env.SECRET, { expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN })
+
+    let decoded = jwt.decode(accessToken, { complete: true })
+
+    let expireDate = decoded.payload.exp * 1000
+
+    let tokenData = {
+      accessToken: accessToken,
+      userID: userID,
+      expireDate: expireDate
+    }
+
+    await Token.storeToken(tokenData)
 
     let response = {
       accessToken: accessToken,
@@ -146,14 +163,22 @@ exports.validateToken = async (ctx) => {
   const accessToken = ctx.request.body.accessToken || ctx.request.query.accessToken || ctx.request.headers['x-access-token']
 
   if (accessToken) {
-    jwt.verify(accessToken, process.env.SECRET, function (err, decoded) {
-      if (err) {
-        ctx.body = TOKEN_EXPIRED
-        return
+    let decoded
+
+    try {
+      jwt.verify(accessToken, process.env.SECRET)
+    } catch (e) {
+      let result = await Token.revokeToken(accessToken)
+
+      if (result.n === 1 && result.nModified === 1 && result.ok === 1) {
+        ctx.throw(401, TOKEN_EXPIRED + ': Please refresh your token.')
+      } else {
+        ctx.throw(401, TOKEN_EXPIRED + ': Error occured while revoking token.')
       }
-      ctx.body = decoded
-    })
+    }
+
+    ctx.body = decoded
   } else {
-    ctx.body = TOKEN_NON_EXIST
+    ctx.throw(401, TOKEN_NON_EXIST + ': Please provide a valid token.')
   }
 }
