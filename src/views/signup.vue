@@ -8,8 +8,6 @@
           </v-img>
         </v-list-item>
         <v-list-item>
-        </v-list-item>
-        <v-list-item>
           <h1>계정 생성</h1>
         </v-list-item>
         <v-form ref="form" v-model="valid" :lazy-validation="lazy">

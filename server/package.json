@@ -19,7 +19,7 @@
     "node-school-kr": "^2.2.2"
   },
   "scripts": {
-    "serve:osx": "NODE_PATH=./ nodemon main.js",
+    "serve:mac": "NODE_PATH=./ nodemon main.js",
     "serve:win": "set NODE_PATH=./&& nodemon main.js"
   }
 }
