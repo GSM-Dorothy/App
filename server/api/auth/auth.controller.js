@@ -5,7 +5,7 @@ const User = require('models/user')
 const DeviceEnroll = require('models/device_enroll')
 
 const AuthCodeType = require('actions/auth_code')
-const { TOKEN_NON_EXIST } = require('actions/token')
+const { TOKEN_EXPIRED, TOKEN_NON_EXIST } = require('actions/token')
 
 var refreshTokens = {}
 
@@ -106,29 +106,53 @@ exports.grantToken = async (ctx) => {
   let userData = ctx.request.body.userData
 
   if (await User.findUserByEmailAndPassword(userData)) {
-    let refreshToken = ctx.request.body.refreshToken
-    let response = {}
-
     let accessToken = jwt.sign(userData, process.env.SECRET, { algorithm: 'HS256', expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN })
+    let refreshToken = jwt.sign(userData, process.env.SECRET, { algorithm: 'HS256', expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN })
 
-    if (refreshToken && refreshToken in refreshTokens) {
-      response = {
-        accessToken: accessToken
-      }
-
-      refreshTokens[refreshToken].accessToken = accessToken
-    } else {
-      refreshToken = jwt.sign(userData, process.env.SECRET, { algorithm: 'HS256', expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN })
-
-      response = {
-        accessToken: accessToken,
-        refreshToken: refreshToken
-      }
-
-      refreshTokens[refreshToken] = response
+    let response = {
+      accessToken: accessToken,
+      refreshToken: refreshToken
     }
 
+    refreshTokens[refreshToken] = response
+
     ctx.body = response
+  } else {
+    ctx.body = TOKEN_NON_EXIST
+  }
+}
+
+exports.refreshToken = async (ctx) => {
+  let userData = ctx.request.body.userData
+  let refreshToken = ctx.request.body.refreshToken
+  let response = {}
+
+  let accessToken = jwt.sign(userData, process.env.SECRET, { algorithm: 'HS256', expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN })
+
+  if (refreshToken && refreshToken in refreshTokens) {
+    response = {
+      accessToken: accessToken
+    }
+
+    refreshTokens[refreshToken].accessToken = accessToken
+
+    ctx.body = response
+  } else {
+    ctx.body = TOKEN_NON_EXIST
+  }
+}
+
+exports.validateToken = async (ctx) => {
+  const accessToken = ctx.request.body.accessToken || ctx.request.query.accessToken || ctx.request.headers['x-access-token']
+
+  if (accessToken) {
+    jwt.verify(accessToken, process.env.SECRET, function (err, decoded) {
+      if (err) {
+        ctx.body = TOKEN_EXPIRED
+        return
+      }
+      ctx.body = decoded
+    })
   } else {
     ctx.body = TOKEN_NON_EXIST
   }

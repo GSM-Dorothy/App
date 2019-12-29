@@ -2,25 +2,23 @@ const Router = require('koa-router')
 
 const index = new Router()
 
-const { jwtVerifyMiddleware } = require('lib/decode_token')
-
-index.get('/', jwtVerifyMiddleware, (ctx, next) => {
+index.get('/', (ctx, next) => {
   ctx.body = 'GET ' + ctx.request.path
 })
 
-index.get('/meals', jwtVerifyMiddleware, (ctx, next) => {
+index.get('/meals', (ctx, next) => {
   ctx.body = 'GET ' + ctx.request.path
 })
 
-index.get('/washer', jwtVerifyMiddleware, (ctx, next) => {
+index.get('/washer', (ctx, next) => {
   ctx.body = 'GET ' + ctx.request.path
 })
 
-index.get('/schedule', jwtVerifyMiddleware, (ctx, next) => {
+index.get('/schedule', (ctx, next) => {
   ctx.body = 'GET ' + ctx.request.path
 })
 
-index.get('/point', jwtVerifyMiddleware, (ctx, next) => {
+index.get('/point', (ctx, next) => {
   ctx.body = 'GET ' + ctx.request.path
 })
 
