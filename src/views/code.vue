@@ -15,13 +15,13 @@
                     <v-text-field v-model="name" :rules="defaultRules" :color="$vuetify.theme.dark ? 'white' : 'black'" label="이름" required outlined dense></v-text-field>
                   </v-list-item>
                   <v-list-item>
-                    <v-text-field v-model="grade" :rules="defaultRules" :color="$vuetify.theme.dark ? 'white' : 'black'" label="학년" required outlined dense></v-text-field>
+                    <v-text-field v-model="grade" type="number" :rules="defaultRules" :color="$vuetify.theme.dark ? 'white' : 'black'" label="학년" required outlined dense></v-text-field>
                   </v-list-item>
                   <v-list-item>
-                    <v-text-field v-model="classRoom" :rules="defaultRules" :color="$vuetify.theme.dark ? 'white' : 'black'" label="반" required outlined dense></v-text-field>
+                    <v-text-field v-model="classRoom" type="number" :rules="defaultRules" :color="$vuetify.theme.dark ? 'white' : 'black'" label="반" required outlined dense></v-text-field>
                   </v-list-item>
                   <v-list-item>
-                    <v-text-field v-model="number" :rules="defaultRules" :color="$vuetify.theme.dark ? 'white' : 'black'" label="번호" required outlined dense></v-text-field>
+                    <v-text-field v-model="number" type="number" :rules="defaultRules" :color="$vuetify.theme.dark ? 'white' : 'black'" label="번호" required outlined dense></v-text-field>
                   </v-list-item>
                   <v-list-item>
                     <v-btn :disabled="!valid" :outlined="!valid" color="red" @click="student" width="60" height="60">
