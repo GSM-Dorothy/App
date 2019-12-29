@@ -15,13 +15,13 @@
             <v-text-field v-model="email" :rules="emailRules" :color="$vuetify.theme.dark ? 'white' : 'black'" label="이메일" required outlined dense></v-text-field>
           </v-list-item>
           <v-list-item>
-            <v-text-field v-model="password" :rules="passwordRules" :color="$vuetify.theme.dark ? 'white' : 'black'" label="비밀번호" type="password" required outlined dense></v-text-field>
+            <v-text-field v-model="password" :rules="defaultRules" :color="$vuetify.theme.dark ? 'white' : 'black'" label="비밀번호" type="password" required outlined dense></v-text-field>
           </v-list-item>
           <v-list-item>
-            <v-text-field v-model="phone" :rules="phoneRules" :color="$vuetify.theme.dark ? 'white' : 'black'" label="전화번호" required outlined dense></v-text-field>
+            <v-text-field v-model="phone" :rules="defaultRules" :color="$vuetify.theme.dark ? 'white' : 'black'" label="전화번호" required outlined dense></v-text-field>
           </v-list-item>
           <v-list-item>
-            <v-text-field v-model="code" :rules="codeRules" :color="$vuetify.theme.dark ? 'white' : 'black'" label="인증번호" required outlined dense></v-text-field>
+            <v-text-field v-model="code" :rules="defaultRules" :color="$vuetify.theme.dark ? 'white' : 'black'" label="인증번호" required outlined dense></v-text-field>
           </v-list-item>
           <v-list-item>
             <v-btn :disabled="!valid" :outlined="!valid" color="red" @click="signup" width="60" height="60">
@@ -56,15 +56,9 @@ export default {
       v => /.+@.+/.test(v) || ''
     ],
     password: '',
-    passwordRules: [
-      v => !!v || ''
-    ],
     phone: '',
-    phoneRules: [
-      v => !!v || ''
-    ],
     code: '',
-    codeRules: [
+    defaultRules: [
       v => !!v || ''
     ]
   }),

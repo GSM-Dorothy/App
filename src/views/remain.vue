@@ -33,6 +33,54 @@
         </v-card>
       </v-col>
     </v-row>
+    <v-card class="elevation-12 ma-3">
+      <v-tabs color="deep-purple accent-4" centered grow>
+        <v-tab>호실</v-tab>
+        <v-tab>외출</v-tab>
+        <v-tab>외박</v-tab>
+
+        <v-tab-item>
+          <v-container fluid>
+            <v-row>
+              <v-col>
+                <v-time-picker v-model="time" :landscape="$vuetify.breakpoint.smAndUp" :allowed-minutes="allowedStep" ampm-in-title scrollable></v-time-picker>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-tab-item>
+        <v-tab-item>
+          <v-container fluid>
+            <v-row>
+              <v-col>
+                <v-time-picker v-model="time" :landscape="$vuetify.breakpoint.smAndUp" :allowed-minutes="allowedStep" ampm-in-title scrollable></v-time-picker>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-tab-item>
+        <v-tab-item>
+          <v-container fluid>
+            <v-row>
+              <v-col>
+                <v-time-picker v-model="time" :landscape="$vuetify.breakpoint.smAndUp" :allowed-minutes="allowedStep" ampm-in-title scrollable></v-time-picker>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-tab-item>
+      </v-tabs>
+    </v-card>
   </v-container>
 </v-content>
 </template>
+
+<script>
+export default {
+  data () {
+    return {
+      time: '13:10'
+    }
+  },
+  methods: {
+    allowedStep: m => m % 5 === 0
+  }
+}
+</script>

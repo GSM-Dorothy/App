@@ -5,7 +5,7 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
+    path: '',
     component: () => import('../views/signin.vue'),
     children: [
       {
@@ -15,17 +15,17 @@ const routes = [
     ]
   },
   {
-    path: '/signup',
+    path: '',
     component: () => import('../views/signup.vue'),
     children: [
       {
-        path: '',
+        path: 'signup',
         component: () => import('../views/home.vue')
       }
     ]
   },
   {
-    path: '/',
+    path: '',
     component: () => import('../views/navigation.vue'),
     children: [
       {
@@ -47,6 +47,24 @@ const routes = [
       {
         path: 'washer',
         component: () => import('../views/washer.vue')
+      }
+    ]
+  },
+  {
+    path: '/admin',
+    component: () => import('../views/admin.vue'),
+    children: [
+      {
+        path: '',
+        component: () => import('../views/homeAdmin.vue')
+      },
+      {
+        path: 'code',
+        component: () => import('../views/code.vue')
+      },
+      {
+        path: 'remain',
+        component: () => import('../views/remainAdmin.vue')
       }
     ]
   }
