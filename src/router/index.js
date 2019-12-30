@@ -28,6 +28,9 @@ const routes = [
   {
     path: '',
     component: () => import('../views/navigation.vue'),
+    meta: {
+      requiresAuth: true
+    },
     children: [
       {
         path: 'meals',
@@ -55,7 +58,7 @@ const routes = [
     path: '/admin',
     component: () => import('../views/admin.vue'),
     meta: {
-      requiresAuth: true
+      requiresAdminAuth: true
     },
     children: [
       {
@@ -87,6 +90,13 @@ router.beforeEach((to, from, next) => {
       return
     }
     next('/')
+  } else if (to.matched.some(record => record.meta.requiresAdminAuth)) {
+    if (store.getters.userType === 'ADMINISTRATOR') {
+      next('/admin')
+      return
+    }
+    window.alert('관리자만 접근가능합니다!')
+    next('/meals')
   } else {
     next()
   }

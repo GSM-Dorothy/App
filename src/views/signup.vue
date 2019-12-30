@@ -74,10 +74,10 @@ export default {
       }
 
       axios.post('http://api.dorothy.gsmhs.kr/user/create', {
-        email,
-        password,
-        phone,
-        code
+        email: email,
+        password: password,
+        phone: phone,
+        code: code
       })
         .then(res => {
           if (res.status === 200) {

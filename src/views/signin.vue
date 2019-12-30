@@ -96,11 +96,11 @@ export default {
     ]
   }),
   methods: {
-    signin: () => {
+    signin () {
       let name = this.name
       let password = this.password
       this.$store.dispatch('signin', { name, password })
-        .then(() => this.$router.push('/'))
+        .then(() => this.$router.push('/meals'))
         .catch(err => console.log(err))
     }
   }

@@ -87,10 +87,10 @@ export default {
       }
 
       axios.post('http://api.dorothy.gsmhs.kr/auth/code/student', {
-        name,
-        grade,
-        classRoom,
-        number
+        name: name,
+        grade: grade,
+        class: classRoom,
+        number: number
       })
         .then(res => {
           if (res.status === 200) {
@@ -108,8 +108,8 @@ export default {
       }
 
       axios.post('http://api.dorothy.gsmhs.kr/auth/code/administrator', {
-        name,
-        responibility
+        name: name,
+        responibility: responibility
       })
         .then(res => {
           if (res.status === 200) {

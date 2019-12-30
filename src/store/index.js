@@ -6,52 +6,46 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    status: '',
-    user: {},
-    accessToken: '',
-    refreshToken: ''
+    userType: localStorage.getItem('userType'),
+    refreshToken: localStorage.getItem('refreshToken')
   },
   mutations: {
-    auth_request (state) {
-      state.status = 'loading'
-    },
-    auth_success (state, accessToken, refreshToken, user) {
-      state.status = 'success'
-      state.accessToken = accessToken
+    auth_success (state, userType, refreshToken) {
+      state.userType = userType
       state.refreshToken = refreshToken
-      state.user = user
-    },
-    auth_error (state) {
-      state.status = 'error'
     },
     signout (state) {
-      state.status = ''
-      state.accessToken = ''
+      state.userType = ''
       state.refreshToken = ''
     }
   },
   actions: {
-    signin ({ commit }, user) {
+    signin ({ commit }, data) {
       return new Promise((resolve, reject) => {
-        commit('auth_request')
-        axios.post('http://api.dorothy.gsmhs.kr/' + user)
+        axios.post('http://api.dorothy.gsmhs.kr/auth/token/grant', {
+          ID: data.name,
+          password: data.password
+        })
           .then(res => {
             const accessToken = res.data.accessToken
             const refreshToken = res.data.refreshToken
-            const user = res.data.user
-            localStorage.setItem('accessToken', accessToken)
             localStorage.setItem('refreshToken', refreshToken)
             axios.defaults.headers.common['x-access-token'] = accessToken
-            axios.defaults.headers.common['x-refresh-token'] = refreshToken
-            commit('auth_success', accessToken, refreshToken, user)
-            resolve(res)
+            axios.get('http://api.dorothy.gsmhs.kr/auth/token')
+              .then(response => {
+                const userType = response.data.userType
+                localStorage.setItem('userType', userType)
+                commit('auth_success', userType, refreshToken)
+                resolve(res)
+              })
+              .catch(err => {
+                console.log(err)
+              })
           })
           .catch(err => {
-            commit('auth_error')
-            localStorage.removeItem('accessToken')
+            localStorage.removeItem('userType')
             localStorage.removeItem('refreshToken')
-            delete axios.defaults.headers.common['accessToken']
-            delete axios.defaults.headers.common['refreshToken']
+            delete axios.defaults.headers.common['x-access-token']
             reject(err)
           })
       })
@@ -59,16 +53,16 @@ export default new Vuex.Store({
     signout ({ commit }) {
       return new Promise((resolve, reject) => {
         commit('signout')
-        localStorage.removeItem('accessToken')
+        localStorage.removeItem('userType')
         localStorage.removeItem('refreshToken')
-        delete axios.defaults.headers.common['accessToken']
-        delete axios.defaults.headers.common['refreshToken']
+        delete axios.defaults.headers.common['x-access-token']
         resolve()
       })
     }
   },
   getters: {
-    isLoggedIn: state => !!state.accessToken,
+    isLoggedIn: state => !!state.refreshToken,
+    userType: state => state.userType,
     authStatus: state => state.status
   }
 })
