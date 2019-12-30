@@ -16,24 +16,13 @@ exports.createUser = async (ctx) => {
     ctx.throw(401, 'Provided user code is invalid!')
   }
 
-  let enteredUserInfo = {
-    userType: userInfo.userType,
-    name: userInfo.name
-  }
+  userInfo.userType = foundUser.userType
 
-  let foundUserInfo = {
-    userType: foundUser.userType,
-    name: foundUser.name
-  }
+  await AuthCode.revokeCode(enteredCode)
 
-  if (_.isEqual(enteredUserInfo, foundUserInfo)) {
-    await AuthCode.revokeCode(enteredCode)
-    delete userInfo.code
+  delete userInfo.code
 
-    ctx.body = await User.createUser(userInfo)
-  } else {
-    ctx.throw(401, 'User can\'t be created!')
-  }
+  ctx.body = await User.createUser(userInfo)
 }
 
 exports.findStudent = async (ctx) => {

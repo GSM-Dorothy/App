@@ -65,87 +65,67 @@ exports.getSchedule = async (ctx) => {
 }
 
 exports.getRemainAdministrator = async (ctx) => {
-  if (!ctx.request.token_validated) {
-    ctx.throw(401, TOKEN_UNAUTHORIZED + ': Please grant your token first.')
-  }
-
   let userID = ctx.request.userID
-
   let foundUser = await User.findUserByID(userID)
 
-  if (foundUser) {
-    ctx.body = await RemainAdministrator.findAll()
-  } else {
+  if (!foundUser) {
     ctx.throw(401, 'This user is not administrator!(or is not exist)')
   }
+
+  ctx.body = await RemainAdministrator.findAll()
 }
 
 exports.getRemainAdministratorByDate = async (ctx) => {
-  if (!ctx.request.token_validated) {
-    ctx.throw(401, TOKEN_UNAUTHORIZED + ': Please grant your token first.')
-  }
-
   let userID = ctx.request.userID
-
   let foundUser = await User.findUserByID(userID)
 
-  if (foundUser) {
-    let year = parseInt(ctx.params.year)
-    let month = parseInt(ctx.params.month) - 1
-    let day = parseInt(ctx.params.day) + 1
-
-    console.log(year, month, day)
-
-    let start = new Date(year, month, day)
-    let end = new Date(year, month, day + 1)
-
-    ctx.body = await RemainAdministrator.findByDate(start, end)
-  } else {
+  if (!foundUser) {
     ctx.throw(401, 'This user is not administrator!(or is not exist)')
   }
+
+  let year = parseInt(ctx.params.year)
+  let month = parseInt(ctx.params.month) - 1
+  let day = parseInt(ctx.params.day) + 1
+
+  console.log(year, month, day)
+
+  let start = new Date(year, month, day)
+  let end = new Date(year, month, day + 1)
+
+  ctx.body = await RemainAdministrator.findByDate(start, end)
 }
 
 exports.addRemainAdministrator = async (ctx) => {
-  if (!ctx.request.token_validated) {
-    ctx.throw(401, TOKEN_UNAUTHORIZED + ': Please grant your token first.')
-  }
-
   let userID = ctx.request.userID
-
   let foundUser = await User.findUserByID(userID)
 
-  if (foundUser && foundUser.userType === ADMINISTRATOR) {
-    let administrator = ctx.request.body
-
-    ctx.body = await RemainAdministrator.addAdministrator(administrator)
-  } else {
+  if (!foundUser || foundUser.userType !== ADMINISTRATOR) {
     ctx.throw(401, 'This user is not administrator!(or is not exist)')
   }
+
+  let administrator = ctx.request.body
+
+  ctx.body = await RemainAdministrator.addAdministrator(administrator)
 }
 
 exports.replaceRemainAdministrator = async (ctx) => {
-  if (!ctx.request.token_validated) {
-    ctx.throw(401, TOKEN_UNAUTHORIZED + ': Please grant your token first.')
-  }
-
   let userID = ctx.request.userID
-
   let foundUser = await User.findUserByID(userID)
 
-  if (foundUser && foundUser.userType === ADMINISTRATOR) {
-    let administrator = ctx.request.body.administrator
-    let replacedAdministrator = ctx.request.body.replacedAdministrator
-
-    let result = await RemainAdministrator.replaceAdministrator(administrator, replacedAdministrator)
-
-    if (result.n === 1 && result.nModified === 1 && result.ok === 1) {
-      ctx.body = 'Remain administrator has just completely replaced!'
-    } else {
-      ctx.body = "Remain administrator hasn't just completely replaced."
-    }
-  } else {
+  if (!foundUser || foundUser.userType !== ADMINISTRATOR) {
     ctx.throw(401, 'This user is not administrator!(or is not exist)')
   }
+
+  let administrator = ctx.request.body.administrator
+  let replacedAdministrator = ctx.request.body.replacedAdministrator
+
+  let result = await RemainAdministrator.replaceAdministrator(administrator, replacedAdministrator)
+
+  if (result.n !== 1 || result.nModified !== 1 || result.ok !== 1) {
+    ctx.throw(401, 'Remain administrator hasn\'t just completely replaced.')
+  }
+
+  ctx.body = 'Remain administrator has just completely replaced!'
 }
 
 exports.findRemainEnrollByUser = async (ctx) => {
