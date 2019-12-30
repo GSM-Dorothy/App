@@ -7,22 +7,26 @@ const PointArchive = require('models/point_archive')
 const { STUDENT, ADMINISTRATOR } = require('actions/auth_code')
 
 exports.createUser = async (ctx) => {
-  let userInfo = ctx.request.body
-  let enteredCode = userInfo.code
+  let registerInfo = ctx.request.body
+  let code = registerInfo.code
 
-  let foundUser = await AuthCode.validateCode(enteredCode)
+  let foundUser = await AuthCode.validateCode(code)
 
   if (!foundUser) {
     ctx.throw(401, 'Provided user code is invalid!')
   }
 
-  let userType = foundUser.userInfo.userType
+  let userInfo = {
+    userType: foundUser.userInfo.userType,
+    name: foundUser.userInfo.name,
+    email: registerInfo.email,
+    password: registerInfo.password,
+    phone: registerInfo.phone,
+    studentInfo: foundUser.userInfo.studentInfo,
+    administratorInfo: foundUser.userInfo.administratorInfo
+  }
 
-  userInfo.userType = userType
-
-  await AuthCode.revokeCode(enteredCode)
-
-  delete userInfo.code
+  await AuthCode.revokeCode(code)
 
   ctx.body = await User.createUser(userInfo)
 }
