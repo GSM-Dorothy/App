@@ -2,7 +2,8 @@ const User = require('models/user')
 const AuthCode = require('models/auth_code')
 const PointArchive = require('models/point_archive')
 
-const AuthCodeType = require('actions/auth_code')
+const { STUDENT } = require('actions/auth_code')
+const { TOKEN_UNAUTHORIZED } = require('actions/token')
 
 const _ = require('lodash')
 
@@ -36,30 +37,50 @@ exports.createUser = async (ctx) => {
   }
 }
 
-exports.findStudentByID = async (ctx) => {
-  let foundUser = await User.findUserByID(ctx.params.id)
-
-  if (foundUser.userType !== AuthCodeType.STUDENT) {
-    ctx.body = 'This user is not student!'
-    return
+exports.findStudent = async (ctx) => {
+  if (!ctx.request.token_validated) {
+    ctx.throw(401, TOKEN_UNAUTHORIZED + ': Please grant your token first.')
   }
 
-  foundUser = JSON.parse(JSON.stringify(foundUser))
+  let userID = ctx.request.userID
 
-  delete foundUser.password
+  let foundUser = await User.findUserByID(userID)
 
-  ctx.body = foundUser
+  if (foundUser && foundUser.userType === STUDENT) {
+    foundUser = JSON.parse(JSON.stringify(foundUser))
+
+    delete foundUser.password
+    delete foundUser.__v
+    delete foundUser._id
+    delete foundUser.refreshToken
+    delete foundUser.fingerprint
+
+    ctx.body = foundUser
+  } else {
+    ctx.throw(401, 'This user is not student!(or is not exist)')
+  }
 }
 
 exports.findPointArchiveByStudentInfo = async (ctx) => {
-  let studentInfo = {
-    grade: ctx.params.grade,
-    class: ctx.params.class,
-    number: ctx.params.number,
-    name: ctx.params.name
+  if (!ctx.request.token_validated) {
+    ctx.throw(401, TOKEN_UNAUTHORIZED + ': Please grant your token first.')
   }
 
-  ctx.body = await PointArchive.findPointArchive(studentInfo)
+  let userID = ctx.request.userID
+
+  let foundUser = await User.findUserByID(userID)
+
+  if (foundUser) {
+    let studentInfo = {
+      grade: ctx.params.grade,
+      class: ctx.params.class,
+      number: ctx.params.number
+    }
+
+    ctx.body = await PointArchive.findPointArchive(studentInfo)
+  } else {
+    ctx.throw(401, 'This user is not student!(or is not exist)')
+  }
 }
 
 exports.addPointArchive = async (ctx) => {
@@ -67,7 +88,7 @@ exports.addPointArchive = async (ctx) => {
 
   let foundUser = await User.findUserByID(userInfo.userID)
 
-  if (foundUser && foundUser.userType === AuthCodeType.STUDENT) {
+  if (foundUser && foundUser.userType === STUDENT) {
     let enteredUserInfo = {
       grade: userInfo.grade,
       class: userInfo.class,

@@ -2,9 +2,11 @@ const Router = require('koa-router')
 const auth = new Router()
 const authCtrl = require('./auth.controller')
 
-auth.get('/code/student/:id', authCtrl.findStudentCode)
-auth.get('/code/administrator/:id', authCtrl.findAdministratorCode)
-auth.get('/code/device/:id', authCtrl.findDeviceCode)
+const { validateTokenMiddleware } = require('lib/validate_token')
+
+auth.get('/code/student', validateTokenMiddleware, authCtrl.findStudentCode)
+auth.get('/code/administrator', validateTokenMiddleware, authCtrl.findAdministratorCode)
+auth.get('/code/device', validateTokenMiddleware, authCtrl.findDeviceCode)
 
 auth.post('/code/validate', authCtrl.validateCode)
 auth.post('/code/student', authCtrl.generateStudentCode)

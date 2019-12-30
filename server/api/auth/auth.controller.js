@@ -5,8 +5,8 @@ const User = require('models/user')
 const DeviceEnroll = require('models/device_enroll')
 const Token = require('models/token')
 
-const AuthCodeType = require('actions/auth_code')
-const { TOKEN_EXPIRED, TOKEN_NON_EXIST } = require('actions/token')
+const { ADMINISTRATOR, DEVICE } = require('actions/auth_code')
+const { TOKEN_UNAUTHORIZED, TOKEN_EXPIRED, TOKEN_NON_EXIST } = require('actions/token')
 
 exports.generateStudentCode = async (ctx) => {
   let studentInfo = ctx.request.body
@@ -27,15 +27,51 @@ exports.generateDeviceCode = async (ctx) => {
 }
 
 exports.findStudentCode = async (ctx) => {
-  ctx.body = await AuthCode.findStudentCode()
+  if (!ctx.request.token_validated) {
+    ctx.throw(401, TOKEN_UNAUTHORIZED + ': Please grant your token first.')
+  }
+
+  let userID = ctx.request.userID
+
+  let foundUser = await User.findUserByID(userID)
+
+  if (foundUser && foundUser.userType === ADMINISTRATOR) {
+    ctx.body = await AuthCode.findStudentCode()
+  } else {
+    ctx.throw(401, 'This user is not administrator!(or is not exist)')
+  }
 }
 
 exports.findAdministratorCode = async (ctx) => {
-  ctx.body = await AuthCode.findAdministratorCode()
+  if (!ctx.request.token_validated) {
+    ctx.throw(401, TOKEN_UNAUTHORIZED + ': Please grant your token first.')
+  }
+
+  let userID = ctx.request.userID
+
+  let foundUser = await User.findUserByID(userID)
+
+  if (foundUser && foundUser.userType === ADMINISTRATOR) {
+    ctx.body = await AuthCode.findDeviceCode()
+  } else {
+    ctx.throw(401, 'This user is not administrator!(or is not exist)')
+  }
 }
 
 exports.findDeviceCode = async (ctx) => {
-  ctx.body = await AuthCode.findDeviceCode()
+  if (!ctx.request.token_validated) {
+    ctx.throw(401, TOKEN_UNAUTHORIZED + ': Please grant your token first.')
+  }
+
+  let userID = ctx.request.userID
+
+  let foundUser = await User.findUserByID(userID)
+
+  if (foundUser && foundUser.userType === ADMINISTRATOR) {
+    ctx.body = await AuthCode.findDeviceCode()
+  } else {
+    ctx.throw(401, 'This user is not administrator!(or is not exist)')
+  }
 }
 
 exports.validateCode = async (ctx) => {
@@ -67,10 +103,10 @@ exports.addFingerprint = async (ctx) => {
     if (result.n === 1 && result.nModified === 1 && result.ok === 1) {
       ctx.body = 'Your fingerprint datas are successfully forwarded!'
     } else {
-      ctx.body = "Your fingerprint datas weren't successfully forwarded."
+      ctx.throw(401, "Your fingerprint datas weren't successfully forwarded.")
     }
   } else {
-    ctx.body = 'Provided device code is invaild.'
+    ctx.throw(401, 'Provided device code is invaild.')
   }
 }
 
@@ -84,11 +120,11 @@ exports.validateFingerprintCode = async (ctx) => {
   let enrollInfo = ctx.request.body
   let foundUser = await AuthCode.validateCode(enrollInfo.code)
 
-  if (foundUser && foundUser.type === AuthCodeType.DEVICE) {
+  if (foundUser && foundUser.type === DEVICE) {
     await DeviceEnroll.addDeviceInfo(enrollInfo)
     ctx.response.status = 200
   } else {
-    ctx.body = 'Entered device code is invalid!'
+    ctx.throw(401, 'Entered device code is invalid!')
   }
 }
 
@@ -140,7 +176,7 @@ exports.grantToken = async (ctx) => {
 
     ctx.body = response
   } else {
-    ctx.body = TOKEN_NON_EXIST
+    ctx.throw(401, TOKEN_NON_EXIST + ': Provided access token is invalid.')
   }
 }
 
