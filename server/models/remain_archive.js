@@ -15,11 +15,22 @@ remainArchive.statics.findArchive = async function (userID) {
 
   return results
 }
+
+remainArchive.statics.findArchiveByDate = async function (start, end) {
+  let results = this.find({ $or: [
+    { startDate: { $lte: start }, finishDate: { $gte: start } },
+    { startDate: { $gte: start, $lt: end }, finishDate: { $gte: start } }
+  ] }).exec()
+
+  return results
+}
+
 remainArchive.statics.findAllArchive = async function () {
   let results = this.find().exec()
 
   return results
 }
+
 remainArchive.statics.addArchive = async function (archiveInfo) {
   let archiveData = {
     userID: archiveInfo.userID,
@@ -35,6 +46,7 @@ remainArchive.statics.addArchive = async function (archiveInfo) {
 
   return archiveItem
 }
+
 remainArchive.statics.deleteArchive = async function (archiveInfo) {
   let result = this.deleteOne({ $and: [
     { userID: archiveInfo.userID },

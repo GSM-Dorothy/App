@@ -70,12 +70,17 @@ exports.getRemainAdministratorByDate = async (ctx) => {
 
   let year = parseInt(ctx.params.year)
   let month = parseInt(ctx.params.month) - 1
-  let day = parseInt(ctx.params.day) + 1
+  let day = parseInt(ctx.params.day)
 
-  console.log(year, month, day)
+  let start, end
 
-  let start = new Date(year, month, day)
-  let end = new Date(year, month, day + 1)
+  if (ctx.params.day) {
+    start = new Date(Date.UTC(year, month, day))
+    end = new Date(Date.UTC(year, month, day + 1))
+  } else {
+    start = new Date(Date.UTC(year, month, 1))
+    end = new Date(Date.UTC(year, month + 1, 1))
+  }
 
   ctx.body = await RemainAdministrator.findByDate(start, end)
 }
@@ -121,13 +126,21 @@ exports.findRemainEnroll = async (ctx) => {
     ctx.throw(401, 'This user is not exist!')
   }
 
-  if (foundUser.userType === STUDENT) {
-    ctx.body = await RemainEnroll.findEnrollList(userID)
-  } else if (foundUser.userType === ADMINISTRATOR) {
-    ctx.body = await RemainEnroll.findAllEnrollList()
+  let year = parseInt(ctx.params.year)
+  let month = parseInt(ctx.params.month) - 1
+  let day = parseInt(ctx.params.day)
+
+  let start, end
+
+  if (ctx.params.day) {
+    start = new Date(Date.UTC(year, month, day))
+    end = new Date(Date.UTC(year, month, day + 1))
   } else {
-    ctx.throw(401, 'This user is invalid!')
+    start = new Date(Date.UTC(year, month, 1))
+    end = new Date(Date.UTC(year, month + 1, 1))
   }
+
+  ctx.body = await RemainEnroll.findEnrollListByDate(start, end)
 }
 
 exports.addEnrollList = async (ctx) => {
@@ -180,13 +193,21 @@ exports.findRemainArchive = async (ctx) => {
     ctx.throw(401, 'This user is not exist!')
   }
 
-  if (foundUser.userType === STUDENT) {
-    ctx.body = await RemainArchive.findArchive(userID)
-  } else if (foundUser.userType === ADMINISTRATOR) {
-    ctx.body = await RemainArchive.findAllArchive()
+  let year = parseInt(ctx.params.year)
+  let month = parseInt(ctx.params.month) - 1
+  let day = parseInt(ctx.params.day)
+
+  let start, end
+
+  if (ctx.params.day) {
+    start = new Date(Date.UTC(year, month, day))
+    end = new Date(Date.UTC(year, month, day + 1))
   } else {
-    ctx.throw(401, 'This user is invalid!')
+    start = new Date(Date.UTC(year, month, 1))
+    end = new Date(Date.UTC(year, month + 1, 1))
   }
+
+  ctx.body = await RemainArchive.findArchiveByDate(start, end)
 }
 
 exports.addRemainArchive = async (ctx) => {

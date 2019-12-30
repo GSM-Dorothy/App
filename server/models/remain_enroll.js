@@ -12,11 +12,19 @@ remainEnroll.statics.findEnrollList = async function (userID) {
 
   return results
 }
+
+remainEnroll.statics.findEnrollListByDate = async function (start, end) {
+  let results = this.find({ enrollDate: { $gte: start, $lt: end } }).exec()
+
+  return results
+}
+
 remainEnroll.statics.findAllEnrollList = async function () {
   let results = this.find().exec()
 
   return results
 }
+
 remainEnroll.statics.addEnrollList = async function (enrollInfo) {
   let enrollData = {
     userID: enrollInfo.userID,
@@ -29,6 +37,7 @@ remainEnroll.statics.addEnrollList = async function (enrollInfo) {
 
   return _enroll
 }
+
 remainEnroll.statics.deleteEnrollList = async function (enrollInfo) {
   let result = this.deleteOne({ $and: [
     { userID: enrollInfo.userID },

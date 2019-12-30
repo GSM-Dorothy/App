@@ -30,8 +30,10 @@ RemainAdministrator.statics.findAll = async function () {
 }
 
 RemainAdministrator.statics.findByDate = async function (start, end) {
-  console.log(start, end)
-  let results = await this.find({}).exec()
+  let results = await this.find({ $or: [
+    { startDate: { $lte: start }, endDate: { $gte: start } },
+    { startDate: { $gte: start, $lt: end }, endDate: { $gte: start } }
+  ] }).exec()
 
   return results
 }
