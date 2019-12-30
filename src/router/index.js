@@ -53,6 +53,7 @@ const routes = [
   {
     path: '/admin',
     component: () => import('../views/admin.vue'),
+    meta: { authRequired: true },
     children: [
       {
         path: '',
@@ -74,6 +75,16 @@ const router = new VueRouter({
   mode: process.env.IS_ELECTRON ? 'hash' : 'history',
   base: process.env.BASE_URL,
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some((routeInfo) => {
+    return routeInfo.meta.authRequired
+  })) {
+    window.alert('관리자만 접근가능합니다!')
+  } else {
+    next()
+  }
 })
 
 export default router
