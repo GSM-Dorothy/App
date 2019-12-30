@@ -1,11 +1,10 @@
+const _ = require('lodash')
+
 const User = require('models/user')
 const AuthCode = require('models/auth_code')
 const PointArchive = require('models/point_archive')
 
-const { STUDENT } = require('actions/auth_code')
-const { TOKEN_UNAUTHORIZED } = require('actions/token')
-
-const _ = require('lodash')
+const { STUDENT, ADMINISTRATOR } = require('actions/auth_code')
 
 exports.createUser = async (ctx) => {
   let userInfo = ctx.request.body
@@ -38,80 +37,101 @@ exports.createUser = async (ctx) => {
 }
 
 exports.findStudent = async (ctx) => {
-  if (!ctx.request.token_validated) {
-    ctx.throw(401, TOKEN_UNAUTHORIZED + ': Please grant your token first.')
-  }
-
   let userID = ctx.request.userID
-
   let foundUser = await User.findUserByID(userID)
 
-  if (foundUser && foundUser.userType === STUDENT) {
-    foundUser = JSON.parse(JSON.stringify(foundUser))
-
-    delete foundUser.password
-    delete foundUser.__v
-    delete foundUser._id
-    delete foundUser.refreshToken
-    delete foundUser.fingerprint
-
-    ctx.body = foundUser
-  } else {
-    ctx.throw(401, 'This user is not student!(or is not exist)')
+  if (!foundUser || foundUser.userType !== STUDENT) {
+    ctx.throw(401, 'This user is not exist(or is not student)!')
   }
+
+  foundUser = JSON.parse(JSON.stringify(foundUser))
+
+  delete foundUser.password
+  delete foundUser.__v
+  delete foundUser._id
+  delete foundUser.refreshToken
+  delete foundUser.fingerprint
+  delete foundUser.userType
+
+  ctx.body = foundUser
 }
 
-exports.findPointArchiveByStudentInfo = async (ctx) => {
-  if (!ctx.request.token_validated) {
-    ctx.throw(401, TOKEN_UNAUTHORIZED + ': Please grant your token first.')
-  }
-
+exports.findPointArchiveByStudent = async (ctx) => {
   let userID = ctx.request.userID
-
   let foundUser = await User.findUserByID(userID)
 
-  if (foundUser) {
-    let studentInfo = {
-      grade: ctx.params.grade,
-      class: ctx.params.class,
-      number: ctx.params.number
-    }
-
-    ctx.body = await PointArchive.findPointArchive(studentInfo)
-  } else {
-    ctx.throw(401, 'This user is not student!(or is not exist)')
+  if (!foundUser || foundUser.userType !== STUDENT) {
+    ctx.throw(401, 'This user is not exist(or is not student)!')
   }
+
+  let studentInfo = {
+    grade: foundUser.studentInfo.grade,
+    class: foundUser.studentInfo.class,
+    number: foundUser.studentInfo.number
+  }
+
+  ctx.body = await PointArchive.findPointArchive(studentInfo)
+}
+
+exports.findPointArchiveByAdmin = async (ctx) => {
+  let userID = ctx.request.userID
+  let foundUser = await User.findUserByID(userID)
+
+  if (!foundUser || foundUser.userType !== ADMINISTRATOR) {
+    ctx.throw(401, 'This user is not exist(or is not administrator!')
+  }
+
+  let studentInfo = {
+    grade: ctx.params.grade,
+    class: ctx.params.class,
+    number: ctx.params.number
+  }
+
+  ctx.body = await PointArchive.findPointArchive(studentInfo)
 }
 
 exports.addPointArchive = async (ctx) => {
-  let userInfo = ctx.request.body
+  let userID = ctx.request.userID
+  let currentUser = await User.findUserByID(userID)
 
+  if (!currentUser || currentUser.userType !== ADMINISTRATOR) {
+    ctx.throw(401, 'This user is not exist(or is not adminisrator)!')
+  }
+
+  let userInfo = ctx.request.body
   let foundUser = await User.findUserByID(userInfo.userID)
 
-  if (foundUser && foundUser.userType === STUDENT) {
-    let enteredUserInfo = {
-      grade: userInfo.grade,
-      class: userInfo.class,
-      number: userInfo.number
-    }
+  if (!foundUser || foundUser.userType !== STUDENT) {
+    ctx.throw(401, 'This user is not exist(or is not student)!')
+  }
 
-    let foundUserInfo = {
-      grade: foundUser.studentInfo.grade,
-      class: foundUser.studentInfo.class,
-      number: foundUser.studentInfo.number
-    }
+  let enteredUserInfo = {
+    grade: userInfo.grade,
+    class: userInfo.class,
+    number: userInfo.number
+  }
 
-    if (_.isEqual(enteredUserInfo, foundUserInfo)) {
-      ctx.body = await PointArchive.addPointArchive(userInfo)
-    } else {
-      ctx.body = 'Student information you provided is invalid.'
-    }
+  let foundUserInfo = {
+    grade: foundUser.studentInfo.grade,
+    class: foundUser.studentInfo.class,
+    number: foundUser.studentInfo.number
+  }
+
+  if (_.isEqual(enteredUserInfo, foundUserInfo)) {
+    ctx.body = await PointArchive.addPointArchive(userInfo)
   } else {
-    ctx.body = 'This user is not exist(or is not student)!'
+    ctx.throw(401, 'Student information you provided is invalid.')
   }
 }
 
 exports.updatePointArchive = async (ctx) => {
+  let userID = ctx.request.userID
+  let currentUser = await User.findUserByID(userID)
+
+  if (!currentUser || currentUser.userType !== ADMINISTRATOR) {
+    ctx.throw(401, 'This user is not exist(or is not adminisrator)!')
+  }
+
   let studentInfo = ctx.request.body.studentInfo
   let archive = ctx.request.body.archive
 
@@ -120,11 +140,18 @@ exports.updatePointArchive = async (ctx) => {
   if (result.n === 1 && result.nModified === 1 && result.ok === 1) {
     ctx.body = 'This student\'s point archive has successfully added/updated.'
   } else {
-    ctx.body = 'This student\'s point archive wasn\'t successfully added/updated.'
+    ctx.throw(401, 'This student\'s point archive wasn\'t successfully added/updated.')
   }
 }
 
 exports.deletePointArchive = async (ctx) => {
+  let userID = ctx.request.userID
+  let currentUser = await User.findUserByID(userID)
+
+  if (!currentUser || currentUser.userType !== ADMINISTRATOR) {
+    ctx.throw(401, 'This user is not exist(or is not adminisrator)!')
+  }
+
   let studentInfo = ctx.request.body.studentInfo
   let archive = ctx.request.body.archive
 
@@ -133,6 +160,6 @@ exports.deletePointArchive = async (ctx) => {
   if (result.n === 1 && result.nModified === 1 && result.ok === 1) {
     ctx.body = 'Part of the archive of point was deleted as you requested.'
   } else {
-    ctx.body = 'Part of the archive of point wasn\'t deleted properly.'
+    ctx.throw(401, 'Part of the archive of point wasn\'t deleted properly.')
   }
 }
