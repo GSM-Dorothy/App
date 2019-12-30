@@ -6,7 +6,7 @@ const { DEVICE } = require('actions/auth_code')
 exports.deviceQueueMiddleware = async (ctx, next) => {
   ctx.req.setTimeout(5 * 60 * 1000)
 
-  let deviceCode = ctx.request.body.deviceCode
+  let deviceCode = ctx.request.body.code
 
   let foundUser = await AuthCode.validateCode(deviceCode)
 
@@ -20,8 +20,6 @@ exports.deviceQueueMiddleware = async (ctx, next) => {
     IP: currentIP,
     code: deviceCode
   }
-
-  await AuthCode.revokeCode(deviceCode)
 
   await DeviceEnroll.addDeviceInfo(enrollInfo)
 
