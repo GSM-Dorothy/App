@@ -19,6 +19,12 @@ Token.statics.storeToken = async function (tokenData) {
   return _tokenData
 }
 
+Token.statics.findToken = async function (accessToken) {
+  let result = await this.findOne({ accessToken: accessToken }).exec()
+
+  return result
+}
+
 Token.statics.revokeToken = async function (accessToken) {
   let result = await this.deleteOne({ accessToken: accessToken }).exec()
 

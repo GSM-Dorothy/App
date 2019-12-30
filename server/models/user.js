@@ -17,6 +17,10 @@ const User = new Schema({
   },
   administratorInfo: {
     responsibility: String
+  },
+  refreshToken: {
+    value: String,
+    expireDate: Date
   }
 })
 
@@ -73,6 +77,31 @@ User.statics.findAllFingerprints = async function () {
 
 User.statics.updateFingerprint = async function (id, fingerprints) {
   let results = await this.updateOne({ _id: id }, { $set: { fingerprint: fingerprints } }).exec()
+
+  return results
+}
+
+User.statics.storeRefreshToken = async function (id, refreshTokenData) {
+  let results = await this.updateOne({ _id: id }, { $set:
+    { refreshToken: {
+      value: refreshTokenData.value,
+      expireDate: refreshTokenData.expireDate
+    }
+    } }).exec()
+
+  return results
+}
+
+User.statics.findRefreshToken = async function (refreshToken) {
+  let results = await this.findOne({ 'refreshToken.value': refreshToken }).exec()
+
+  return results
+}
+
+User.statics.revokeRefreshToken = async function (refreshToken) {
+  let results = await this.updateOne({ 'refreshToken.value': refreshToken }, { $unset:
+    { refreshToken: { value: 1, expireDate: 1 }
+    } }).exec()
 
   return results
 }

@@ -8,8 +8,6 @@ const Token = require('models/token')
 const AuthCodeType = require('actions/auth_code')
 const { TOKEN_EXPIRED, TOKEN_NON_EXIST } = require('actions/token')
 
-var refreshTokens = {}
-
 exports.generateStudentCode = async (ctx) => {
   let studentInfo = ctx.request.body
 
@@ -104,7 +102,7 @@ exports.deleteFingerprintCode = async (ctx) => {
 }
 
 exports.grantToken = async (ctx) => {
-  let loginData = ctx.request.body.userData
+  let loginData = ctx.request.body
 
   let foundUser = await User.findUserWithLoginData(loginData)
 
@@ -114,9 +112,63 @@ exports.grantToken = async (ctx) => {
     let accessToken = jwt.sign({}, process.env.SECRET, { expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN })
     let refreshToken = jwt.sign({}, process.env.SECRET, { expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN })
 
-    let decoded = jwt.decode(accessToken, { complete: true })
+    let accessDecoded = jwt.decode(accessToken, { complete: true })
+    let refreshDecoded = jwt.decode(refreshToken, { complete: true })
 
-    let expireDate = decoded.payload.exp * 1000
+    let accessExpireDate = accessDecoded.payload.exp * 1000
+    let refreshExpireDate = refreshDecoded.payload.exp * 1000
+
+    let tokenData = {
+      accessToken: accessToken,
+      userID: userID,
+      expireDate: accessExpireDate
+    }
+
+    let refreshTokenData = {
+      value: refreshToken,
+      expireDate: refreshExpireDate
+    }
+
+    await Token.storeToken(tokenData)
+
+    await User.storeRefreshToken(userID, refreshTokenData)
+
+    let response = {
+      accessToken: accessToken,
+      refreshToken: refreshToken
+    }
+
+    ctx.body = response
+  } else {
+    ctx.body = TOKEN_NON_EXIST
+  }
+}
+
+exports.refreshToken = async (ctx) => {
+  let refreshToken = ctx.request.body.refreshToken
+  let response = {}
+
+  try {
+    jwt.verify(refreshToken, process.env.SECRET)
+  } catch (e) {
+    let result = await User.revokeRefreshToken(refreshToken)
+
+    if (result.n === 1 && result.deletedCount === 1 && result.ok === 1) {
+      ctx.throw(401, TOKEN_EXPIRED + ': Please re-grant your token.')
+    } else {
+      ctx.throw(401, TOKEN_EXPIRED + ': Error occured while revoking token.')
+    }
+
+    return
+  }
+
+  let foundUser = await User.findRefreshToken(refreshToken)
+
+  if (foundUser) {
+    let userID = foundUser._id
+
+    let accessToken = jwt.sign({}, process.env.SECRET, { expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN })
+    let expireDate = jwt.decode(accessToken, { complete: true }).payload.exp * 1000
 
     let tokenData = {
       accessToken: accessToken,
@@ -126,58 +178,50 @@ exports.grantToken = async (ctx) => {
 
     await Token.storeToken(tokenData)
 
-    let response = {
-      accessToken: accessToken,
-      refreshToken: refreshToken
-    }
-
-    refreshTokens[refreshToken] = response
-
-    ctx.body = response
-  } else {
-    ctx.body = TOKEN_NON_EXIST
-  }
-}
-
-exports.refreshToken = async (ctx) => {
-  let userData = ctx.request.body.userData
-  let refreshToken = ctx.request.body.refreshToken
-  let response = {}
-
-  let accessToken = jwt.sign(userData, process.env.SECRET, { algorithm: 'HS256', expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN })
-
-  if (refreshToken && refreshToken in refreshTokens) {
     response = {
       accessToken: accessToken
     }
 
-    refreshTokens[refreshToken].accessToken = accessToken
-
     ctx.body = response
   } else {
-    ctx.body = TOKEN_NON_EXIST
+    ctx.throw(401, TOKEN_NON_EXIST + ': Provide a valid refresh token!')
   }
 }
 
 exports.validateToken = async (ctx) => {
   const accessToken = ctx.request.body.accessToken || ctx.request.query.accessToken || ctx.request.headers['x-access-token']
 
-  if (accessToken) {
+  let foundTokenData = await Token.findToken(accessToken)
+
+  if (foundTokenData) {
     let decoded
+    let userID = foundTokenData.userID
+
+    let foundUser = await User.findUserByID(userID)
+    let userType = foundUser.userType
 
     try {
-      jwt.verify(accessToken, process.env.SECRET)
+      decoded = jwt.verify(accessToken, process.env.SECRET)
     } catch (e) {
       let result = await Token.revokeToken(accessToken)
 
-      if (result.n === 1 && result.nModified === 1 && result.ok === 1) {
+      if (result.n === 1 && result.deletedCount === 1 && result.ok === 1) {
         ctx.throw(401, TOKEN_EXPIRED + ': Please refresh your token.')
       } else {
         ctx.throw(401, TOKEN_EXPIRED + ': Error occured while revoking token.')
       }
     }
 
-    ctx.body = decoded
+    let createdDate = new Date(decoded.iat * 1000)
+    let expireDate = new Date(decoded.exp * 1000)
+
+    let response = {
+      createdDate: createdDate.toISOString(),
+      expireDate: expireDate.toISOString(),
+      userType: userType
+    }
+
+    ctx.body = response
   } else {
     ctx.throw(401, TOKEN_NON_EXIST + ': Please provide a valid token.')
   }
