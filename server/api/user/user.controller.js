@@ -16,7 +16,9 @@ exports.createUser = async (ctx) => {
     ctx.throw(401, 'Provided user code is invalid!')
   }
 
-  userInfo.userType = foundUser.userType
+  let userType = foundUser.userInfo.userType
+
+  userInfo.userType = userType
 
   await AuthCode.revokeCode(enteredCode)
 
