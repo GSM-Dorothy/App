@@ -16,6 +16,10 @@ auth.post('/code/administrator', authCtrl.generateAdministratorCode)
 auth.post('/code/device', authCtrl.generateDeviceCode)
 auth.delete('/code', authCtrl.revokeCode)
 
+auth.get('/device', validateTokenMiddleware, authCtrl.getAllDevices)
+auth.post('/device', validateTokenMiddleware, authCtrl.addDeviceToList)
+auth.delete('/device', validateTokenMiddleware, authCtrl.deleteDeviceFromList)
+
 auth.get('/fingerprint', authCtrl.findAllFingerprints)
 auth.post('/fingerprint', deviceQueueMiddleware, authCtrl.addFingerprint)
 

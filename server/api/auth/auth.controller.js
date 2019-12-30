@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken')
 const AuthCode = require('models/auth_code')
 const User = require('models/user')
 const Token = require('models/token')
+const DeviceList = require('models/device_list')
 
 const { ADMINISTRATOR } = require('actions/auth_code')
 const { TOKEN_EXPIRED, TOKEN_NON_EXIST } = require('actions/token')
@@ -91,6 +92,43 @@ exports.revokeCode = async (ctx) => {
   let code = ctx.request.body.code
 
   ctx.body = await AuthCode.revokeCode(code)
+}
+
+exports.getAllDevices = async (ctx) => {
+  let userID = ctx.request.userID
+  let foundUser = await User.findUserByID(userID)
+
+  if (!foundUser || foundUser.userType !== ADMINISTRATOR) {
+    ctx.throw(401, 'This user is not exist(or is not administrator)!')
+  }
+
+  ctx.body = await DeviceList.findDeviceList()
+}
+
+exports.addDeviceToList = async (ctx) => {
+  let userID = ctx.request.userID
+  let foundUser = await User.findUserByID(userID)
+
+  if (!foundUser || foundUser.userType !== ADMINISTRATOR) {
+    ctx.throw(401, 'This user is not exist(or is not administrator)!')
+  }
+
+  let ip = ctx.request.body.IP
+
+  ctx.body = await DeviceList.addDeviceToList(ip)
+}
+
+exports.deleteDeviceFromList = async (ctx) => {
+  let userID = ctx.request.userID
+  let foundUser = await User.findUserByID(userID)
+
+  if (!foundUser || foundUser.userType !== ADMINISTRATOR) {
+    ctx.throw(401, 'This user is not exist(or is not administrator)!')
+  }
+
+  let ip = ctx.request.body.IP
+
+  ctx.body = await DeviceList.deleteDeviceFromList(ip)
 }
 
 exports.addFingerprint = async (ctx, next) => {
