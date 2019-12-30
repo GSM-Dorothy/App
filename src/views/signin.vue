@@ -96,10 +96,10 @@ export default {
     ]
   }),
   methods: {
-    login: () => {
+    signin: () => {
       let name = this.name
       let password = this.password
-      this.$store.dispatch('login', { name, password })
+      this.$store.dispatch('signin', { name, password })
         .then(() => this.$router.push('/'))
         .catch(err => console.log(err))
     }

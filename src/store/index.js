@@ -15,21 +15,23 @@ export default new Vuex.Store({
     auth_request (state) {
       state.status = 'loading'
     },
-    auth_success (state, token, user) {
+    auth_success (state, accessToken, refreshToken, user) {
       state.status = 'success'
-      state.token = token
+      state.accessToken = accessToken
+      state.refreshToken = refreshToken
       state.user = user
     },
     auth_error (state) {
       state.status = 'error'
     },
-    logout (state) {
+    signout (state) {
       state.status = ''
-      state.token = ''
+      state.accessToken = ''
+      state.refreshToken = ''
     }
   },
   actions: {
-    login ({ commit }, user) {
+    signin ({ commit }, user) {
       return new Promise((resolve, reject) => {
         commit('auth_request')
         axios.post('http://api.dorothy.gsmhs.kr/' + user)
@@ -39,23 +41,28 @@ export default new Vuex.Store({
             const user = res.data.user
             localStorage.setItem('accessToken', accessToken)
             localStorage.setItem('refreshToken', refreshToken)
-            axios.defaults.headers.common['Authorization'] = accessToken
-            commit('auth_success', accessToken, user)
+            axios.defaults.headers.common['x-access-token'] = accessToken
+            axios.defaults.headers.common['x-refresh-token'] = refreshToken
+            commit('auth_success', accessToken, refreshToken, user)
             resolve(res)
           })
           .catch(err => {
             commit('auth_error')
             localStorage.removeItem('accessToken')
+            localStorage.removeItem('refreshToken')
+            delete axios.defaults.headers.common['accessToken']
+            delete axios.defaults.headers.common['refreshToken']
             reject(err)
           })
       })
     },
-    logout ({ commit }) {
+    signout ({ commit }) {
       return new Promise((resolve, reject) => {
-        commit('logout')
+        commit('signout')
         localStorage.removeItem('accessToken')
         localStorage.removeItem('refreshToken')
-        delete axios.defaults.headers.common['Authorization']
+        delete axios.defaults.headers.common['accessToken']
+        delete axios.defaults.headers.common['refreshToken']
         resolve()
       })
     }
