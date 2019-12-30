@@ -7,19 +7,37 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     accessToken: '',
-    reflashToken: ''
+    refreshToken: ''
   },
   mutations: {
-    signin: (state, accessToken, refreshToken) => {
-      state.accessToken = accessToken
-      state.refreshToken = refreshToken
+    signin: (state, data) => {
+      state.accessToken = data.accessToken
+      state.refreshToken = data.refreshToken
     },
     signout: (state) => {
       state.accessToken = ''
-      state.reflashToken = ''
+      state.refreshToken = ''
     },
     tokenCheck: (state) => {
-      axios.get()
+      axios.get('http://api.dorothy.gsmhs.kr/' + state.accessToken)
+        .then((res) => {
+          if (res.status === 200) {
+            return res.data.userType
+          } else if (res.status === 401) {
+            axios.post('http://api.dorothy.gsmhs.kr/' + state.refreshToken)
+              .then((res) => {
+                if (res.status === 200) {
+                  state.accessToken = res.data.accessToken
+                  axios.get('http://api.dorothy.gsmhs.kr/' + state.accessToken)
+                    .then((res) => {
+                      if (res.status === 200) {
+                        return res.data.userType
+                      }
+                    })
+                }
+              })
+          }
+        })
     }
   },
   actions: {

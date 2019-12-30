@@ -56,7 +56,7 @@
                 :disabled="!valid"
                 :outlined="!valid"
                 color="red"
-                @click="validate"
+                @click="signin"
                 width="60"
                 height="60"
               >
@@ -99,17 +99,17 @@ export default {
   }),
   methods: {
     signin () {
-      const name = this.name
+      const ID = this.name
       const password = this.password
 
-      if (!name || !password) {
+      if (!ID || !password) {
         return false
       }
 
-      axios.post('http://api.dorothy.gsmhs.kr/auth/token', { name, password })
+      axios.post('http://api.dorothy.gsmhs.kr/auth/token/grant', { ID, password })
         .then(res => {
           if (res.status === 200) {
-            this.$store.commit('signin', res.data.accessToken, res.data.refreshToken)
+            this.$store.commit('signin', res.data)
             this.$router.push('/meals')
           }
         })
