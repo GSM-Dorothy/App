@@ -82,8 +82,6 @@
 </template>
 
 <script>
-import axios from 'axios'
-
 export default {
   data: () => ({
     valid: true,
@@ -98,21 +96,12 @@ export default {
     ]
   }),
   methods: {
-    signin () {
-      const ID = this.name
-      const password = this.password
-
-      if (!ID || !password) {
-        return false
-      }
-
-      axios.post('http://api.dorothy.gsmhs.kr/auth/token/grant', { ID, password })
-        .then(res => {
-          if (res.status === 200) {
-            this.$store.commit('signin', res.data)
-            this.$router.push('/meals')
-          }
-        })
+    login: () => {
+      let name = this.name
+      let password = this.password
+      this.$store.dispatch('login', { name, password })
+        .then(() => this.$router.push('/'))
+        .catch(err => console.log(err))
     }
   }
 }

@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import store from '../store'
 import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
@@ -53,7 +54,9 @@ const routes = [
   {
     path: '/admin',
     component: () => import('../views/admin.vue'),
-    meta: { authRequired: true },
+    meta: {
+      requiresAuth: true
+    },
     children: [
       {
         path: '',
@@ -78,10 +81,12 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.matched.some((routeInfo) => {
-    return routeInfo.meta.authRequired
-  })) {
-    window.alert('관리자만 접근가능합니다!')
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (store.getters.isLoggedIn) {
+      next()
+      return
+    }
+    next('/login')
   } else {
     next()
   }
