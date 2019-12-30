@@ -15,20 +15,6 @@ const { OCCUPIED, RESERVED, INOPERABLE } = require('actions/washer')
 
 School.init(SchoolAPI.Type.HIGH, SchoolAPI.Region.GWANGJU, 'F100000120')
 
-let jsonifyMeal = meal => {
-  let menus = meal.replace(/\n/g, ',').replace(/[1234567890*.]/gi, '').split(',')
-
-  let breakfastIndex = menus.indexOf('[조식]') === -1 ? menus.length : menus.indexOf('[조식]')
-  let lunchIndex = menus.indexOf('[중식]') === -1 ? menus.length : menus.indexOf('[중식]')
-  let dinnerIndex = menus.indexOf('[석식]') === -1 ? menus.length : menus.indexOf('[석식]')
-
-  return {
-    조식: menus.slice(breakfastIndex + 1, lunchIndex),
-    중식: menus.slice(lunchIndex + 1, dinnerIndex),
-    석식: menus.slice(dinnerIndex + 1)
-  }
-}
-
 exports.getMeal = async (ctx) => {
   let meals = await School.getMeal(ctx.params.year, ctx.params.month)
 
@@ -152,7 +138,7 @@ exports.addEnrollList = async (ctx) => {
     ctx.throw(401, 'This user is not exist(or is not student)!')
   }
 
-  let enrollDate = ctx.request.body
+  let enrollDate = ctx.request.body.enrollDate
 
   let enrollInfo = {
     userID: userID,
@@ -166,16 +152,27 @@ exports.deleteEnrollList = async (ctx) => {
   let userID = ctx.request.userID
   let foundUser = await User.findUserByID(userID)
 
-  if (!foundUser || foundUser.userType !== ADMINISTRATOR) {
+  if (!foundUser) {
     ctx.throw(401, 'This user is not administrator!(or is not exist)')
   }
 
-  let enrollInfo = ctx.request.body
+  let enrollDate = ctx.request.body.enrollDate
 
-  ctx.body = await RemainEnroll.deleteEnrollList(enrollInfo)
+  let enrollInfo = {
+    userID: userID,
+    enrollDate: enrollDate
+  }
+
+  let result = await RemainEnroll.deleteEnrollList(enrollInfo)
+
+  if (result.n !== 1 || result.deleteCount !== 1 || result.ok !== 1) {
+    ctx.throw(401, 'You weren\'t left from remain enroll list.')
+  }
+
+  ctx.body = 'You were left from remain enroll list!'
 }
 
-exports.findRemainArchiveByUser = async (ctx) => {
+exports.findRemainArchive = async (ctx) => {
   let userID = ctx.request.userID
   let foundUser = await User.findUserByID(userID)
 
@@ -193,29 +190,48 @@ exports.findRemainArchiveByUser = async (ctx) => {
 }
 
 exports.addRemainArchive = async (ctx) => {
+  let archiveInfo = ctx.request.body
+
   let userID = ctx.request.userID
   let foundUser = await User.findUserByID(userID)
 
-  if (!foundUser || foundUser.userType !== ADMINISTRATOR) {
+  if (!foundUser || foundUser.userType !== STUDENT) {
     ctx.throw(401, 'This user is not exist(or is not administrator)!')
   }
 
-  let archiveInfo = ctx.request.body
+  let _archiveInfo = {
+    userID: userID,
+    remainType: archiveInfo.remainType,
+    startDate: archiveInfo.startDate,
+    finishDate: archiveInfo.finishDate,
+    reason: archiveInfo.reason
+  }
 
-  ctx.body = await RemainArchive.addArchive(archiveInfo)
+  ctx.body = await RemainArchive.addArchive(_archiveInfo)
 }
 
 exports.deleteRemainArchive = async (ctx) => {
+  let archiveInfo = ctx.request.body
   let userID = ctx.request.userID
   let foundUser = await User.findUserByID(userID)
 
-  if (!foundUser || foundUser.userType !== ADMINISTRATOR) {
+  if (!foundUser || foundUser.userType !== STUDENT) {
     ctx.throw(401, 'This user is not exist(or is not administrator)!')
   }
 
-  let archiveInfo = ctx.request.body
+  let _archiveInfo = {
+    userID: userID,
+    remainType: archiveInfo.remainType,
+    startDate: archiveInfo.startDate
+  }
 
-  ctx.body = await RemainArchive.deleteArchive(archiveInfo)
+  let result = await RemainArchive.deleteArchive(_archiveInfo)
+
+  if (result.n !== 1 || result.deleteCount !== 1 || result.ok !== 1) {
+    ctx.throw(401, 'The info you requested wasn\'t deleted from archive.')
+  }
+
+  ctx.body = 'The info you requested was deleted from archive.'
 }
 
 exports.findWasher = async (ctx) => {
@@ -255,7 +271,7 @@ exports.changeStatus = async (ctx) => {
     ctx.throw(401, 'This user is not exist(or is not student)!')
   }
 
-  let washer = ctx.request.body.washer
+  let washer = ctx.request.body
   let foundWasher = await Washer.findByInfo(washer)
 
   if (!foundWasher || foundWasher.status === INOPERABLE) {
@@ -282,4 +298,18 @@ exports.changeStatus = async (ctx) => {
   }
 
   ctx.body = response
+}
+
+let jsonifyMeal = meal => {
+  let menus = meal.replace(/\n/g, ',').replace(/[1234567890*.]/gi, '').split(',')
+
+  let breakfastIndex = menus.indexOf('[조식]') === -1 ? menus.length : menus.indexOf('[조식]')
+  let lunchIndex = menus.indexOf('[중식]') === -1 ? menus.length : menus.indexOf('[중식]')
+  let dinnerIndex = menus.indexOf('[석식]') === -1 ? menus.length : menus.indexOf('[석식]')
+
+  return {
+    조식: menus.slice(breakfastIndex + 1, lunchIndex),
+    중식: menus.slice(lunchIndex + 1, dinnerIndex),
+    석식: menus.slice(dinnerIndex + 1)
+  }
 }

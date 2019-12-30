@@ -23,11 +23,11 @@ remainEnroll.statics.addEnrollList = async function (enrollInfo) {
     enrollDate: enrollInfo.enrollDate
   }
 
-  let enrollItem = new this(enrollData)
+  let _enroll = new this(enrollData)
 
-  await enrollItem.save()
+  await _enroll.save()
 
-  return enrollItem
+  return _enroll
 }
 remainEnroll.statics.deleteEnrollList = async function (enrollInfo) {
   let result = this.deleteOne({ $and: [

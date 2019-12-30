@@ -9,19 +9,42 @@ const { ADMINISTRATOR, DEVICE } = require('actions/auth_code')
 const { TOKEN_EXPIRED, TOKEN_NON_EXIST } = require('actions/token')
 
 exports.generateStudentCode = async (ctx) => {
+  let userID = ctx.request.userID
+  let foundUser = await User.findUserByID(userID)
+
+  if (!foundUser || foundUser.userType !== ADMINISTRATOR) {
+    ctx.throw(401, 'This user is not exist(or is not administrator)!')
+  }
+
   let studentInfo = ctx.request.body
 
   ctx.body = await AuthCode.generateStudentCode(studentInfo)
 }
 
 exports.generateAdministratorCode = async (ctx) => {
+  let userID = ctx.request.userID
+  let foundUser = await User.findUserByID(userID)
+
+  if (!foundUser || foundUser.userType !== ADMINISTRATOR) {
+    ctx.throw(401, 'This user is not exist(or is not administrator)!')
+  }
+
   let administratorInfo = ctx.request.body
 
   ctx.body = await AuthCode.generateAdministratorCode(administratorInfo)
 }
 
 exports.generateDeviceCode = async (ctx) => {
-  let deviceInfo = ctx.request.body
+  let userID = ctx.request.userID
+  let foundUser = await User.findUserByID(userID)
+
+  if (!foundUser) {
+    ctx.throw(401, 'This user is not exist!')
+  }
+
+  let deviceInfo = {
+    userID: userID
+  }
 
   ctx.body = await AuthCode.generateDeviceCode(deviceInfo)
 }
