@@ -16,6 +16,7 @@ auth.post('/code/administrator', authCtrl.generateAdministratorCode)
 auth.post('/code/device', authCtrl.generateDeviceCode)
 auth.delete('/code', authCtrl.revokeCode)
 
+auth.get('/device/enroll', authCtrl.validateDevice)
 auth.get('/device', validateTokenMiddleware, authCtrl.getAllDevices)
 auth.post('/device', validateTokenMiddleware, authCtrl.addDeviceToList)
 auth.delete('/device', validateTokenMiddleware, authCtrl.deleteDeviceFromList)

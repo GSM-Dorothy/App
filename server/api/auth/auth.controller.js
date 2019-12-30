@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken')
 const AuthCode = require('models/auth_code')
 const User = require('models/user')
 const Token = require('models/token')
+
+const DeviceEnroll = require('models/device_enroll')
 const DeviceList = require('models/device_list')
 
 const { ADMINISTRATOR } = require('actions/auth_code')
@@ -92,6 +94,19 @@ exports.revokeCode = async (ctx) => {
   let code = ctx.request.body.code
 
   ctx.body = await AuthCode.revokeCode(code)
+}
+
+exports.validateDevice = async (ctx) => {
+  let currentIP = ctx.request.ip.substr(7)
+  let deviceInfo = await DeviceEnroll.getDeviceInfo(currentIP)
+
+  if (!deviceInfo) {
+    ctx.throw(401, 'This device hasn\'t been authenticated.')
+  }
+
+  await DeviceEnroll.deleteDeviceInfo(currentIP)
+
+  ctx.body = deviceInfo.code
 }
 
 exports.getAllDevices = async (ctx) => {

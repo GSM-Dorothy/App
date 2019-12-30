@@ -6,19 +6,27 @@ const { DEVICE } = require('actions/auth_code')
 exports.deviceQueueMiddleware = async (ctx, next) => {
   ctx.req.setTimeout(5 * 60 * 1000)
 
-  let enrollInfo = ctx.request.body
-  let foundUser = await AuthCode.validateCode(enrollInfo.code)
+  let deviceCode = ctx.request.body.deviceCode
+
+  let foundUser = await AuthCode.validateCode(deviceCode)
 
   if (!foundUser || foundUser.type !== DEVICE) {
     ctx.throw(401, 'Entered device code is invalid!')
   }
 
-  await AuthCode.revokeCode(enrollInfo.code)
+  let currentIP = ctx.request.ip.substr(7)
+
+  let enrollInfo = {
+    IP: currentIP,
+    code: deviceCode
+  }
+
+  await AuthCode.revokeCode(deviceCode)
 
   await DeviceEnroll.addDeviceInfo(enrollInfo)
 
   next().then(async () => {
-    await DeviceEnroll.deleteDeviceInfo(enrollInfo.IP)
+    await DeviceEnroll.deleteDeviceInfo(currentIP)
 
     ctx.response.code = 200
   }).catch((err) => {
