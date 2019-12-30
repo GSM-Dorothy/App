@@ -12,7 +12,6 @@ const User = require('models/user')
 
 const { STUDENT, ADMINISTRATOR } = require('actions/auth_code')
 const { OCCUPIED, RESERVED, INOPERABLE } = require('actions/washer')
-const { TOKEN_UNAUTHORIZED } = require('actions/token')
 
 School.init(SchoolAPI.Type.HIGH, SchoolAPI.Region.GWANGJU, 'F100000120')
 
@@ -128,207 +127,159 @@ exports.replaceRemainAdministrator = async (ctx) => {
   ctx.body = 'Remain administrator has just completely replaced!'
 }
 
-exports.findRemainEnrollByUser = async (ctx) => {
-  if (!ctx.request.token_validated) {
-    ctx.throw(401, TOKEN_UNAUTHORIZED + ': Please grant your token first.')
+exports.findRemainEnroll = async (ctx) => {
+  let userID = ctx.request.userID
+  let foundUser = await User.findUserByID(userID)
+
+  if (!foundUser) {
+    ctx.throw(401, 'This user is not exist!')
   }
 
-  let userID = ctx.request.userID
-
-  let foundUser = await User.findUserByID(userID)
-  let foundUserType = foundUser ? foundUser.userType : ''
-
-  if (foundUserType === STUDENT) {
+  if (foundUser.userType === STUDENT) {
     ctx.body = await RemainEnroll.findEnrollList(userID)
-  } else if (foundUserType === ADMINISTRATOR) {
+  } else if (foundUser.userType === ADMINISTRATOR) {
     ctx.body = await RemainEnroll.findAllEnrollList()
   } else {
-    ctx.throw(401, 'This user is not exist!')
+    ctx.throw(401, 'This user is invalid!')
   }
 }
 
 exports.addEnrollList = async (ctx) => {
-  if (!ctx.request.token_validated) {
-    ctx.throw(401, TOKEN_UNAUTHORIZED + ': Please grant your token first.')
+  let userID = ctx.request.userID
+  let foundUser = await User.findUserByID(userID)
+
+  if (!foundUser || foundUser.userType !== STUDENT) {
+    ctx.throw(401, 'This user is not exist(or is not student)!')
   }
 
-  let userID = ctx.request.userID
   let enrollDate = ctx.request.body
 
-  let foundUser = await User.findUserByID(userID)
-  let foundUserType = foundUser ? foundUser.userType : ''
-
-  if (foundUserType === STUDENT) {
-    let enrollInfo = {
-      userID: userID,
-      enrollDate: enrollDate
-    }
-
-    ctx.body = await RemainEnroll.addEnrollList(enrollInfo)
-  } else if (foundUserType === ADMINISTRATOR) {
-    ctx.body = 'Administrator can\'t be enrolled in school remain.'
-  } else {
-    ctx.throw(401, 'This user is not exist!')
+  let enrollInfo = {
+    userID: userID,
+    enrollDate: enrollDate
   }
+
+  ctx.body = await RemainEnroll.addEnrollList(enrollInfo)
 }
 
 exports.deleteEnrollList = async (ctx) => {
-  if (!ctx.request.token_validated) {
-    ctx.throw(401, TOKEN_UNAUTHORIZED + ': Please grant your token first.')
-  }
-
   let userID = ctx.request.userID
-
   let foundUser = await User.findUserByID(userID)
 
-  if (foundUser && foundUser.userType === ADMINISTRATOR) {
-    let enrollInfo = ctx.request.body
-
-    ctx.body = await RemainEnroll.deleteEnrollList(enrollInfo)
-  } else {
+  if (!foundUser || foundUser.userType !== ADMINISTRATOR) {
     ctx.throw(401, 'This user is not administrator!(or is not exist)')
   }
+
+  let enrollInfo = ctx.request.body
+
+  ctx.body = await RemainEnroll.deleteEnrollList(enrollInfo)
 }
 
 exports.findRemainArchiveByUser = async (ctx) => {
-  if (!ctx.request.token_validated) {
-    ctx.throw(401, TOKEN_UNAUTHORIZED + ': Please grant your token first.')
+  let userID = ctx.request.userID
+  let foundUser = await User.findUserByID(userID)
+
+  if (!foundUser) {
+    ctx.throw(401, 'This user is not exist!')
   }
 
-  let userID = ctx.request.userID
-
-  let foundUser = await User.findUserByID(userID)
-  let foundUserType = foundUser ? foundUser.userType : ''
-
-  if (foundUserType === STUDENT) {
+  if (foundUser.userType === STUDENT) {
     ctx.body = await RemainArchive.findArchive(userID)
-  } else if (foundUserType === ADMINISTRATOR) {
+  } else if (foundUser.userType === ADMINISTRATOR) {
     ctx.body = await RemainArchive.findAllArchive()
   } else {
-    ctx.throw(401, 'This user is not exist!')
+    ctx.throw(401, 'This user is invalid!')
   }
 }
 
 exports.addRemainArchive = async (ctx) => {
-  if (!ctx.request.token_validated) {
-    ctx.throw(401, TOKEN_UNAUTHORIZED + ': Please grant your token first.')
-  }
-
   let userID = ctx.request.userID
-
   let foundUser = await User.findUserByID(userID)
 
-  if (foundUser && foundUser.userType === ADMINISTRATOR) {
-    let archiveInfo = ctx.request.body
-
-    ctx.body = await RemainArchive.addArchive(archiveInfo)
-  } else {
-    ctx.throw(401, 'This user is not administrator!(or is not exist)')
+  if (!foundUser || foundUser.userType !== ADMINISTRATOR) {
+    ctx.throw(401, 'This user is not exist(or is not administrator)!')
   }
+
+  let archiveInfo = ctx.request.body
+
+  ctx.body = await RemainArchive.addArchive(archiveInfo)
 }
 
 exports.deleteRemainArchive = async (ctx) => {
-  if (!ctx.request.token_validated) {
-    ctx.throw(401, TOKEN_UNAUTHORIZED + ': Please grant your token first.')
-  }
-
   let userID = ctx.request.userID
-
   let foundUser = await User.findUserByID(userID)
 
-  if (foundUser && foundUser.userType === ADMINISTRATOR) {
-    let archiveInfo = ctx.request.body
-
-    ctx.body = await RemainArchive.deleteArchive(archiveInfo)
-  } else {
-    ctx.throw(401, 'This user is not administrator!(or is not exist)')
+  if (!foundUser || foundUser.userType !== ADMINISTRATOR) {
+    ctx.throw(401, 'This user is not exist(or is not administrator)!')
   }
+
+  let archiveInfo = ctx.request.body
+
+  ctx.body = await RemainArchive.deleteArchive(archiveInfo)
 }
 
 exports.findWasher = async (ctx) => {
-  if (!ctx.request.token_validated) {
-    ctx.throw(401, TOKEN_UNAUTHORIZED + ': Please grant your token first.')
-  }
-
   let userID = ctx.request.userID
-
   let foundUser = await User.findUserByID(userID)
 
-  if (foundUser) {
-    let washer = {
-      'floor': ctx.params.floor,
-      'location': ctx.params.location
-    }
-
-    ctx.body = await Washer.findByInfo(washer)
-  } else {
+  if (!foundUser) {
     ctx.throw(401, 'This user is not exist!')
   }
+
+  let washer = {
+    'floor': ctx.params.floor,
+    'location': ctx.params.location
+  }
+
+  ctx.body = await Washer.findByInfo(washer)
 }
 
 exports.addWasher = async (ctx) => {
-  if (!ctx.request.token_validated) {
-    ctx.throw(401, TOKEN_UNAUTHORIZED + ': Please grant your token first.')
-  }
-
   let userID = ctx.request.userID
-
   let foundUser = await User.findUserByID(userID)
 
-  if (foundUser && foundUser.userType === ADMINISTRATOR) {
-    let washerInfo = ctx.request.body
-
-    ctx.body = await Washer.addWasher(washerInfo)
-  } else {
-    ctx.throw(401, 'This user is not administrator!(or is not exist)')
+  if (!foundUser || foundUser.userType !== ADMINISTRATOR) {
+    ctx.throw(401, 'This user is not exist(or is not administrator)!')
   }
+
+  let washerInfo = ctx.request.body
+
+  ctx.body = await Washer.addWasher(washerInfo)
 }
 
 exports.changeStatus = async (ctx) => {
-  if (!ctx.request.token_validated) {
-    ctx.throw(401, TOKEN_UNAUTHORIZED + ': Please grant your token first.')
-  }
-
   let userID = ctx.request.userID
-
   let foundUser = await User.findUserByID(userID)
 
-  if (foundUser && foundUser.userType === STUDENT) {
-    let washer = ctx.request.body.washer
-    let userID = ctx.request.body.userID
-    let status
-
-    let foundWasher = await Washer.findByInfo(washer)
-
-    if (foundWasher) {
-      status = foundWasher.status
-    } else {
-      ctx.body = 'This washer is not exist!'
-      return
-    }
-
-    if (status === INOPERABLE) {
-      ctx.body = { status: status }
-      return
-    }
-
-    let latestArchive = (await WasherArchive.latestArchive(foundWasher))[0]
-    let startTime
-
-    if (latestArchive) {
-      startTime = latestArchive.finishTime
-      status = RESERVED
-    } else {
-      startTime = Date.now()
-      status = OCCUPIED
-    }
-
-    await WasherArchive.useWasher(foundWasher, userID, startTime)
-
-    await Washer.changeStatus(washer, status)
-
-    ctx.body = { status: status }
-  } else {
-    ctx.throw(401, 'This user is not student!(or is not exist)')
+  if (!foundUser || foundUser.userType !== STUDENT) {
+    ctx.throw(401, 'This user is not exist(or is not student)!')
   }
+
+  let washer = ctx.request.body.washer
+  let foundWasher = await Washer.findByInfo(washer)
+
+  if (!foundWasher || foundWasher.status === INOPERABLE) {
+    ctx.throw(401, 'This washer is not exist(or is inoperable)!')
+  }
+
+  let latestArchive = (await WasherArchive.latestArchive(foundWasher))[0]
+  let startTime, status
+
+  if (latestArchive) {
+    startTime = latestArchive.finishTime
+    status = RESERVED
+  } else {
+    startTime = Date.now()
+    status = OCCUPIED
+  }
+
+  await WasherArchive.useWasher(foundWasher, userID, startTime)
+
+  await Washer.changeStatus(washer, status)
+
+  let response = {
+    status: status
+  }
+
+  ctx.body = response
 }
