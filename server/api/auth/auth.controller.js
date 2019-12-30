@@ -2,10 +2,9 @@ const jwt = require('jsonwebtoken')
 
 const AuthCode = require('models/auth_code')
 const User = require('models/user')
-const DeviceEnroll = require('models/device_enroll')
 const Token = require('models/token')
 
-const { ADMINISTRATOR, DEVICE } = require('actions/auth_code')
+const { ADMINISTRATOR } = require('actions/auth_code')
 const { TOKEN_EXPIRED, TOKEN_NON_EXIST } = require('actions/token')
 
 exports.generateStudentCode = async (ctx) => {
@@ -94,7 +93,7 @@ exports.revokeCode = async (ctx) => {
   ctx.body = await AuthCode.revokeCode(code)
 }
 
-exports.addFingerprint = async (ctx) => {
+exports.addFingerprint = async (ctx, next) => {
   let fingerprints = ctx.request.body.fingerprints
   let code = ctx.request.body.code
 
@@ -114,35 +113,11 @@ exports.addFingerprint = async (ctx) => {
     ctx.throw(401, "Your fingerprint datas weren't successfully forwarded.")
   }
 
-  ctx.body = 'Your fingerprint datas are successfully forwarded!'
+  ctx.response.code = 200
 }
 
 exports.findAllFingerprints = async (ctx) => {
   ctx.body = await User.findAllFingerprints()
-}
-
-exports.validateFingerprintCode = async (ctx) => {
-  ctx.req.setTimeout(5 * 60 * 1000)
-
-  let enrollInfo = ctx.request.body
-  let foundUser = await AuthCode.validateCode(enrollInfo.code)
-
-  if (!foundUser || foundUser.type !== DEVICE) {
-    ctx.throw(401, 'Entered device code is invalid!')
-  }
-
-  await DeviceEnroll.addDeviceInfo(enrollInfo)
-
-  ctx.response.status = 200
-}
-
-exports.deleteFingerprintCode = async (ctx) => {
-  let currentIP = ctx.request.ip.substr(7)
-  let forwardedCode = (await DeviceEnroll.getDeviceInfo(currentIP)).code
-
-  await DeviceEnroll.deleteDeviceInfo(currentIP)
-
-  ctx.body = forwardedCode
 }
 
 exports.grantToken = async (ctx) => {
@@ -183,6 +158,10 @@ exports.grantToken = async (ctx) => {
   }
 
   ctx.body = response
+}
+
+exports.grantTokenToDevice = async (ctx, next) => {
+
 }
 
 exports.refreshToken = async (ctx) => {
