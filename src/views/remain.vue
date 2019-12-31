@@ -2,8 +2,8 @@
 <v-content>
   <v-container fluid>
     <v-row>
-      <v-col cols=6>
-        <v-card class="elevation-12 ma-3">
+      <v-col :cols="$vuetify.breakpoint.smAndUp ? '6' : '12'">
+        <v-card class="elevation-12 ma-1">
           <v-card-text>
             <p class="text--primary">
               현재 담당선생님
@@ -17,8 +17,8 @@
           </v-card-text>
         </v-card>
       </v-col>
-      <v-col cols=6>
-        <v-card class="elevation-12 ma-3">
+      <v-col :cols="$vuetify.breakpoint.smAndUp ? '6' : '12'">
+        <v-card class="elevation-12 ma-1">
           <v-card-text>
             <p class="text--primary">
               다음 담당선생님
@@ -33,40 +33,36 @@
         </v-card>
       </v-col>
     </v-row>
-    <v-card class="elevation-12 ma-3">
-      <v-tabs color="deep-purple accent-4" centered grow>
-        <v-tab>호실</v-tab>
-        <v-tab>외출</v-tab>
-        <v-tab>외박</v-tab>
+    <v-card class="elevation-12 ma-1">
+      <v-stepper v-model="e1">
+        <v-stepper-header class="elevation-0">
+          <v-stepper-step :editable="e1 > 1" :complete="e1 > 1" step="1">선택1</v-stepper-step>
+          <v-divider></v-divider>
+          <v-stepper-step :editable="e1 > 2" :complete="e1 > 2" step="2">선택2</v-stepper-step>
+          <v-divider></v-divider>
+          <v-stepper-step step="3">선택3</v-stepper-step>
+        </v-stepper-header>
 
-        <v-tab-item>
-          <v-container fluid>
-            <v-row>
-              <v-col>
-                <v-time-picker v-model="time" :landscape="$vuetify.breakpoint.smAndUp" :allowed-minutes="allowedStep" ampm-in-title scrollable></v-time-picker>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-tab-item>
-        <v-tab-item>
-          <v-container fluid>
-            <v-row>
-              <v-col>
-                <v-time-picker v-model="time" :landscape="$vuetify.breakpoint.smAndUp" :allowed-minutes="allowedStep" ampm-in-title scrollable></v-time-picker>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-tab-item>
-        <v-tab-item>
-          <v-container fluid>
-            <v-row>
-              <v-col>
-                <v-time-picker v-model="time" :landscape="$vuetify.breakpoint.smAndUp" :allowed-minutes="allowedStep" ampm-in-title scrollable></v-time-picker>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-tab-item>
-      </v-tabs>
+        <v-stepper-items>
+          <v-stepper-content step="1">
+            <v-btn color="primary" @click="e1 = 2">
+              계속
+            </v-btn>
+          </v-stepper-content>
+
+          <v-stepper-content step="2">
+            <v-btn color="primary" @click="e1 = 3">
+              계속
+            </v-btn>
+          </v-stepper-content>
+
+          <v-stepper-content step="3">
+            <v-btn color="primary" @click="1">
+              확인
+            </v-btn>
+          </v-stepper-content>
+        </v-stepper-items>
+      </v-stepper>
     </v-card>
   </v-container>
 </v-content>
@@ -76,6 +72,7 @@
 export default {
   data () {
     return {
+      e1: 0,
       time: '13:10'
     }
   },

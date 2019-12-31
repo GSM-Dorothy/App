@@ -15,10 +15,10 @@
     </template>
     <template>
       <v-list flat>
-        <v-list-item-group v-model="item" color="primary">
-          <v-list-item v-for="(item, i) in items" :key="i" :to="item.link">
+        <v-list-item-group v-model="item">
+          <v-list-item v-for="(item, i) in items" :key="i" :to="item.link" :color="item.color">
             <v-list-item-icon>
-              <v-btn color="primary" tag fab outlined elevation=12 :small="$vuetify.breakpoint.smAndUp" :x-small="$vuetify.breakpoint.xsOnly">
+              <v-btn :color="item.color" dark tag fab elevation=12 :small="$vuetify.breakpoint.smAndUp" :x-small="$vuetify.breakpoint.xsOnly">
                 <v-icon v-text="item.icon"></v-icon>
               </v-btn>
             </v-list-item-icon>
@@ -40,18 +40,21 @@ export default {
     item: 1,
     items: [{
       text: '급식',
-      icon: 'mdi-clock',
-      link: '/meals'
+      icon: 'mdi-noodles',
+      link: '/meals',
+      color: 'orange'
     },
     {
       text: '학사일정',
-      icon: 'mdi-clock',
-      link: '/schedule'
+      icon: 'mdi-calendar-today',
+      link: '/schedule',
+      color: 'light-green'
     },
     {
       text: '잔류',
-      icon: 'mdi-account',
-      link: '/remain'
+      icon: 'mdi-home',
+      link: '/remain',
+      color: 'light-blue'
     }
     ]
   })

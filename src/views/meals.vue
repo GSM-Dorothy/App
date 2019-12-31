@@ -2,24 +2,26 @@
 <v-content>
   <v-container fluid>
     <v-sheet>
-      <v-toolbar flat>
-        <v-btn outlined class="mr-4" @click="setToday">
+      <v-card flat class="elevation-12 ma-1 pa-1">
+        <v-card-actions>
+        <v-btn outlined class="mr-3" @click="setToday">
           Today
         </v-btn>
         <v-btn fab text small @click="prev">
           <v-icon small>mdi-chevron-left</v-icon>
         </v-btn>
-        <v-btn fab text small @click="next">
+        <v-btn fab text small @click="next" class="mr-3">
           <v-icon small>mdi-chevron-right</v-icon>
         </v-btn>
         <v-toolbar-title>{{ title }}</v-toolbar-title>
-      </v-toolbar>
+        </v-card-actions>
+      </v-card>
     </v-sheet>
     <v-row>
-      <v-col v-for="title in Object.keys(posts)" :key="title" :cols="4">
-        <v-card class="elevation-12 ma-3">
+      <v-col v-for="title in Object.keys(posts)" :key="title" :cols="$vuetify.breakpoint.smAndUp ? '4' : '12'">
+        <v-card class="elevation-12 ma-1">
           <v-card-text>
-            <p class="display-1 text--primary">
+            <p class="display-1 font-weight-regular text--primary">
               {{title}}
             </p>
             <div class="text--primary" v-for="menu in posts[title]" :key="menu">

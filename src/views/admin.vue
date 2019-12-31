@@ -18,7 +18,7 @@
         <v-list-item-group v-model="item" color="primary">
           <v-list-item v-for="(item, i) in items" :key="i" :to="item.link">
             <v-list-item-icon>
-              <v-btn color="primary" tag fab outlined elevation=12 :small="$vuetify.breakpoint.smAndUp" :x-small="$vuetify.breakpoint.xsOnly">
+              <v-btn color="primary" tag fab elevation=12 :small="$vuetify.breakpoint.smAndUp" :x-small="$vuetify.breakpoint.xsOnly">
                 <v-icon v-text="item.icon"></v-icon>
               </v-btn>
             </v-list-item-icon>
@@ -40,12 +40,12 @@ export default {
     item: 1,
     items: [{
       text: '인증번호',
-      icon: 'mdi-account',
+      icon: 'mdi-barcode',
       link: '/admin/code'
     },
     {
       text: '잔류',
-      icon: 'mdi-account',
+      icon: 'mdi-home',
       link: '/admin/remain'
     }
     ]

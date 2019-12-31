@@ -1,40 +1,42 @@
 <template>
 <v-content>
-  <v-container fluid>
-    <v-card class="elevation-12 ma-3">
-      <v-row class="fill-height">
-        <v-col>
-          <v-sheet>
-            <v-toolbar flat>
-              <v-btn outlined class="mr-4" @click="setToday">
-                Today
-              </v-btn>
-              <v-btn fab text small @click="prev">
-                <v-icon small>mdi-chevron-left</v-icon>
-              </v-btn>
-              <v-btn fab text small @click="next">
-                <v-icon small>mdi-chevron-right</v-icon>
-              </v-btn>
-              <v-toolbar-title>{{ title }}</v-toolbar-title>
-              <v-spacer></v-spacer>
-            </v-toolbar>
-          </v-sheet>
-          <v-sheet height="75vh">
-            <v-calendar
-              ref="calendar"
-              v-model="focus"
-              color="primary"
-              :events="events"
-              :event-color="getEventColor"
-              :event-margin-bottom="3"
-              :now="today"
-              :type="type"
-              @change="updateRange"
-            >
-            </v-calendar>
-          </v-sheet>
-        </v-col>
-      </v-row>
+  <v-container fluid class="hidden-sm-and-down">
+    <v-card flat class="elevation-12 ma-1 mb-3 pa-1">
+      <v-card-actions>
+        <v-btn outlined class="mr-3" @click="setToday">
+          Today
+        </v-btn>
+        <v-btn fab text small @click="prev">
+          <v-icon small>mdi-chevron-left</v-icon>
+        </v-btn>
+        <v-btn fab text small @click="next" class="mr-3">
+          <v-icon small>mdi-chevron-right</v-icon>
+        </v-btn>
+        <v-toolbar-title>{{ title }}</v-toolbar-title>
+      </v-card-actions>
+    </v-card>
+    <v-card class="elevation-12 ma-1" height="75vh">
+      <v-calendar ref="calendar" v-model="focus" color="primary" :events="events" :event-color="getEventColor" :event-margin-bottom="3" :now="today" :type="type" @change="updateRange">
+      </v-calendar>
+    </v-card>
+  </v-container>
+  <v-container fluid class="hidden-md-and-up">
+    <v-card flat class="elevation-12 ma-1 mb-3 pa-1">
+      <v-card-actions>
+        <div>
+          <v-timeline dense>
+            <v-timeline-item v-for="n in 2" :key="n" fill-dot :small="n.today">
+              <span slot="opposite">Tus eu perfecto</span>
+              <v-card class="elevation-2">
+                <v-card-title class="headline">Lorem ipsum</v-card-title>
+                <v-card-text>
+                  Lorem ipsum dolor sit amet, no nam oblique veritus. Commune scaevola imperdiet nec ut, sed euismod convenire principes at. Est et nobis iisque percipit, an vim zril disputando voluptatibus, vix an salutandi sententiae.
+                </v-card-text>
+              </v-card>
+            </v-timeline-item>
+          </v-timeline>
+        </div>
+      </v-card-actions>
     </v-card>
   </v-container>
 </v-content>
