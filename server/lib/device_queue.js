@@ -11,7 +11,7 @@ exports.deviceQueueMiddleware = async (ctx, next) => {
   let foundUser = await AuthCode.validateCode(deviceCode)
 
   if (!foundUser || foundUser.type !== DEVICE) {
-    ctx.throw(401, 'Entered device code is invalid!')
+    ctx.throw(401, 'Provided device code is invalid.')
   }
 
   let currentIP = ctx.request.ip.substr(7)
@@ -24,7 +24,13 @@ exports.deviceQueueMiddleware = async (ctx, next) => {
   await DeviceEnroll.addDeviceInfo(enrollInfo)
 
   next().then(async () => {
-    await DeviceEnroll.deleteDeviceInfo(currentIP)
+    currentIP = ctx.request.ip.substr(7)
+
+    let result = await DeviceEnroll.deleteDeviceInfo(currentIP)
+
+    if (result.n !== 1 || result.deleteCount !== 1 || result.ok !== 1) {
+      ctx.throw(401, 'Your IP address was not authenticated in device!')
+    }
 
     ctx.response.code = 200
   }).catch((err) => {

@@ -106,7 +106,11 @@ exports.validateDevice = async (ctx) => {
 
   await DeviceEnroll.deleteDeviceInfo(currentIP)
 
-  ctx.body = deviceInfo.code
+  let response = {
+    code: deviceInfo.code
+  }
+
+  ctx.body = response
 }
 
 exports.getAllDevices = async (ctx) => {
@@ -143,7 +147,17 @@ exports.deleteDeviceFromList = async (ctx) => {
 
   let ip = ctx.request.body.IP
 
-  ctx.body = await DeviceList.deleteDeviceFromList(ip)
+  let result = await DeviceList.deleteDeviceFromList(ip)
+
+  if (result.n !== 1 || result.deleteCount !== 1 || result.ok !== 1) {
+    ctx.throw(401, 'Your device info wasn\'t completely deleted from the list!')
+  }
+
+  let response = {
+    IP: ip
+  }
+
+  ctx.body = response
 }
 
 exports.addFingerprint = async (ctx, next) => {
@@ -214,7 +228,7 @@ exports.grantToken = async (ctx) => {
 }
 
 exports.grantTokenToDevice = async (ctx, next) => {
-  let userID = ctx.request.body
+  let userID = ctx.request.body.userID
 
   let accessToken = jwt.sign({}, process.env.SECRET, { expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN })
   let accessExpireDate = jwt.decode(accessToken, { complete: true }).payload.exp * 1000
@@ -242,7 +256,7 @@ exports.grantTokenToDevice = async (ctx, next) => {
     refreshToken: refreshToken
   }
 
-  ctx.request.body.token = response
+  ctx.request.body = response
   next()
 }
 

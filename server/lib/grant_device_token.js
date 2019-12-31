@@ -12,7 +12,15 @@ exports.grantDeviceTokenMiddleware = async (ctx, next) => {
   await DeviceEnroll.addDeviceInfo(enrollInfo)
 
   next().then(async () => {
-    let tokens = ctx.request.body.token
+    currentIP = ctx.request.ip.substr(7)
+
+    let result = await DeviceEnroll.deleteDeviceInfo(currentIP)
+
+    if (result.n !== 1 || result.deleteCount !== 1 || result.ok !== 1) {
+      ctx.throw(401, 'Your IP address was not authenticated in device!')
+    }
+
+    let tokens = ctx.request.body
 
     ctx.body = tokens
   }).catch((err) => {
