@@ -12,9 +12,7 @@ exports.createUser = async (ctx) => {
 
   let foundUser = await AuthCode.validateCode(code)
 
-  if (!foundUser) {
-    ctx.throw(401, 'Provided user code is invalid!')
-  }
+  ctx.assert(foundUser, 401, 'Provided user code is invalid!')
 
   let userInfo = {
     userType: foundUser.userInfo.userType,
@@ -35,9 +33,7 @@ exports.findStudent = async (ctx) => {
   let userID = ctx.request.userID
   let foundUser = await User.findUserByID(userID)
 
-  if (!foundUser || foundUser.userType !== STUDENT) {
-    ctx.throw(401, 'This user is not exist(or is not student)!')
-  }
+  ctx.assert(foundUser && foundUser.userType === STUDENT, 401, 'This user is not exist(or is not student)!')
 
   foundUser = JSON.parse(JSON.stringify(foundUser))
 
@@ -55,9 +51,7 @@ exports.findPointArchiveByStudent = async (ctx) => {
   let userID = ctx.request.userID
   let foundUser = await User.findUserByID(userID)
 
-  if (!foundUser || foundUser.userType !== STUDENT) {
-    ctx.throw(401, 'This user is not exist(or is not student)!')
-  }
+  ctx.assert(foundUser && foundUser.userType === STUDENT, 401, 'This user is not exist(or is not student)!')
 
   let studentInfo = {
     grade: foundUser.studentInfo.grade,
@@ -72,9 +66,7 @@ exports.findPointArchiveByAdmin = async (ctx) => {
   let userID = ctx.request.userID
   let foundUser = await User.findUserByID(userID)
 
-  if (!foundUser || foundUser.userType !== ADMINISTRATOR) {
-    ctx.throw(401, 'This user is not exist(or is not administrator!')
-  }
+  ctx.assert(foundUser && foundUser.userType === ADMINISTRATOR, 401, 'This user is not exist(or is not administrator!')
 
   let studentInfo = {
     grade: ctx.params.grade,
@@ -89,16 +81,12 @@ exports.addPointArchive = async (ctx) => {
   let userID = ctx.request.userID
   let currentUser = await User.findUserByID(userID)
 
-  if (!currentUser || currentUser.userType !== ADMINISTRATOR) {
-    ctx.throw(401, 'This user is not exist(or is not adminisrator)!')
-  }
+  ctx.assert(currentUser && currentUser.userType === ADMINISTRATOR, 401, 'This user is not exist(or is not adminisrator)!')
 
   let userInfo = ctx.request.body
   let foundUser = await User.findUserByID(userInfo.userID)
 
-  if (!foundUser || foundUser.userType !== STUDENT) {
-    ctx.throw(401, 'This user is not exist(or is not student)!')
-  }
+  ctx.assert(foundUser && foundUser.userType === STUDENT, 401, 'This user is not exist(or is not student)!')
 
   let enteredUserInfo = {
     grade: userInfo.grade,
@@ -112,49 +100,39 @@ exports.addPointArchive = async (ctx) => {
     number: foundUser.studentInfo.number
   }
 
-  if (_.isEqual(enteredUserInfo, foundUserInfo)) {
-    ctx.body = await PointArchive.addPointArchive(userInfo)
-  } else {
-    ctx.throw(401, 'Student information you provided is invalid.')
-  }
+  ctx.assert(_.isEqual(enteredUserInfo, foundUserInfo), 401, 'Student information you provided is invalid.')
+
+  ctx.body = await PointArchive.addPointArchive(userInfo)
 }
 
 exports.updatePointArchive = async (ctx) => {
   let userID = ctx.request.userID
   let currentUser = await User.findUserByID(userID)
 
-  if (!currentUser || currentUser.userType !== ADMINISTRATOR) {
-    ctx.throw(401, 'This user is not exist(or is not adminisrator)!')
-  }
+  ctx.assert(currentUser && currentUser.userType === ADMINISTRATOR, 401, 'This user is not exist(or is not adminisrator)!')
 
   let studentInfo = ctx.request.body.studentInfo
   let archive = ctx.request.body.archive
 
   let result = await PointArchive.updatePointArchive(studentInfo, archive)
 
-  if (result.n === 1 && result.nModified === 1 && result.ok === 1) {
-    ctx.body = 'This student\'s point archive has successfully added/updated.'
-  } else {
-    ctx.throw(401, 'This student\'s point archive wasn\'t successfully added/updated.')
-  }
+  ctx.assert(result.n === 1 && result.nModified === 1 && result.ok === 1, 401, 'This student\'s point archive wasn\'t successfully added/updated.')
+
+  ctx.body = 'This student\'s point archive has successfully added/updated.'
 }
 
 exports.deletePointArchive = async (ctx) => {
   let userID = ctx.request.userID
   let currentUser = await User.findUserByID(userID)
 
-  if (!currentUser || currentUser.userType !== ADMINISTRATOR) {
-    ctx.throw(401, 'This user is not exist(or is not adminisrator)!')
-  }
+  ctx.assert(currentUser && currentUser.userType === ADMINISTRATOR, 401, 'This user is not exist(or is not adminisrator)!')
 
   let studentInfo = ctx.request.body.studentInfo
   let archive = ctx.request.body.archive
 
   let result = await PointArchive.deletePointArchive(studentInfo, archive)
 
-  if (result.n === 1 && result.nModified === 1 && result.ok === 1) {
-    ctx.body = 'Part of the archive of point was deleted as you requested.'
-  } else {
-    ctx.throw(401, 'Part of the archive of point wasn\'t deleted properly.')
-  }
+  ctx.assert(result.n === 1 && result.nModified === 1 && result.ok === 1, 401, 'Part of the archive of point wasn\'t deleted properly.')
+
+  ctx.body = 'Part of the archive of point was deleted as you requested.'
 }

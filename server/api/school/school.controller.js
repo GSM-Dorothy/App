@@ -53,9 +53,7 @@ exports.getRemainAdministrator = async (ctx) => {
   let userID = ctx.request.userID
   let foundUser = await User.findUserByID(userID)
 
-  if (!foundUser) {
-    ctx.throw(401, 'This user is not administrator!(or is not exist)')
-  }
+  ctx.assert(foundUser, 401, 'This user is not administrator!(or is not exist)')
 
   ctx.body = await RemainAdministrator.findAll()
 }
@@ -64,9 +62,7 @@ exports.getRemainAdministratorByDate = async (ctx) => {
   let userID = ctx.request.userID
   let foundUser = await User.findUserByID(userID)
 
-  if (!foundUser) {
-    ctx.throw(401, 'This user is not administrator!(or is not exist)')
-  }
+  ctx.assert(foundUser, 401, 'This user is not administrator!(or is not exist)')
 
   let year = parseInt(ctx.params.year)
   let month = parseInt(ctx.params.month) - 1
@@ -89,9 +85,7 @@ exports.addRemainAdministrator = async (ctx) => {
   let userID = ctx.request.userID
   let foundUser = await User.findUserByID(userID)
 
-  if (!foundUser || foundUser.userType !== ADMINISTRATOR) {
-    ctx.throw(401, 'This user is not administrator!(or is not exist)')
-  }
+  ctx.assert(foundUser && foundUser.userType === ADMINISTRATOR, 401, 'This user is not administrator!(or is not exist)')
 
   let administrator = ctx.request.body
 
@@ -102,18 +96,14 @@ exports.replaceRemainAdministrator = async (ctx) => {
   let userID = ctx.request.userID
   let foundUser = await User.findUserByID(userID)
 
-  if (!foundUser || foundUser.userType !== ADMINISTRATOR) {
-    ctx.throw(401, 'This user is not administrator!(or is not exist)')
-  }
+  ctx.assert(foundUser && foundUser.userType === ADMINISTRATOR, 401, 'This user is not administrator!(or is not exist)')
 
   let administrator = ctx.request.body.administrator
   let replacedAdministrator = ctx.request.body.replacedAdministrator
 
   let result = await RemainAdministrator.replaceAdministrator(administrator, replacedAdministrator)
 
-  if (result.n !== 1 || result.nModified !== 1 || result.ok !== 1) {
-    ctx.throw(401, 'Remain administrator hasn\'t just completely replaced.')
-  }
+  ctx.assert(result.n === 1 && result.nModified === 1 && result.ok === 1, 401, 'Remain administrator hasn\'t just completely replaced.')
 
   ctx.body = 'Remain administrator has just completely replaced!'
 }
@@ -122,9 +112,7 @@ exports.findRemainEnroll = async (ctx) => {
   let userID = ctx.request.userID
   let foundUser = await User.findUserByID(userID)
 
-  if (!foundUser) {
-    ctx.throw(401, 'This user is not exist!')
-  }
+  ctx.assert(foundUser, 401, 'This user is not exist!')
 
   let year = parseInt(ctx.params.year)
   let month = parseInt(ctx.params.month) - 1
@@ -147,9 +135,7 @@ exports.addEnrollList = async (ctx) => {
   let userID = ctx.request.userID
   let foundUser = await User.findUserByID(userID)
 
-  if (!foundUser || foundUser.userType !== STUDENT) {
-    ctx.throw(401, 'This user is not exist(or is not student)!')
-  }
+  ctx.assert(foundUser && foundUser.userType === STUDENT, 401, 'This user is not exist(or is not student)!')
 
   let enrollDate = ctx.request.body.enrollDate
 
@@ -165,9 +151,7 @@ exports.deleteEnrollList = async (ctx) => {
   let userID = ctx.request.userID
   let foundUser = await User.findUserByID(userID)
 
-  if (!foundUser) {
-    ctx.throw(401, 'This user is not administrator!(or is not exist)')
-  }
+  ctx.assert(foundUser, 401, 'This user is not administrator!(or is not exist)')
 
   let enrollDate = ctx.request.body.enrollDate
 
@@ -178,9 +162,7 @@ exports.deleteEnrollList = async (ctx) => {
 
   let result = await RemainEnroll.deleteEnrollList(enrollInfo)
 
-  if (result.n !== 1 || result.deleteCount !== 1 || result.ok !== 1) {
-    ctx.throw(401, 'You weren\'t left from remain enroll list.')
-  }
+  ctx.assert(result.n === 1 && result.deleteCount === 1 && result.ok === 1, 401, 'You weren\'t left from remain enroll list.')
 
   ctx.body = 'You were left from remain enroll list!'
 }
@@ -189,9 +171,7 @@ exports.findRemainArchive = async (ctx) => {
   let userID = ctx.request.userID
   let foundUser = await User.findUserByID(userID)
 
-  if (!foundUser) {
-    ctx.throw(401, 'This user is not exist!')
-  }
+  ctx.assert(foundUser, 401, 'This user is not exist!')
 
   let year = parseInt(ctx.params.year)
   let month = parseInt(ctx.params.month) - 1
@@ -216,9 +196,7 @@ exports.addRemainArchive = async (ctx) => {
   let userID = ctx.request.userID
   let foundUser = await User.findUserByID(userID)
 
-  if (!foundUser || foundUser.userType !== STUDENT) {
-    ctx.throw(401, 'This user is not exist(or is not administrator)!')
-  }
+  ctx.assert(foundUser && foundUser.userType === STUDENT, 401, 'This user is not exist(or is not administrator)!')
 
   let _archiveInfo = {
     userID: userID,
@@ -236,9 +214,7 @@ exports.deleteRemainArchive = async (ctx) => {
   let userID = ctx.request.userID
   let foundUser = await User.findUserByID(userID)
 
-  if (!foundUser || foundUser.userType !== STUDENT) {
-    ctx.throw(401, 'This user is not exist(or is not administrator)!')
-  }
+  ctx.assert(foundUser && foundUser.userType === STUDENT, 401, 'This user is not exist(or is not administrator)!')
 
   let _archiveInfo = {
     userID: userID,
@@ -248,9 +224,7 @@ exports.deleteRemainArchive = async (ctx) => {
 
   let result = await RemainArchive.deleteArchive(_archiveInfo)
 
-  if (result.n !== 1 || result.deleteCount !== 1 || result.ok !== 1) {
-    ctx.throw(401, 'The info you requested wasn\'t deleted from archive.')
-  }
+  ctx.assert(result.n === 1 && result.deleteCount === 1 && result.ok === 1, 401, 'The info you requested wasn\'t deleted from archive.')
 
   ctx.body = 'The info you requested was deleted from archive.'
 }
@@ -259,9 +233,7 @@ exports.findWasher = async (ctx) => {
   let userID = ctx.request.userID
   let foundUser = await User.findUserByID(userID)
 
-  if (!foundUser) {
-    ctx.throw(401, 'This user is not exist!')
-  }
+  ctx.assert(foundUser, 401, 'This user is not exist!')
 
   let washer = {
     'floor': ctx.params.floor,
@@ -275,9 +247,7 @@ exports.addWasher = async (ctx) => {
   let userID = ctx.request.userID
   let foundUser = await User.findUserByID(userID)
 
-  if (!foundUser || foundUser.userType !== ADMINISTRATOR) {
-    ctx.throw(401, 'This user is not exist(or is not administrator)!')
-  }
+  ctx.assert(foundUser && foundUser.userType === ADMINISTRATOR, 401, 'This user is not exist(or is not administrator)!')
 
   let washerInfo = ctx.request.body
 
@@ -288,16 +258,12 @@ exports.changeStatus = async (ctx) => {
   let userID = ctx.request.userID
   let foundUser = await User.findUserByID(userID)
 
-  if (!foundUser || foundUser.userType !== STUDENT) {
-    ctx.throw(401, 'This user is not exist(or is not student)!')
-  }
+  ctx.assert(foundUser && foundUser.userType === STUDENT, 401, 'This user is not exist(or is not student)!')
 
   let washer = ctx.request.body
   let foundWasher = await Washer.findByInfo(washer)
 
-  if (!foundWasher || foundWasher.status === INOPERABLE) {
-    ctx.throw(401, 'This washer is not exist(or is inoperable)!')
-  }
+  ctx.assert(foundWasher && foundWasher.status !== INOPERABLE, 401, 'This washer is not exist(or is inoperable)!')
 
   let latestArchive = (await WasherArchive.latestArchive(foundWasher))[0]
   let startTime, status
