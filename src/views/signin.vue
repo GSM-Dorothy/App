@@ -100,7 +100,13 @@ export default {
       let name = this.name
       let password = this.password
       this.$store.dispatch('signin', { name, password })
-        .then(() => this.$router.push('/meals'))
+        .then(() => {
+          if (this.$store.state.userType === 'STUDENT') {
+            this.$router.push('/meals')
+          } else if (this.$store.state.userType === 'ADMINISTRATOR') {
+            this.$router.push('/admin')
+          }
+        })
         .catch(err => console.log(err))
     }
   }

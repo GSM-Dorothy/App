@@ -37,15 +37,15 @@
           <v-container fluid>
             <v-row>
               <v-col>
-                <v-form ref="form" v-model="valid" :lazy-validation="lazy">
+                <v-form ref="form" v-model="validB" :lazy-validation="lazyB">
                   <v-list-item>
                     <v-text-field v-model="adminName" :rules="defaultRules" :color="$vuetify.theme.dark ? 'white' : 'black'" label="이름" required outlined dense></v-text-field>
                   </v-list-item>
                   <v-list-item>
-                    <v-text-field v-model="responibility" :rules="defaultRules" :color="$vuetify.theme.dark ? 'white' : 'black'" label="담당 직무" required outlined dense></v-text-field>
+                    <v-text-field v-model="responibility" :rules="defaultRules" :color="$vuetify.theme.dark ? 'white' : 'black'" label="담당 업무" required outlined dense></v-text-field>
                   </v-list-item>
                   <v-list-item>
-                    <v-btn :disabled="!valid" :outlined="!valid" color="red" @click="admin" width="60" height="60">
+                    <v-btn :disabled="!validB" :outlined="!validB" color="red" @click="admin" width="60" height="60">
                       <v-icon color="white">mdi-arrow-right</v-icon>
                     </v-btn>
                   </v-list-item>
@@ -67,10 +67,14 @@ export default {
   data: () => ({
     valid: true,
     lazy: false,
+    validB: true,
+    lazyB: false,
     name: '',
     grade: '',
     classRoom: '',
     number: '',
+    adminName: '',
+    responibility: '',
     defaultRules: [
       v => !!v || ''
     ]
@@ -100,15 +104,15 @@ export default {
         })
     },
     admin () {
-      const name = this.adminName
+      const adminName = this.adminName
       const responibility = this.responibility
 
-      if (!name || !responibility) {
+      if (!adminName || !responibility) {
         return false
       }
 
       axios.post('http://api.dorothy.gsmhs.kr/auth/code/administrator', {
-        name: name,
+        name: adminName,
         responibility: responibility
       })
         .then(res => {

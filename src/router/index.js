@@ -89,14 +89,18 @@ router.beforeEach((to, from, next) => {
       next()
       return
     }
-    next('/')
+    next()
   } else if (to.matched.some(record => record.meta.requiresAdminAuth)) {
     if (store.getters.userType === 'ADMINISTRATOR') {
-      next('/admin')
+      next()
+      return
+    } else if (store.getters.userType === 'STUDENT') {
+      window.alert('관리자만 접근가능합니다!')
+      next('/meals')
       return
     }
     window.alert('관리자만 접근가능합니다!')
-    next('/meals')
+    next('/')
   } else {
     next()
   }

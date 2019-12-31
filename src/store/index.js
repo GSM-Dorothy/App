@@ -39,7 +39,7 @@ export default new Vuex.Store({
                 resolve(res)
               })
               .catch(err => {
-                console.log(err)
+                reject(err)
               })
           })
           .catch(err => {
@@ -62,7 +62,6 @@ export default new Vuex.Store({
   },
   getters: {
     isLoggedIn: state => !!state.refreshToken,
-    userType: state => state.userType,
-    authStatus: state => state.status
+    userType: state => state.userType
   }
 })
