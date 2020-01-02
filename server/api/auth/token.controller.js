@@ -13,7 +13,7 @@ exports.grantToken = async (ctx) => {
   } else {
     let loginData = ctx.request.body
     let foundUser = await User.findUserWithLoginData(loginData)
-  
+
     userID = foundUser._id
 
     ctx.assert(foundUser, 401, TOKEN_NON_EXIST + ': Provided access token is invalid.')

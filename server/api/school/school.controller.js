@@ -1,7 +1,9 @@
 const SchoolAPI = require('node-school-kr')
 const School = new SchoolAPI()
 
-School.init(SchoolAPI.Type.HIGH, SchoolAPI.Region.GWANGJU, 'F100000120')
+const GWANGJU_SOFTWARE_MEISTER_SCHOOL_CODE = 'F100000120'
+
+School.init(SchoolAPI.Type.HIGH, SchoolAPI.Region.GWANGJU, GWANGJU_SOFTWARE_MEISTER_SCHOOL_CODE)
 
 exports.getMeal = async (ctx) => {
   let meals = await School.getMeal(ctx.params.year, ctx.params.month)
@@ -38,7 +40,7 @@ exports.getSchedule = async (ctx) => {
 }
 
 let jsonifyMeal = meal => {
-  let menus = meal.replace(/\n/g, ',').replace(/[1234567890*.]/gi, '').split(',')
+  let menus = meal.replace(/\n/g, ',').replace(/[1234567890*./]/gi, '').split(',')
 
   let breakfastIndex = menus.indexOf('[조식]') === -1 ? menus.length : menus.indexOf('[조식]')
   let lunchIndex = menus.indexOf('[중식]') === -1 ? menus.length : menus.indexOf('[중식]')

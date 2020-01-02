@@ -4,8 +4,6 @@ const User = require('models/user')
 const AuthCode = require('models/auth_code')
 const PointArchive = require('models/point_archive')
 
-const { STUDENT, ADMINISTRATOR } = require('actions/auth_code')
-
 exports.createUser = async (ctx) => {
   let registerInfo = ctx.request.body
   let code = registerInfo.code
