@@ -99,7 +99,7 @@ export default {
         .then(res => {
           if (res.status === 200) {
             alert(res.data.code)
-            this.$router.push('/admin/code/list')
+            this.$router.push('/admin/code')
           }
         })
     },
@@ -118,7 +118,7 @@ export default {
         .then(res => {
           if (res.status === 200) {
             alert(res.data.code)
-            this.$router.push('/admin/code/list')
+            this.$router.push('/admin/code')
           }
         })
     }

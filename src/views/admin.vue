@@ -44,9 +44,14 @@ export default {
       link: '/admin/code'
     },
     {
-      text: '잔류',
+      text: '잔류 담당',
       icon: 'mdi-home',
       link: '/admin/remain'
+    },
+    {
+      text: '잔류 관리',
+      icon: 'mdi-home',
+      link: '/admin/member'
     }
     ]
   })

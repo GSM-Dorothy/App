@@ -1,58 +1,56 @@
 <template>
 <v-content>
   <v-container fluid>
-    <v-row>
-      <v-col :cols="$vuetify.breakpoint.smAndUp ? '6' : '12'">
-        <v-card class="elevation-12 ma-1">
-          <v-card-text>
-            <p class="text--primary">
-              잔류 학생 총원
-            </p>
-            <p class="display-1 text--primary">
-              15명
-            </p>
-          </v-card-text>
-        </v-card>
-      </v-col>
-      <v-col :cols="$vuetify.breakpoint.smAndUp ? '6' : '12'">
-        <v-card class="elevation-12 ma-1">
-          <v-card-text>
-            <p class="text--primary">
-              사내 학생 총원
-            </p>
-            <p class="display-1 text--primary">
-              9명
-            </p>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
     <v-card class="elevation-12 ma-1">
       <v-tabs color="deep-purple accent-4" centered grow>
-        <v-tab>신청자</v-tab>
-        <v-tab>학습실</v-tab>
-        <v-tab>호실</v-tab>
-        <v-tab>외출</v-tab>
+        <v-tab>등록</v-tab>
+        <v-tab>목록</v-tab>
 
         <v-tab-item>
-          <v-container fluid>
-            <v-data-table :headers="headersList" :items="dessertsList"></v-data-table>
-          </v-container>
+          <v-stepper v-model="e1">
+            <v-stepper-header class="elevation-0">
+              <v-stepper-step :editable="e1 > 1" :complete="e1 > 1" step="1">날짜</v-stepper-step>
+              <v-divider></v-divider>
+              <v-stepper-step :editable="e1 > 2" :complete="e1 > 2" step="2">시작 시간</v-stepper-step>
+              <v-divider></v-divider>
+              <v-stepper-step step="3">종료 시간</v-stepper-step>
+            </v-stepper-header>
+
+            <v-stepper-items>
+              <v-stepper-content step="1" align="center">
+                <v-container fluid>
+                  <v-date-picker v-model="date" :landscape="$vuetify.breakpoint.smAndUp" class="mt-4">
+                    <v-btn color="primary" @click="e1 = 2">
+                      계속
+                    </v-btn>
+                  </v-date-picker>
+                </v-container>
+              </v-stepper-content>
+
+              <v-stepper-content step="2" align="center">
+                <v-container dense>
+                  <v-time-picker ampm-in-title landscape v-model="start" :max="end">
+                    <v-btn color="primary" @click="e3">
+                      계속
+                    </v-btn>
+                  </v-time-picker>
+                </v-container>
+              </v-stepper-content>
+
+              <v-stepper-content step="3" align="center">
+                <v-container dense>
+                  <v-time-picker ampm-in-title landscape v-model="end" :min="start">
+                    <v-btn color="primary" @click="e4">
+                      확인
+                    </v-btn>
+                  </v-time-picker>
+                </v-container>
+              </v-stepper-content>
+            </v-stepper-items>
+          </v-stepper>
         </v-tab-item>
         <v-tab-item>
-          <v-container fluid>
-            <v-data-table :headers="headersSTUDYING" :items="dessertsSTUDYING"></v-data-table>
-          </v-container>
-        </v-tab-item>
-        <v-tab-item>
-          <v-container fluid>
-            <v-data-table :headers="headersSTAYING_OUT" :items="dessertsSTAYING_OUT"></v-data-table>
-          </v-container>
-        </v-tab-item>
-        <v-tab-item>
-          <v-container fluid>
-            <v-data-table :headers="headersLEFT" :items="dessertsLEFT"></v-data-table>
-          </v-container>
+          목록
         </v-tab-item>
       </v-tabs>
     </v-card>
@@ -64,179 +62,27 @@
 export default {
   data () {
     return {
-      headersList: [{
-        text: '학년',
-        value: 'grade'
-      },
-      {
-        text: '반',
-        value: 'class'
-      },
-      {
-        text: '번호',
-        value: 'number'
-      },
-      {
-        text: '이름',
-        value: 'name'
-      }
-      ],
-      dessertsList: [{
-        grade: 2,
-        class: 3,
-        number: 9,
-        name: '가나다'
-      },
-      {
-        grade: 2,
-        class: 4,
-        number: 4,
-        name: '라마바'
-      },
-      {
-        grade: 2,
-        class: 1,
-        number: 3,
-        name: '사아자'
-      }
-      ],
-      headersSTUDYING: [{
-        text: '학년',
-        value: 'grade'
-      },
-      {
-        text: '반',
-        value: 'class'
-      },
-      {
-        text: '번호',
-        value: 'number'
-      },
-      {
-        text: '이름',
-        value: 'name'
-      }
-      ],
-      dessertsSTUDYING: [{
-        grade: 2,
-        class: 3,
-        number: 9,
-        name: '가나다'
-      },
-      {
-        grade: 2,
-        class: 4,
-        number: 4,
-        name: '라마바'
-      },
-      {
-        grade: 2,
-        class: 1,
-        number: 3,
-        name: '사아자'
-      }
-      ],
-      headersSTAYING_OUT: [{
-        text: '복귀 시간',
-        value: 'end'
-      },
-      {
-        text: '호실',
-        value: 'room'
-      },
-      {
-        text: '학년',
-        value: 'grade'
-      },
-      {
-        text: '반',
-        value: 'class'
-      },
-      {
-        text: '번호',
-        value: 'number'
-      },
-      {
-        text: '이름',
-        value: 'name'
-      }
-      ],
-      dessertsSTAYING_OUT: [{
-        end: '11시 30분',
-        room: 301,
-        grade: 2,
-        class: 3,
-        number: 9,
-        name: '가나다'
-      },
-      {
-        end: '13시 30분',
-        room: 302,
-        grade: 2,
-        class: 4,
-        number: 4,
-        name: '라마바'
-      },
-      {
-        end: '14시 30분',
-        room: 411,
-        grade: 2,
-        class: 1,
-        number: 3,
-        name: '사아자'
-      }
-      ],
-      headersLEFT: [{
-        text: '복귀 시간',
-        value: 'end'
-      },
-      {
-        text: '사유',
-        value: 'log'
-      },
-      {
-        text: '학년',
-        value: 'grade'
-      },
-      {
-        text: '반',
-        value: 'class'
-      },
-      {
-        text: '번호',
-        value: 'number'
-      },
-      {
-        text: '이름',
-        value: 'name'
-      }
-      ],
-      dessertsLEFT: [{
-        end: '11시 30분',
-        log: '사유',
-        grade: 2,
-        class: 3,
-        number: 9,
-        name: '가나다'
-      },
-      {
-        end: '13시 30분',
-        log: '사유',
-        grade: 2,
-        class: 4,
-        number: 4,
-        name: '라마바'
-      },
-      {
-        end: '14시 30분',
-        log: '사유',
-        grade: 2,
-        class: 1,
-        number: 3,
-        name: '사아자'
-      }
-      ]
+      e1: 0,
+      date: new Date().toISOString().substr(0, 10),
+      start: null,
+      end: null
     }
+  },
+  methods: {
+    e3 () {
+      if (this.start != null) {
+        this.e1 = 3
+      }
+      if (this.end === null) {
+        this.end = this.start
+      }
+    },
+    e4 () {
+      if (this.end != null) {
+        this.e1 = 3
+      }
+    },
+    allowedStep: m => m % 5 === 0
   }
 }
 </script>

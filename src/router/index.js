@@ -72,6 +72,10 @@ const routes = [
       {
         path: 'remain',
         component: () => import('../views/remainAdmin.vue')
+      },
+      {
+        path: 'member',
+        component: () => import('../views/remainMember.vue')
       }
     ]
   }

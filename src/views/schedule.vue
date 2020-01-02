@@ -43,8 +43,7 @@
 </template>
 
 <script>
-var date = new Date()
-var today = date.getFullYear() + date.getMonth() + date.getDate()
+var today = new Date().toISOString().substr(0, 10)
 export default {
   data: () => ({
     today: today,

@@ -58,6 +58,20 @@ export default new Vuex.Store({
         delete axios.defaults.headers.common['x-access-token']
         resolve()
       })
+    },
+    refresh () {
+      return new Promise((resolve, reject) => {
+        axios.post('http://api.dorothy.gsmhs.kr/auth/token/refresh', {
+          refreshToken: localStorage.getItem('refreshToken')
+        })
+          .then(res => {
+            axios.defaults.headers.common['x-access-token'] = res.data.accessToken
+            resolve(res)
+          })
+          .catch(err => {
+            reject(err)
+          })
+      })
     }
   },
   getters: {
