@@ -3,6 +3,7 @@ require('dotenv').config()
 const Koa = require('koa')
 const Router = require('koa-router')
 const bodyParser = require('koa-bodyparser')
+const cors = require('@koa/cors')
 
 const app = new Koa()
 const router = new Router()
@@ -25,12 +26,14 @@ mongoose.connect(process.env.MONGO_URI, {
 router.use('', index.routes())
 router.use('', api.routes())
 
+app.use(cors())
+
 app.use(bodyParser({
   detectJSON: function (ctx) {
     return /\.json$/i.test(ctx.path)
   }
 })).use(router.routes()).use(router.allowedMethods())
 
-app.listen(8080, () => {
-  console.log('Server is listening to port 8080')
+app.listen(80, () => {
+  console.log('Server is listening to port 80')
 })

@@ -8,6 +8,7 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
+    "@koa/cors": "2",
     "crypto-random-string": "^3.0.1",
     "dotenv": "^8.2.0",
     "jsonwebtoken": "^8.5.1",
