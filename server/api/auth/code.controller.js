@@ -41,5 +41,9 @@ exports.validateCode = async (ctx) => {
 exports.revokeCode = async (ctx) => {
   let code = ctx.request.body.code
 
-  ctx.body = await AuthCode.revokeCode(code)
+  let result = await AuthCode.revokeCode(code)
+
+  ctx.assert(result.n === 1 && result.deleteCount === 1 && result.ok === 1, 401, 'Authentication code wasn\'t deleted properly.')
+
+  ctx.body = 'Provided authentication code was deleted.'
 }

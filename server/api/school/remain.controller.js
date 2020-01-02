@@ -2,6 +2,8 @@ const RemainAdministrator = require('models/remain_administrator')
 const RemainEnroll = require('models/remain_enroll')
 const RemainArchive = require('models/remain_archive')
 
+const User = require('models/user')
+
 exports.getRemainAdministrator = async (ctx) => {
   ctx.body = await RemainAdministrator.findAll()
 }
@@ -56,7 +58,15 @@ exports.findRemainEnroll = async (ctx) => {
     end = new Date(Date.UTC(year, month + 1, 1))
   }
 
-  ctx.body = await RemainEnroll.findEnrollListByDate(start, end)
+  let foundStudents = await RemainEnroll.findEnrollListByDate(start, end)
+  let enrolledStudents = []
+
+  for (let i in foundStudents) {
+    let user = await User.findUserByID(foundStudents[i].userID)
+    enrolledStudents.push({ name: user.name })
+  }
+
+  ctx.body = enrolledStudents
 }
 
 exports.addEnrollList = async (ctx) => {

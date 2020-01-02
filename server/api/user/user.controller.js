@@ -4,6 +4,8 @@ const User = require('models/user')
 const AuthCode = require('models/auth_code')
 const PointArchive = require('models/point_archive')
 
+const { STUDENT } = require('actions/auth_code')
+
 exports.createUser = async (ctx) => {
   let registerInfo = ctx.request.body
   let code = registerInfo.code
@@ -65,7 +67,7 @@ exports.findPointArchiveByAdmin = async (ctx) => {
 }
 
 exports.addPointArchive = async (ctx) => {
-  let foundUser = ctx.state.foundUser
+  let userInfo = ctx.request.body
 
   let enteredUserInfo = {
     grade: userInfo.grade,
@@ -73,13 +75,20 @@ exports.addPointArchive = async (ctx) => {
     number: userInfo.number
   }
 
+  let foundUser = await User.findUserWithStudentInfo(enteredUserInfo)
+
+  ctx.assert(foundUser && foundUser.userType === STUDENT, 401, 'This student is not exist(or is not student)!')
+
   let foundUserInfo = {
     grade: foundUser.studentInfo.grade,
     class: foundUser.studentInfo.class,
     number: foundUser.studentInfo.number
   }
 
-  ctx.assert(_.isEqual(enteredUserInfo, foundUserInfo), 401, 'Student information you provided is invalid.')
+  ctx.assert(_.isEqual(enteredUserInfo, foundUserInfo), 401, 'Student information you provided does not match with anyone in student list.')
+
+  foundUserInfo.room = foundUser.studentInfo.room
+  foundUserInfo.name = foundUser.name
 
   ctx.body = await PointArchive.addPointArchive(userInfo)
 }
@@ -101,7 +110,7 @@ exports.deletePointArchive = async (ctx) => {
 
   let result = await PointArchive.deletePointArchive(studentInfo, archive)
 
-  ctx.assert(result.n === 1 && result.nModified === 1 && result.ok === 1, 401, 'Part of the archive of point wasn\'t deleted properly.')
+  ctx.assert(result.n === 1 && result.deleteCount === 1 && result.ok === 1, 401, 'Part of the archive of point wasn\'t deleted properly.')
 
   ctx.body = 'Part of the archive of point was deleted as you requested.'
 }

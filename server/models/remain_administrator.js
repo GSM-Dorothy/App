@@ -10,10 +10,10 @@ const RemainAdministrator = new Schema({
 
 RemainAdministrator.statics.addAdministrator = async function (administrator) {
   let administratorData = {
-    'name': administrator.name,
-    'phone': administrator.phone,
-    'startDate': administrator.startDate,
-    'endDate': administrator.endDate
+    name: administrator.name,
+    phone: administrator.phone,
+    startDate: administrator.startDate,
+    endDate: administrator.endDate
   }
 
   let Administrator = new this(administratorData)
@@ -40,9 +40,9 @@ RemainAdministrator.statics.findByDate = async function (start, end) {
 
 RemainAdministrator.statics.replaceAdministrator = async function (administrator, replacedAdministrator) {
   let results = await this.updateOne({ $and: [
-    { 'name': administrator.name },
-    { 'phone': administrator.phone },
-    { 'startDate': administrator.startDate }
+    { name: administrator.name },
+    { phone: administrator.phone },
+    { startDate: administrator.startDate }
   ] }, { $set: {
     name: replacedAdministrator.name,
     phone: replacedAdministrator.phone,

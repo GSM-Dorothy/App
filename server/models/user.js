@@ -54,6 +54,22 @@ User.statics.findUserByID = async function (id) {
   return foundUser
 }
 
+User.statics.findUserWithStudentInfo = async function (studentInfo) {
+  let foundUser
+
+  try {
+    foundUser = await this.findOne({ $and: [
+      { grade: studentInfo.grade },
+      { class: studentInfo.class },
+      { number: studentInfo.number }
+    ]}).exec()
+  } catch (e) {
+    console.log(e)
+  }
+
+  return foundUser
+}
+
 User.statics.findUserWithLoginData = async function (loginData) {
   let foundUser
 

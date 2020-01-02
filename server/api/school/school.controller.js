@@ -27,15 +27,19 @@ exports.getMeal = async (ctx) => {
 exports.getSchedule = async (ctx) => {
   let year = ctx.params.year
   let month = ctx.params.month
-  const schedule = await School.getCalendar(year, month)
+  let schedules = await School.getCalendar(year, month)
 
-  delete schedule.year
-  delete schedule.month
+  delete schedules.year
+  delete schedules.month
+
+  for (let i in schedules) {
+    schedules[i] = jsonifySchedule(schedules[i])
+  }
 
   if (ctx.params.day) {
-    ctx.body = { today: schedule[ctx.params.day] }
+    ctx.body = { today: schedules[ctx.params.day] }
   } else {
-    ctx.body = schedule
+    ctx.body = schedules
   }
 }
 
@@ -51,4 +55,22 @@ let jsonifyMeal = meal => {
     중식: menus.slice(lunchIndex + 1, dinnerIndex),
     석식: menus.slice(dinnerIndex + 1)
   }
+}
+
+let jsonifySchedule = schedule => {
+  schedule = schedule.replace(/\/\d+/g, '')
+  if (/[/,]/g.test(schedule)) {
+    schedule = schedule.replace(/\d,\d+/g, (match, p1, p2, offset, string) => {
+      return match.replace(',', '~')
+    })
+    
+    let offset = schedule.includes('/') ? '/' : ','
+    schedule = schedule.split(offset)
+
+    if (schedule.length === 1) {
+      schedule = schedule[0]
+    }
+  }
+  
+  return schedule
 }

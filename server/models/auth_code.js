@@ -101,7 +101,9 @@ AuthCode.statics.findDeviceCode = async function () {
 }
 
 AuthCode.statics.revokeCode = async function (code) {
-  return { code: (await this.findOneAndDelete({ code: code }).exec()).code }
+  let result = await this.deleteOne({ code: code }).exec()
+
+  return result
 }
 
 const _authCode = mongoose.models.AuthCode || mongoose.model('AuthCode', AuthCode, 'AuthCode')
