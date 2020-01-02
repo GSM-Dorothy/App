@@ -1,7 +1,7 @@
 <template>
 <v-content>
   <v-container fluid>
-    <v-card class="elevation-12 ma-3">
+    <v-card class="elevation-12 ma-1">
       <v-tabs color="deep-purple accent-4" centered grow>
         <v-tab>학생</v-tab>
         <v-tab>관리자</v-tab>

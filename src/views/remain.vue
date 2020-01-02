@@ -60,7 +60,7 @@
 
           <v-stepper-content step="2" align="center">
             <v-container dense>
-              <v-time-picker ampm-in-title landscape v-model="start" :max="end">
+              <v-time-picker ampm-in-title landscape v-model="start" :max="end" full-width="100">
                 <v-btn color="primary" @click="e3">
                   계속
                 </v-btn>
@@ -70,7 +70,7 @@
 
           <v-stepper-content step="3" align="center">
             <v-container dense>
-              <v-time-picker ampm-in-title landscape v-model="end" :min="start">
+              <v-time-picker ampm-in-title landscape v-model="end" :min="start" full-width="100">
                 <v-btn color="primary" @click="e4">
                   확인
                 </v-btn>

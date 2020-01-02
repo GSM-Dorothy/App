@@ -51,6 +51,12 @@ export default {
       color: 'light-green'
     },
     {
+      text: '상벌점',
+      icon: 'mdi-counter',
+      link: '/point',
+      color: 'purple'
+    },
+    {
       text: '잔류',
       icon: 'mdi-home',
       link: '/remain',
