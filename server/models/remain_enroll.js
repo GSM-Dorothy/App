@@ -47,6 +47,6 @@ remainEnroll.statics.deleteEnrollList = async function (enrollInfo) {
   return result
 }
 
-const _remainEnroll = mongoose.model('RemainEnroll', remainEnroll, 'RemainEnroll')
+const _remainEnroll = mongoose.models.RemainEnroll || mongoose.model('RemainEnroll', remainEnroll, 'RemainEnroll')
 
 module.exports = _remainEnroll

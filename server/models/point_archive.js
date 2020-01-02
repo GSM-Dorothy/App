@@ -76,6 +76,6 @@ PointArchive.statics.deletePointArchive = async function (studentInfo, archive) 
   return result
 }
 
-const _pointArchive = mongoose.model('PointArchive', PointArchive, 'PointArchive')
+const _pointArchive = mongoose.models.PointArchive || mongoose.model('PointArchive', PointArchive, 'PointArchive')
 
 module.exports = _pointArchive

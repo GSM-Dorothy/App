@@ -27,6 +27,6 @@ DeviceList.statics.deleteDeviceFromList = async function (ip) {
   return result
 }
 
-const _deviceList = mongoose.model('DeviceList', DeviceList, 'DeviceList')
+const _deviceList = mongoose.models.DeviceList || mongoose.model('DeviceList', DeviceList, 'DeviceList')
 
 module.exports = _deviceList

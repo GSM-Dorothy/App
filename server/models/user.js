@@ -106,6 +106,6 @@ User.statics.revokeRefreshToken = async function (refreshToken) {
   return results
 }
 
-const _user = mongoose.model('User', User, 'User')
+const _user = mongoose.models.User || mongoose.model('User', User, 'User')
 
 module.exports = _user

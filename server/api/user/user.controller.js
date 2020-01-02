@@ -30,10 +30,7 @@ exports.createUser = async (ctx) => {
 }
 
 exports.findStudent = async (ctx) => {
-  let userID = ctx.request.userID
-  let foundUser = await User.findUserByID(userID)
-
-  ctx.assert(foundUser && foundUser.userType === STUDENT, 401, 'This user is not exist(or is not student)!')
+  let foundUser = ctx.state.foundUser
 
   foundUser = JSON.parse(JSON.stringify(foundUser))
 
@@ -48,10 +45,7 @@ exports.findStudent = async (ctx) => {
 }
 
 exports.findPointArchiveByStudent = async (ctx) => {
-  let userID = ctx.request.userID
-  let foundUser = await User.findUserByID(userID)
-
-  ctx.assert(foundUser && foundUser.userType === STUDENT, 401, 'This user is not exist(or is not student)!')
+  let foundUser = ctx.state.foundUser
 
   let studentInfo = {
     grade: foundUser.studentInfo.grade,
@@ -63,11 +57,6 @@ exports.findPointArchiveByStudent = async (ctx) => {
 }
 
 exports.findPointArchiveByAdmin = async (ctx) => {
-  let userID = ctx.request.userID
-  let foundUser = await User.findUserByID(userID)
-
-  ctx.assert(foundUser && foundUser.userType === ADMINISTRATOR, 401, 'This user is not exist(or is not administrator!')
-
   let studentInfo = {
     grade: ctx.params.grade,
     class: ctx.params.class,
@@ -78,15 +67,7 @@ exports.findPointArchiveByAdmin = async (ctx) => {
 }
 
 exports.addPointArchive = async (ctx) => {
-  let userID = ctx.request.userID
-  let currentUser = await User.findUserByID(userID)
-
-  ctx.assert(currentUser && currentUser.userType === ADMINISTRATOR, 401, 'This user is not exist(or is not adminisrator)!')
-
-  let userInfo = ctx.request.body
-  let foundUser = await User.findUserByID(userInfo.userID)
-
-  ctx.assert(foundUser && foundUser.userType === STUDENT, 401, 'This user is not exist(or is not student)!')
+  let foundUser = ctx.state.foundUser
 
   let enteredUserInfo = {
     grade: userInfo.grade,
@@ -106,11 +87,6 @@ exports.addPointArchive = async (ctx) => {
 }
 
 exports.updatePointArchive = async (ctx) => {
-  let userID = ctx.request.userID
-  let currentUser = await User.findUserByID(userID)
-
-  ctx.assert(currentUser && currentUser.userType === ADMINISTRATOR, 401, 'This user is not exist(or is not adminisrator)!')
-
   let studentInfo = ctx.request.body.studentInfo
   let archive = ctx.request.body.archive
 
@@ -122,11 +98,6 @@ exports.updatePointArchive = async (ctx) => {
 }
 
 exports.deletePointArchive = async (ctx) => {
-  let userID = ctx.request.userID
-  let currentUser = await User.findUserByID(userID)
-
-  ctx.assert(currentUser && currentUser.userType === ADMINISTRATOR, 401, 'This user is not exist(or is not adminisrator)!')
-
   let studentInfo = ctx.request.body.studentInfo
   let archive = ctx.request.body.archive
 

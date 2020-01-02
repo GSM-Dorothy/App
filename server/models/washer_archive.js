@@ -37,6 +37,6 @@ WasherArchive.statics.useWasher = async function (washer, userID, startTime) {
   return archive
 }
 
-const _washerArchive = mongoose.model('WasherArchive', WasherArchive, 'WasherArchive')
+const _washerArchive = mongoose.models.WasherArchive || mongoose.model('WasherArchive', WasherArchive, 'WasherArchive')
 
 module.exports = _washerArchive

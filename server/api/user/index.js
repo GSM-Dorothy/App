@@ -3,15 +3,16 @@ const user = new Router()
 const userCtrl = require('./user.controller')
 
 const { validateTokenMiddleware } = require('lib/validate_token')
+const { validateStudent, validateAdministrator } = require('lib/validate_user_type')
 
 user.post('/create', userCtrl.createUser)
 
-user.get('/student', validateTokenMiddleware, userCtrl.findStudent)
+user.get('/student', validateTokenMiddleware, validateStudent, userCtrl.findStudent)
 
-user.get('/point_archive', validateTokenMiddleware, userCtrl.findPointArchiveByStudent)
-user.get('/point_archive/:grade/:class/:number', validateTokenMiddleware, userCtrl.findPointArchiveByAdmin)
-user.post('/point_archive', validateTokenMiddleware, userCtrl.addPointArchive)
-user.put('/point_archive', validateTokenMiddleware, userCtrl.updatePointArchive)
-user.delete('/point_archive', validateTokenMiddleware, userCtrl.deletePointArchive)
+user.get('/point_archive', validateTokenMiddleware, validateAdministrator, userCtrl.findPointArchiveByStudent)
+user.get('/point_archive/:grade/:class/:number', validateTokenMiddleware, validateStudent, userCtrl.findPointArchiveByAdmin)
+user.post('/point_archive', validateTokenMiddleware, validateAdministrator, userCtrl.addPointArchive)
+user.put('/point_archive', validateTokenMiddleware, validateAdministrator, userCtrl.updatePointArchive)
+user.delete('/point_archive', validateTokenMiddleware, validateAdministrator, userCtrl.deletePointArchive)
 
 module.exports = user

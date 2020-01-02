@@ -27,6 +27,6 @@ DeviceEnroll.statics.deleteDeviceInfo = async function (ip) {
   return result
 }
 
-const _deviceEnroll = mongoose.model('DeviceEnroll', DeviceEnroll, 'DeviceEnroll')
+const _deviceEnroll = mongoose.models.DeviceEnroll || mongoose.model('DeviceEnroll', DeviceEnroll, 'DeviceEnroll')
 
 module.exports = _deviceEnroll

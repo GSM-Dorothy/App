@@ -104,6 +104,6 @@ AuthCode.statics.revokeCode = async function (code) {
   return { code: (await this.findOneAndDelete({ code: code }).exec()).code }
 }
 
-const _authCode = mongoose.model('AuthCode', AuthCode, 'AuthCode')
+const _authCode = mongoose.models.AuthCode || mongoose.model('AuthCode', AuthCode, 'AuthCode')
 
 module.exports = _authCode

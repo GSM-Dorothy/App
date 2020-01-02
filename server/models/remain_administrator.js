@@ -53,6 +53,6 @@ RemainAdministrator.statics.replaceAdministrator = async function (administrator
   return results
 }
 
-const _remainAdministrator = mongoose.model('RemainAdministrator', RemainAdministrator, 'RemainAdministrator')
+const _remainAdministrator = mongoose.models.RemainAdministrator || mongoose.model('RemainAdministrator', RemainAdministrator, 'RemainAdministrator')
 
 module.exports = _remainAdministrator

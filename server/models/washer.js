@@ -34,6 +34,6 @@ Washer.statics.changeStatus = async function (washer, status) {
   return result
 }
 
-const _washer = mongoose.model('Washer', Washer, 'Washer')
+const _washer = mongoose.models.Washer || mongoose.model('Washer', Washer, 'Washer')
 
 module.exports = _washer

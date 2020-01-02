@@ -31,6 +31,6 @@ Token.statics.revokeToken = async function (accessToken) {
   return result
 }
 
-const _token = mongoose.model('Token', Token, 'Token')
+const _token = mongoose.models.Token || mongoose.model('Token', Token, 'Token')
 
 module.exports = _token

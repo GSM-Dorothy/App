@@ -20,7 +20,7 @@ exports.validateTokenMiddleware = async (ctx, next) => {
     ctx.assert(result.n === 1 && result.deletedCount === 1 && result.ok === 1, 401, 'Error occured while revoking token.')
   }
 
-  ctx.request.userID = tokenData.userID
+  ctx.state.userID = tokenData.userID
 
   return next()
 }

@@ -57,6 +57,6 @@ remainArchive.statics.deleteArchive = async function (archiveInfo) {
   return result
 }
 
-const _remainArchive = mongoose.model('RemainArchive', remainArchive, 'RemainArchive')
+const _remainArchive = mongoose.models.RemainArchive || mongoose.model('RemainArchive', remainArchive, 'RemainArchive')
 
 module.exports = _remainArchive
