@@ -15,7 +15,7 @@
         <v-toolbar-title>{{ title }}</v-toolbar-title>
       </v-card-actions>
     </v-card>
-    <v-card class="elevation-12 ma-1" height="75vh">
+    <v-card class="elevation-12 ma-1" height="85vh">
       <v-calendar ref="calendar" v-model="focus" color="primary" :events="events" :event-color="getEventColor" :event-margin-bottom="3" :now="today" :type="type" @change="getEvents">
       </v-calendar>
     </v-card>
