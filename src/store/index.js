@@ -18,6 +18,7 @@ export default new Vuex.Store({
     },
     signout (state) {
       state.userType = ''
+      state.expireDate = ''
       state.refreshToken = ''
     }
   },
@@ -66,7 +67,7 @@ export default new Vuex.Store({
         resolve()
       })
     },
-    refresh () {
+    refresh ({ commit }) {
       return new Promise((resolve, reject) => {
         axios.post('http://api.dorothy.gsmhs.kr/auth/token/refresh', {
           refreshToken: localStorage.getItem('refreshToken')
@@ -76,6 +77,11 @@ export default new Vuex.Store({
             resolve(res)
           })
           .catch(err => {
+            commit('signout')
+            localStorage.removeItem('userType')
+            localStorage.removeItem('expireDate')
+            localStorage.removeItem('refreshToken')
+            delete axios.defaults.headers.common['x-access-token']
             reject(err)
           })
       })
