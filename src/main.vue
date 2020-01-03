@@ -3,16 +3,15 @@
 </template>
 
 <script>
-import store from './store'
-
 export default {
   created () {
-    setInterval(() => {
-      let expireDate = store.getters['expireDate']
-      const now = new Date()
-      console.log(expireDate)
-      console.log(now)
+    if (this.$store.state.refreshToken) {
       this.$store.dispatch('refresh')
+    }
+    setInterval(() => {
+      if (this.$store.state.refreshToken) {
+        this.$store.dispatch('refresh')
+      }
     }, 60000)
   },
   mounted () {
