@@ -27,17 +27,20 @@ exports.getMeal = async (ctx) => {
 exports.getSchedule = async (ctx) => {
   let year = ctx.params.year
   let month = ctx.params.month
-  let schedules = await School.getCalendar(year, month)
+  let imported = await School.getCalendar(year, month)
 
-  delete schedules.year
-  delete schedules.month
+  let schedules = {}
 
-  for (let i in schedules) {
-    schedules[i] = jsonifySchedule(schedules[i])
+  delete imported.year
+  delete imported.month
+
+  for (let day in imported) {
+    let date = `${year}-${month}-${day}`
+    schedules[date] = jsonifySchedule(imported[day])
   }
 
   if (ctx.params.day) {
-    ctx.body = { today: schedules[ctx.params.day] }
+    ctx.body = { today: schedules[`${year}-${month}-${ctx.params.day}`] }
   } else {
     ctx.body = schedules
   }
@@ -58,19 +61,22 @@ let jsonifyMeal = meal => {
 }
 
 let jsonifySchedule = schedule => {
-  schedule = schedule.replace(/\/\d+/g, '')
+  let jsonifiedSchedule = []
+
+  schedule = schedule.replace(/\/\d+/g, '').replace(/\d,\d+/g, (match, p1, p2, offset, string) => {
+    return match.replace(',', '~')
+  })
+
   if (/[/,]/g.test(schedule)) {
-    schedule = schedule.replace(/\d,\d+/g, (match, p1, p2, offset, string) => {
-      return match.replace(',', '~')
-    })
-    
     let offset = schedule.includes('/') ? '/' : ','
     schedule = schedule.split(offset)
-
-    if (schedule.length === 1) {
-      schedule = schedule[0]
-    }
   }
-  
-  return schedule
+
+  if (!Array.isArray(schedule)) {
+    schedule = [ schedule ]
+  }
+
+  jsonifiedSchedule = schedule
+
+  return jsonifiedSchedule
 }

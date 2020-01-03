@@ -7,17 +7,21 @@ const { TOKEN_EXPIRED, TOKEN_NON_EXIST } = require('actions/token')
 
 exports.grantToken = async (ctx) => {
   let userID
+  let foundUser
 
   if (ctx.request.body.userID) {
     userID = ctx.request.body.userID
+
+    foundUser = await User.findUserByID(userID)
   } else {
     let loginData = ctx.request.body
-    let foundUser = await User.findUserWithLoginData(loginData)
+
+    foundUser = await User.findUserWithLoginData(loginData)
 
     userID = foundUser._id
-
-    ctx.assert(foundUser, 401, TOKEN_NON_EXIST + ': Provided access token is invalid.')
   }
+
+  ctx.assert(foundUser, 401, 'This user is not exist!')
 
   let accessToken = jwt.sign({}, process.env.SECRET, { expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN })
   let accessExpireDate = jwt.decode(accessToken, { complete: true }).payload.exp * 1000

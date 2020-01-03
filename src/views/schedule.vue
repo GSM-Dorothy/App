@@ -16,7 +16,7 @@
       </v-card-actions>
     </v-card>
     <v-card class="elevation-12 ma-1" height="75vh">
-      <v-calendar ref="calendar" v-model="focus" color="primary" :events="events" :event-color="getEventColor" :event-margin-bottom="3" :now="today" :type="type" @change="updateRange">
+      <v-calendar ref="calendar" v-model="focus" color="primary" :events="events" :event-color="getEventColor" :event-margin-bottom="3" :now="today" :type="type" @change="getEvents">
       </v-calendar>
     </v-card>
   </v-container>
@@ -43,7 +43,10 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 var today = new Date().toISOString().substr(0, 10)
+
 export default {
   data: () => ({
     today: today,
@@ -51,13 +54,8 @@ export default {
     type: 'month',
     start: null,
     end: null,
-    events: [{
-      name: 'Vacation',
-      details: 'Going to the beach!',
-      start: '2019-12-28',
-      end: '2019-12-29',
-      color: 'blue'
-    }]
+    events: [],
+    colors: ['blue', 'indigo', 'deep-purple', 'teal', 'orange', 'yellow darken-2', 'light-green', 'pink', 'red']
   }),
   computed: {
     title () {
@@ -111,12 +109,38 @@ export default {
     next () {
       this.$refs.calendar.next()
     },
-    updateRange ({
-      start,
-      end
-    }) {
+    getEvents ({ start, end }) {
       this.start = start
       this.end = end
+      this.events = []
+
+      let year = this.start.year
+      let month = this.start.month
+
+      axios
+        .get(`http://api.dorothy.gsmhs.kr/school/schedule/${year}/${month}`)
+        .then((response) => {
+          let events = {}
+          let schedules = response.data
+
+          Object.keys(schedules)
+            .map(date => schedules[date]
+              .filter(schedule => schedule)
+              .map(schedule => {
+                events[schedule] = {
+                  name: events[schedule] ? events[schedule].name : schedule,
+                  start: events[schedule] ? events[schedule].start : date,
+                  end: date,
+                  color: events[schedule] ? events[schedule].color : this.random(this.colors)
+                }
+              }))
+
+          this.events = Object.values(events)
+        })
+        .catch(err => console.log(err))
+    },
+    random (array) {
+      return array[Math.floor(array.length * Math.random())]
     }
   }
 }
