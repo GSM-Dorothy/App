@@ -90,3 +90,15 @@ if (isDevelopment) {
     })
   }
 }
+
+const io = require('socket.io')(2048, { serveClient: false })
+
+io.on('connection', function (socket) {
+  socket.on('add', function (msg) {
+    io.emit('add', msg)
+  })
+
+  socket.on('in', function (msg) {
+    io.emit('in', msg)
+  })
+})

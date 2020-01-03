@@ -24,7 +24,8 @@ export default new Vuex.Store({
       return new Promise((resolve, reject) => {
         axios.post('http://api.dorothy.gsmhs.kr/auth/token/grant', {
           ID: data.name,
-          password: data.password
+          password: data.password,
+          userID: data.id
         })
           .then(res => {
             const accessToken = res.data.accessToken

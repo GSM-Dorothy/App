@@ -78,6 +78,10 @@ const routes = [
         component: () => import('../views/remainMember.vue')
       }
     ]
+  },
+  {
+    path: '/device',
+    component: () => import('../views/device.vue')
   }
 ]
 
