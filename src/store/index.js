@@ -7,11 +7,13 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     userType: localStorage.getItem('userType'),
+    expireDate: localStorage.getItem('expireDate'),
     refreshToken: localStorage.getItem('refreshToken')
   },
   mutations: {
-    auth_success (state, userType, refreshToken) {
+    auth_success (state, userType, expireDate, refreshToken) {
       state.userType = userType
+      state.expireDate = expireDate
       state.refreshToken = refreshToken
     },
     signout (state) {
@@ -35,8 +37,10 @@ export default new Vuex.Store({
             axios.get('http://api.dorothy.gsmhs.kr/auth/token')
               .then(response => {
                 const userType = response.data.userType
+                const expireDate = response.data.expireDate
                 localStorage.setItem('userType', userType)
-                commit('auth_success', userType, refreshToken)
+                localStorage.setItem('expireDate', expireDate)
+                commit('auth_success', userType, expireDate, refreshToken)
                 resolve(res)
               })
               .catch(err => {
@@ -45,6 +49,7 @@ export default new Vuex.Store({
           })
           .catch(err => {
             localStorage.removeItem('userType')
+            localStorage.removeItem('expireDate')
             localStorage.removeItem('refreshToken')
             delete axios.defaults.headers.common['x-access-token']
             reject(err)
@@ -55,6 +60,7 @@ export default new Vuex.Store({
       return new Promise((resolve, reject) => {
         commit('signout')
         localStorage.removeItem('userType')
+        localStorage.removeItem('expireDate')
         localStorage.removeItem('refreshToken')
         delete axios.defaults.headers.common['x-access-token']
         resolve()
@@ -77,6 +83,7 @@ export default new Vuex.Store({
   },
   getters: {
     isLoggedIn: state => !!state.refreshToken,
-    userType: state => state.userType
+    userType: state => state.userType,
+    expireDate: state => state.expireDate
   }
 })

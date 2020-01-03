@@ -1,19 +1,19 @@
 <template>
-  <router-view></router-view>
+<router-view></router-view>
 </template>
 
 <script>
 import store from './store'
-import axios from 'axios'
 
 export default {
   created () {
-    axios.interceptors.response.use(undefined, (err) => {
-      return new Promise(function (resolve, reject) {
-        store.dispatch('refresh')
-        throw err
-      })
-    })
+    setInterval(() => {
+      let expireDate = store.getters['expireDate']
+      const now = new Date()
+      console.log(expireDate)
+      console.log(now)
+      this.$store.dispatch('refresh')
+    }, 60000)
   },
   mounted () {
     const dark = window.matchMedia('(prefers-color-scheme: dark)')
