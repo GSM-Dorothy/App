@@ -9,7 +9,7 @@ user.post('/create', userCtrl.createUser)
 
 user.get('/student', validateTokenMiddleware, validateStudent, userCtrl.findStudent)
 
-user.get('/point_archive', validateTokenMiddleware, validateAdministrator, userCtrl.findPointArchiveByStudent)
+user.get('/point_archive', userCtrl.findPointArchiveByStudent)
 user.get('/point_archive/:grade/:class/:number', validateTokenMiddleware, validateStudent, userCtrl.findPointArchiveByAdmin)
 user.post('/point_archive', validateTokenMiddleware, validateAdministrator, userCtrl.addPointArchive)
 user.put('/point_archive', validateTokenMiddleware, validateAdministrator, userCtrl.updatePointArchive)

@@ -9,7 +9,7 @@
               상점
             </p>
             <p class="display-1 text--primary">
-              31점
+              {{ plusPoint }}점
             </p>
           </v-card-text>
         </v-card>
@@ -21,7 +21,7 @@
               벌점
             </p>
             <p class="display-1 text--primary">
-              36점
+              {{ minusPoint }}점
             </p>
           </v-card-text>
         </v-card>
@@ -34,7 +34,7 @@
               합산
             </p>
             <p class="display-1">
-              -5점
+              {{ totalPoint }}점
             </p>
           </v-card-text>
           </v-img>
@@ -42,13 +42,15 @@
       </v-col>
     </v-row>
     <v-card class="elevation-12 ma-1">
-      <v-data-table :items-per-page="5" :headers="headers" :items="desserts"></v-data-table>
+      <v-data-table :items-per-page="5" :headers="headers" :items="archives"></v-data-table>
     </v-card>
   </v-container>
 </v-content>
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   data () {
     return {
@@ -62,26 +64,38 @@ export default {
       },
       {
         text: '사유',
-        value: 'log'
+        value: 'reason'
       }
       ],
-      desserts: [{
-        date: '2019-12-12',
-        point: -12,
-        log: '사유'
-      },
-      {
-        date: '2019-12-11',
-        point: 11,
-        log: '사유'
-      },
-      {
-        date: '2019-12-09',
-        point: -10,
-        log: '사유'
-      }
-      ]
+      archives: []
     }
+  },
+  computed: {
+    plusPoint: function () {
+      return this.archives
+        .map(archive => archive.point)
+        .filter(point => point > 0)
+        .reduce((a, b) => a + b, 0)
+    },
+    minusPoint: function () {
+      return this.archives
+        .map(archive => archive.point)
+        .filter(point => point < 0)
+        .reduce((a, b) => a + b, 0)
+    },
+    totalPoint: function () {
+      return this.archives
+        .map(archive => archive.point)
+        .reduce((a, b) => a + b, 0)
+    }
+  },
+  created () {
+    axios
+      .get(`http://api.dorothy.gsmhs.kr/user/point_archive`)
+      .then(response => {
+        this.archives = response.data
+      })
+      .catch(err => console.log(err))
   }
 }
 </script>
