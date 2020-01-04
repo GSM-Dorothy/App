@@ -98,8 +98,8 @@ export default {
       })
         .then(res => {
           if (res.status === 200) {
-            alert(res.data.code)
-            this.$router.push('/admin/code')
+            alert('인증번호 ' + res.data.code)
+            this.$router.go(0)
           }
         })
     },
@@ -117,8 +117,8 @@ export default {
       })
         .then(res => {
           if (res.status === 200) {
-            alert(res.data.code)
-            this.$router.push('/admin/code')
+            alert('인증번호 ' + res.data.code)
+            this.$router.go(0)
           }
         })
     }

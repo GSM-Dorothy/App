@@ -59,7 +59,7 @@ export default {
         .then(res => {
           if (res.status === 200) {
             alert('등록 완료')
-            this.ip = ''
+            this.$router.go(0)
           }
         })
     }
