@@ -1,40 +1,30 @@
 <template>
-  <v-app>
-    <v-content>
-      <v-img src="hana" height="100vh" gradient="to top right, rgba(255,0,0,.6), rgba(0,0,255,.6)">
-        <v-row align="center" class="lightbox white--text fill-height">
-          <v-col align="center">
-            <v-icon color="white" size="75">mdi-fingerprint</v-icon>
-            <div class="display-1">지문을 인식해주세요!</div>
-          </v-col>
-        </v-row>
-      </v-img>
-    </v-content>
-  </v-app>
+<v-content>
+  <v-img :src="$vuetify.theme.dark ? require('../assets/night.jpg') : require('../assets/day.jpeg')" height="100vh" gradient="to bottom, rgba(0,0,0,.0), rgba(0,0,0,.1)">
+    <v-row align="end" class="lightbox white--text pl-5 fill-height">
+      <v-col>
+        <span id="clock" class="font-weight-black display-3"></span>
+        <span id="seconds" class="font-weight-black display-1 ml-2"></span>
+        <p id="date" class="font-weight-black display-1"></p>
+      </v-col>
+    </v-row>
+  </v-img>
+</v-content>
 </template>
 
 <script>
-import io from 'socket.io-client'
+const week = ['일', '월', '화', '수', '목', '금', '토']
 
-export default {
-  data () {
-    return {
-      socket: io('http://localhost:2048')
-    }
-  },
-  mounted () {
-    this.socket.on('in', id => {
-      console.log(id)
-      this.$store.dispatch('signin', { id })
-        .then(() => {
-          if (this.$store.state.userType === 'STUDENT') {
-            this.$router.go(-1)
-          } else if (this.$store.state.userType === 'ADMINISTRATOR') {
-            this.$router.push('/admin')
-          }
-        })
-        .catch(err => console.log(err))
-    })
-  }
+function time () {
+  var date = new Date()
+  var m = date.getMinutes()
+  var s = date.getSeconds()
+  document.getElementById('clock').innerHTML = date.getHours() + ':' + (m < 10 ? '0' + m : m)
+  document.getElementById('seconds').innerHTML = s < 10 ? '0' + s : s
+  document.getElementById('date').innerHTML = date.getMonth() + 1 + '월 ' + date.getDay() + '일 ' + week[date.getDay()] + '요일'
 }
+
+setInterval(() => {
+  time()
+}, 1000)
 </script>

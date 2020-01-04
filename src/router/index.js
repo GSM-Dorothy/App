@@ -86,6 +86,10 @@ const routes = [
       {
         path: 'member',
         component: () => import('../views/remainMember.vue')
+      },
+      {
+        path: 'device',
+        component: () => import('../views/deviceAdmin.vue')
       }
     ]
   },
@@ -113,7 +117,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (store.getters.device) {
+    if (store.getters.device === 200) {
       next('/device/in')
     } else if (store.getters.userType) {
       next()

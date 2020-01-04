@@ -3,7 +3,7 @@
   <v-container fluid>
     <v-row>
       <v-spacer></v-spacer>
-      <v-col :cols="$vuetify.breakpoint.smAndUp ? '6' : '12'">
+      <v-col :cols="$vuetify.breakpoint.smAndUp ? '8' : '12'">
         <v-card class="elevation-12 ma-1">
           <v-card-title>
             지문 등록

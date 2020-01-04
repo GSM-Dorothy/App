@@ -45,13 +45,18 @@ export default {
     },
     {
       text: '잔류 담당',
-      icon: 'mdi-home',
+      icon: 'mdi-account-details',
       link: '/admin/remain'
     },
     {
       text: '잔류 관리',
-      icon: 'mdi-home',
+      icon: 'mdi-account-check',
       link: '/admin/member'
+    },
+    {
+      text: '디바이스',
+      icon: 'mdi-tablet',
+      link: '/admin/device'
     }
     ]
   })

@@ -101,11 +101,13 @@ export default new Vuex.Store({
           localStorage.removeItem('refreshToken')
           delete axios.defaults.headers.common['x-access-token']
         }
-        axios.get('http://api.dorothy.gsmhs.kr/auth/device')
+        axios.get('http://api.dorothy.gsmhs.kr/auth/device/validate')
           .then(res => {
-            commit('device', 200)
-            localStorage.setItem('device', 200)
-            resolve(res)
+            if (res.status === 200) {
+              commit('device', 200)
+              localStorage.setItem('device', 200)
+              resolve(res)
+            }
           })
       })
     }
