@@ -25,13 +25,14 @@
       <v-card-actions>
         <div>
           <v-timeline dense>
-            <v-timeline-item v-for="n in 2" :key="n" fill-dot :small="n.today">
-              <span slot="opposite">Tus eu perfecto</span>
+            <v-timeline-item v-for="list in lists" :key="list" fill-dot>
+              <template v-slot:icon>
+                <span class="white--text">
+                  {{list.date}}
+                </span>
+              </template>
               <v-card class="elevation-2">
-                <v-card-title class="headline">Lorem ipsum</v-card-title>
-                <v-card-text>
-                  Lorem ipsum dolor sit amet, no nam oblique veritus. Commune scaevola imperdiet nec ut, sed euismod convenire principes at. Est et nobis iisque percipit, an vim zril disputando voluptatibus, vix an salutandi sententiae.
-                </v-card-text>
+                <v-card-text v-text="list.text"></v-card-text>
               </v-card>
             </v-timeline-item>
           </v-timeline>
@@ -49,6 +50,27 @@ var today = new Date().toISOString().substr(0, 10)
 
 export default {
   data: () => ({
+    lists: [{
+      date: '화',
+      text: '일정내용'
+    },
+    {
+      date: '수',
+      text: '일정내용'
+    },
+    {
+      date: '목',
+      text: '일정내용'
+    },
+    {
+      date: '금',
+      text: '일정내용'
+    },
+    {
+      date: '토',
+      text: '일정내용'
+    }
+    ],
     today: today,
     focus: today,
     type: 'month',
