@@ -14,7 +14,7 @@ auth.post('/code/student', validateTokenMiddleware, validateAdministrator, codeC
 auth.get('/code/administrator', validateTokenMiddleware, validateAdministrator, codeCtrl.findAdministratorCode)
 auth.post('/code/administrator', validateTokenMiddleware, validateAdministrator, codeCtrl.generateAdministratorCode)
 auth.get('/code/device', validateTokenMiddleware, codeCtrl.findDeviceCode)
-auth.post('/code/device',validateTokenMiddleware, codeCtrl.generateDeviceCode)
+auth.post('/code/device', validateTokenMiddleware, codeCtrl.generateDeviceCode)
 auth.post('/code/validate', codeCtrl.validateCode)
 auth.delete('/code', codeCtrl.revokeCode)
 
@@ -23,6 +23,7 @@ auth.post('/fingerprint', fingerprintCtrl.addFingerprint)
 
 auth.get('/device/enroll', deviceCtrl.validateDevice)
 auth.get('/device', validateTokenMiddleware, validateAdministrator, deviceCtrl.getAllDevices)
+auth.get('/device/validate', deviceCtrl.validateDeviceList)
 auth.post('/device', validateTokenMiddleware, validateAdministrator, deviceCtrl.addDeviceToList)
 auth.delete('/device', validateTokenMiddleware, validateAdministrator, deviceCtrl.deleteDeviceFromList)
 

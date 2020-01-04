@@ -47,8 +47,6 @@ exports.findStudent = async (ctx) => {
 exports.findPointArchiveByStudent = async (ctx) => {
   let foundUser = ctx.state.foundUser
 
-  foundUser = await User.findUserByID('5e0ec0cd8b169daacbacb3c8')
-
   let studentInfo = {
     grade: foundUser.studentInfo.grade,
     class: foundUser.studentInfo.class,

@@ -20,6 +20,16 @@ exports.getAllDevices = async (ctx) => {
   ctx.body = await DeviceList.findDeviceList()
 }
 
+exports.validateDeviceList = async (ctx) => {
+  let ip = ctx.request.ip.substr(7)
+
+  let foundDevice = await DeviceList.validateDeviceList(ip)
+
+  ctx.assert(foundDevice, 401, 'This device hasn\'t added to device list!')
+
+  ctx.body = 'This device exists in device list.'
+}
+
 exports.addDeviceToList = async (ctx) => {
   let ip = ctx.request.body.IP
 
