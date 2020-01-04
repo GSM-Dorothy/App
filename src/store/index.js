@@ -12,10 +12,10 @@ export default new Vuex.Store({
     device: localStorage.getItem('device')
   },
   mutations: {
-    auth_success (state, userType, expireDate, refreshToken) {
-      state.userType = userType
-      state.expireDate = expireDate
-      state.refreshToken = refreshToken
+    auth_success (state, data) {
+      state.userType = data.userType
+      state.expireDate = data.expireDate
+      state.refreshToken = data.refreshToken
     },
     signout (state) {
       state.userType = ''
@@ -45,7 +45,7 @@ export default new Vuex.Store({
                 const expireDate = response.data.expireDate
                 localStorage.setItem('userType', userType)
                 localStorage.setItem('expireDate', expireDate)
-                commit('auth_success', userType, expireDate, refreshToken)
+                commit('auth_success', { userType, expireDate, refreshToken })
                 resolve(res)
               })
               .catch(err => {
