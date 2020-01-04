@@ -3,9 +3,9 @@
   <v-img :src="$vuetify.theme.dark ? require('../assets/night.jpg') : require('../assets/day.jpeg')" height="100vh" gradient="to bottom, rgba(0,0,0,.0), rgba(0,0,0,.1)">
     <v-row align="end" class="lightbox white--text pl-5 fill-height">
       <v-col>
-        <span id="clock" class="font-weight-black display-3"></span>
+        <span id="clock" class="font-weight-black display-4"></span>
         <span id="seconds" class="font-weight-black display-1 ml-2"></span>
-        <p id="date" class="font-weight-black display-1"></p>
+        <p id="date" class="font-weight-black display-2"></p>
       </v-col>
     </v-row>
   </v-img>

@@ -53,9 +53,7 @@ export default {
         return false
       }
 
-      axios.post('http://api.dorothy.gsmhs.kr/auth/device', {
-        IP: ip
-      })
+      axios.post('http://api.dorothy.gsmhs.kr/auth/device', { IP: ip })
         .then(res => {
           if (res.status === 200) {
             alert('등록 완료')

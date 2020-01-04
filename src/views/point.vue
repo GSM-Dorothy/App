@@ -90,8 +90,7 @@ export default {
     }
   },
   created () {
-    axios
-      .get(`http://api.dorothy.gsmhs.kr/user/point_archive`)
+    axios.get(`http://api.dorothy.gsmhs.kr/user/point_archive`)
       .then(response => {
         this.archives = response.data
       })
