@@ -73,7 +73,7 @@ exports.addEnrollList = async (ctx) => {
   let enrollDate = ctx.request.body.enrollDate
 
   let enrollInfo = {
-    userID: userID,
+    userID: ctx.state.foundUser._id,
     enrollDate: enrollDate
   }
 
@@ -84,7 +84,7 @@ exports.deleteEnrollList = async (ctx) => {
   let enrollDate = ctx.request.body.enrollDate
 
   let enrollInfo = {
-    userID: userID,
+    userID: ctx.state.foundUser._id,
     enrollDate: enrollDate
   }
 
@@ -117,7 +117,7 @@ exports.addRemainArchive = async (ctx) => {
   let archiveInfo = ctx.request.body
 
   let _archiveInfo = {
-    userID: userID,
+    userID: ctx.state.foundUser._id,
     remainType: archiveInfo.remainType,
     startDate: archiveInfo.startDate,
     finishDate: archiveInfo.finishDate,
@@ -131,7 +131,7 @@ exports.deleteRemainArchive = async (ctx) => {
   let archiveInfo = ctx.request.body
 
   let _archiveInfo = {
-    userID: userID,
+    userID: ctx.state.foundUser._id,
     remainType: archiveInfo.remainType,
     startDate: archiveInfo.startDate
   }
