@@ -13,19 +13,45 @@
         <v-btn fab text small @click="next" class="mr-3">
           <v-icon small>mdi-chevron-right</v-icon>
         </v-btn>
-        <v-toolbar-title>{{ title }}</v-toolbar-title>
+        <v-toolbar-title>{{ date }}</v-toolbar-title>
         </v-card-actions>
       </v-card>
     </v-sheet>
     <v-row>
-      <v-col v-for="title in Object.keys(posts)" :key="title" :cols="$vuetify.breakpoint.smAndUp ? '4' : '12'">
+      <v-col :cols="$vuetify.breakpoint.smAndUp ? '4' : '12'">
         <v-card class="elevation-12 ma-1">
           <v-card-text>
             <p class="display-1 font-weight-regular text--primary">
-              {{ title }}
+              조식
             </p>
-            <p v-if="!posts[title].length">오늘의 {{ title }}은 없습니다.</p>
-            <div v-else class="text--primary" v-for="menu in posts[title]" :key="menu">
+            <p v-if="!breakfast.length">오늘의 조식은 없습니다.</p>
+            <div v-else class="text--primary" v-for="menu in breakfast" :key="menu">
+              {{ menu }}
+            </div>
+          </v-card-text>
+        </v-card>
+      </v-col>
+      <v-col :cols="$vuetify.breakpoint.smAndUp ? '4' : '12'">
+        <v-card class="elevation-12 ma-1">
+          <v-card-text>
+            <p class="display-1 font-weight-regular text--primary">
+              중식
+            </p>
+            <p v-if="!lunch.length">오늘의 중식은 없습니다.</p>
+            <div v-else class="text--primary" v-for="menu in lunch" :key="menu">
+              {{ menu }}
+            </div>
+          </v-card-text>
+        </v-card>
+      </v-col>
+      <v-col :cols="$vuetify.breakpoint.smAndUp ? '4' : '12'">
+        <v-card class="elevation-12 ma-1">
+          <v-card-text>
+            <p class="display-1 font-weight-regular text--primary">
+              석식
+            </p>
+            <p v-if="!dinner.length">오늘의 석식은 없습니다.</p>
+            <div v-else class="text--primary" v-for="menu in dinner" :key="menu">
               {{ menu }}
             </div>
           </v-card-text>
@@ -40,43 +66,85 @@
 import axios from 'axios'
 
 export default {
-  data: () => ({
-    posts: [],
-    day: new Date(),
-    title: ''
-  }),
-  created () {
-    this.title = this.day.getFullYear() + '년 ' + (this.day.getMonth() + 1) + '월 ' + this.day.getDate() + '일'
-    var get = 'http://api.dorothy.gsmhs.kr/school/meal/' + this.day.getFullYear() + '/' + (this.day.getMonth() + 1) + '/' + this.day.getDate()
-    axios.get(get).then((response) => {
-      this.posts = response.data
-    })
+  data () {
+    return {
+      meals: [],
+      currentDate: new Date()
+    }
+  },
+  computed: {
+    date: function () {
+      return this.currentDate.toLocaleDateString('ko-KR') || NaN
+    },
+    breakfast: function () {
+      return this.meals.조식 || []
+    },
+    lunch: function () {
+      return this.meals.중식 || []
+    },
+    dinner: function () {
+      return this.meals.석식 || []
+    }
   },
   methods: {
     setToday () {
-      this.day = new Date()
-      this.title = this.day.getFullYear() + '년 ' + (this.day.getMonth() + 1) + '월 ' + this.day.getDate() + '일'
-      var get = 'http://api.dorothy.gsmhs.kr/school/meal/' + this.day.getFullYear() + '/' + (this.day.getMonth() + 1) + '/' + this.day.getDate()
-      axios.get(get).then((response) => {
-        this.posts = response.data
-      })
+      this.currentDate = new Date()
+
+      let year = this.currentDate.getFullYear()
+      let month = this.currentDate.getMonth() + 1
+      let day = this.currentDate.getDate()
+
+      axios
+        .get(`http://api.dorothy.gsmhs.kr/school/meal/${year}/${month}/${day}`)
+        .then((response) => {
+          this.meals = response.data
+        })
+        .catch(err => console.log(err))
     },
     prev () {
-      this.day.setDate(this.day.getDate() - 1)
-      this.title = this.day.getFullYear() + '년 ' + (this.day.getMonth() + 1) + '월 ' + this.day.getDate() + '일'
-      var get = 'http://api.dorothy.gsmhs.kr/school/meal/' + this.day.getFullYear() + '/' + (this.day.getMonth() + 1) + '/' + this.day.getDate()
-      axios.get(get).then((response) => {
-        this.posts = response.data
-      })
+      let prevDate = new Date(this.currentDate)
+      prevDate.setDate(this.currentDate.getDate() - 1)
+      this.currentDate = prevDate
+
+      let year = this.currentDate.getFullYear()
+      let month = this.currentDate.getMonth() + 1
+      let day = this.currentDate.getDate()
+
+      axios
+        .get(`http://api.dorothy.gsmhs.kr/school/meal/${year}/${month}/${day}`)
+        .then((response) => {
+          this.meals = response.data
+        })
+        .catch(err => console.log(err))
     },
     next () {
-      this.day.setDate(this.day.getDate() + 1)
-      this.title = this.day.getFullYear() + '년 ' + (this.day.getMonth() + 1) + '월 ' + this.day.getDate() + '일'
-      var get = 'http://api.dorothy.gsmhs.kr/school/meal/' + this.day.getFullYear() + '/' + (this.day.getMonth() + 1) + '/' + this.day.getDate()
-      axios.get(get).then((response) => {
-        this.posts = response.data
-      })
+      let nextDate = new Date(this.currentDate)
+      nextDate.setDate(this.currentDate.getDate() + 1)
+      this.currentDate = nextDate
+
+      let year = this.currentDate.getFullYear()
+      let month = this.currentDate.getMonth() + 1
+      let day = this.currentDate.getDate()
+
+      axios
+        .get(`http://api.dorothy.gsmhs.kr/school/meal/${year}/${month}/${day}`)
+        .then((response) => {
+          this.meals = response.data
+        })
+        .catch(err => console.log(err))
     }
+  },
+  created () {
+    let year = this.currentDate.getFullYear()
+    let month = this.currentDate.getMonth() + 1
+    let day = this.currentDate.getDate()
+
+    axios
+      .get(`http://api.dorothy.gsmhs.kr/school/meal/${year}/${month}/${day}`)
+      .then((response) => {
+        this.meals = response.data
+      })
+      .catch(err => console.log(err))
   }
 }
 </script>

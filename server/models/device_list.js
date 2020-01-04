@@ -12,7 +12,7 @@ DeviceList.statics.findDeviceList = async function () {
 }
 
 DeviceList.statics.validateDeviceList = async function (ip) {
-  let results = this.find({ IP: ip }).exec()
+  let results = this.findOne({ IP: ip }).exec()
 
   return results
 }
