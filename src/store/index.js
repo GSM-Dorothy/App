@@ -8,7 +8,8 @@ export default new Vuex.Store({
   state: {
     userType: localStorage.getItem('userType'),
     expireDate: localStorage.getItem('expireDate'),
-    refreshToken: localStorage.getItem('refreshToken')
+    refreshToken: localStorage.getItem('refreshToken'),
+    device: localStorage.getItem('device')
   },
   mutations: {
     auth_success (state, userType, expireDate, refreshToken) {
@@ -20,6 +21,9 @@ export default new Vuex.Store({
       state.userType = ''
       state.expireDate = ''
       state.refreshToken = ''
+    },
+    device (state, device) {
+      state.device = device
     }
   },
   actions: {
@@ -85,11 +89,30 @@ export default new Vuex.Store({
             reject(err)
           })
       })
+    },
+    device ({ commit }) {
+      return new Promise((resolve, reject) => {
+        if (localStorage.getItem('device') === 200) {
+          commit('device')
+          commit('signout')
+          localStorage.removeItem('device')
+          localStorage.removeItem('userType')
+          localStorage.removeItem('expireDate')
+          localStorage.removeItem('refreshToken')
+          delete axios.defaults.headers.common['x-access-token']
+        }
+        axios.get('http://api.dorothy.gsmhs.kr/auth/device')
+          .then(res => {
+            commit('device', 200)
+            localStorage.setItem('device', 200)
+            resolve(res)
+          })
+      })
     }
   },
   getters: {
-    isLoggedIn: state => !!state.refreshToken,
     userType: state => state.userType,
-    expireDate: state => state.expireDate
+    expireDate: state => state.expireDate,
+    device: state => state.device
   }
 })

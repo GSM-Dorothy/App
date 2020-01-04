@@ -7,6 +7,13 @@ export default {
   created () {
     if (this.$store.state.refreshToken) {
       this.$store.dispatch('refresh')
+    } else {
+      this.$store.dispatch('device')
+        .then(res => {
+          if (res.status === 200) {
+            this.$router.push('device')
+          }
+        })
     }
     setInterval(() => {
       if (this.$store.state.refreshToken) {

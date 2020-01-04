@@ -28,14 +28,24 @@ const routes = [
   {
     path: '',
     component: () => import('../views/navigation.vue'),
-    meta: {
-      requiresAuth: true
-    },
     children: [
       {
         path: 'meals',
         component: () => import('../views/meals.vue')
       },
+      {
+        path: 'schedule',
+        component: () => import('../views/schedule.vue')
+      }
+    ]
+  },
+  {
+    path: '',
+    component: () => import('../views/navigation.vue'),
+    meta: {
+      requiresAuth: true
+    },
+    children: [
       {
         path: 'point',
         component: () => import('../views/point.vue')
@@ -45,12 +55,12 @@ const routes = [
         component: () => import('../views/remain.vue')
       },
       {
-        path: 'schedule',
-        component: () => import('../views/schedule.vue')
-      },
-      {
         path: 'washer',
         component: () => import('../views/washer.vue')
+      },
+      {
+        path: 'fingerprint',
+        component: () => import('../views/fingerprint.vue')
       }
     ]
   },
@@ -81,7 +91,17 @@ const routes = [
   },
   {
     path: '/device',
-    component: () => import('../views/device.vue')
+    component: () => import('../views/navigation.vue'),
+    children: [
+      {
+        path: '',
+        component: () => import('../views/device.vue')
+      }
+    ]
+  },
+  {
+    path: '/device/in',
+    component: () => import('../views/deviceIn.vue')
   }
 ]
 
@@ -93,22 +113,24 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (store.getters.isLoggedIn) {
+    if (store.getters.device) {
+      next('/device/in')
+    } else if (store.getters.userType) {
       next()
-      return
+    } else {
+      window.alert('로그인 후 접근가능합니다!')
+      next('/')
     }
-    next()
   } else if (to.matched.some(record => record.meta.requiresAdminAuth)) {
     if (store.getters.userType === 'ADMINISTRATOR') {
       next()
-      return
     } else if (store.getters.userType === 'STUDENT') {
       window.alert('관리자만 접근가능합니다!')
       next('/meals')
-      return
+    } else {
+      window.alert('관리자만 접근가능합니다!')
+      next('/')
     }
-    window.alert('관리자만 접근가능합니다!')
-    next('/')
   } else {
     next()
   }

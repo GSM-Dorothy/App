@@ -54,13 +54,19 @@ export default {
       text: '상벌점',
       icon: 'mdi-counter',
       link: '/point',
-      color: 'purple'
+      color: 'deep-orange'
     },
     {
       text: '잔류',
       icon: 'mdi-home',
       link: '/remain',
       color: 'light-blue'
+    },
+    {
+      text: '지문',
+      icon: 'mdi-fingerprint',
+      link: '/fingerprint',
+      color: 'deep-purple accent-4'
     }
     ]
   })
