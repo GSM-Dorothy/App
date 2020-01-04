@@ -5,30 +5,46 @@
       <v-col :cols="$vuetify.breakpoint.smAndUp ? '6' : '12'">
         <v-card class="elevation-12 ma-1">
           <v-card-text>
-            <p class="text--primary">
-              현재 담당선생님
-            </p>
-            <p class="display-1 text--primary">
-              장재원 선생님
-            </p>
-            <p class="text--primary">
-              010-1234-5678
-            </p>
+            <h3 v-if="!currentAdmin">
+              현재 잔류 담당 선생님이 없습니다!
+            </h3>
+            <div v-else>
+              <p class="text--primary">
+                현재 잔류 담당 선생님
+              </p>
+              <p class="display-1 text--primary">
+                {{ currentAdmin.name }} 선생님
+              </p>
+              <p class="text--primary">
+                {{ currentAdmin.phone }}
+              </p>
+              <p class="text--primary">
+                {{ stringifiedDate(currentAdmin.startDate) }}부터 {{ stringifiedDate(currentAdmin.endDate) }}까지
+              </p>
+            </div>
           </v-card-text>
         </v-card>
       </v-col>
       <v-col :cols="$vuetify.breakpoint.smAndUp ? '6' : '12'">
         <v-card class="elevation-12 ma-1">
           <v-card-text>
-            <p class="text--primary">
-              다음 담당선생님
-            </p>
-            <p class="display-1 text--primary">
-              사감 선생님
-            </p>
-            <p class="text--primary">
-              010-1234-5678
-            </p>
+            <h3 v-if="!nextAdmin">
+              다음 잔류 담당 선생님이 없습니다!
+            </h3>
+            <div v-else>
+              <p class="text--primary">
+                다음 잔류 담당 선생님
+              </p>
+              <p class="display-1 text--primary">
+                {{ nextAdmin.name }} 선생님
+              </p>
+              <p class="text--primary">
+                {{ nextAdmin.phone }}
+              </p>
+              <p class="text--primary">
+                {{ stringifiedDate(nextAdmin.startDate) }}부터 {{ stringifiedDate(nextAdmin.endDate) }}까지
+              </p>
+            </div>
           </v-card-text>
         </v-card>
       </v-col>
@@ -85,6 +101,10 @@
 </template>
 
 <script>
+import axios from 'axios'
+
+var currentTime = new Date()
+
 export default {
   data () {
     return {
@@ -106,7 +126,29 @@ export default {
       ],
       e1: 0,
       start: null,
-      end: null
+      end: null,
+      todayAdmin: []
+    }
+  },
+  computed: {
+    currentAdmin: function () {
+      return this.todayAdmin
+        .filter(admin => this.isCurrentAdmin(admin))[0]
+    },
+    nextAdmin: function () {
+      return this.todayAdmin
+        .filter(admin => this.isNextAdmin(admin))
+        .sort((a, b) => {
+          if (a.startDate < b.startDate) {
+            return -1
+          }
+
+          if (a.startDate > b.startDate) {
+            return 1
+          }
+
+          return 0
+        })[0]
     }
   },
   methods: {
@@ -123,7 +165,38 @@ export default {
         this.e1 = 3
       }
     },
-    allowedStep: m => m % 5 === 0
+    allowedStep: m => m % 5 === 0,
+    isCurrentAdmin (admin) {
+      let today = currentTime.toISOString()
+
+      return admin.startDate < today && today < admin.endDate
+    },
+    isNextAdmin (admin) {
+      let today = currentTime.toISOString()
+
+      return admin.startDate > today
+    },
+    stringifiedDate (date) {
+      let converted = new Date(date)
+
+      let dateString = converted.toLocaleDateString('ko-KR', { timeZone: 'UTC' })
+      let timeString = converted.toLocaleString('ko-KR', { timeZone: 'UTC', hour: 'numeric', hour12: true })
+
+      return `${dateString} ${timeString}`
+    }
+  },
+  created () {
+    let year = currentTime.getFullYear()
+    let month = currentTime.getMonth() + 1
+    let day = currentTime.getDate() - 1
+
+    axios
+      .get(`http://api.dorothy.gsmhs.kr/school/remain/administrator/${year}/${month}/${day}`)
+      .then(response => {
+        console.log(response.data)
+        this.todayAdmin = response.data
+      })
+      .catch(err => console.log(err))
   }
 }
 </script>

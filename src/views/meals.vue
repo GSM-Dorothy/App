@@ -22,10 +22,11 @@
         <v-card class="elevation-12 ma-1">
           <v-card-text>
             <p class="display-1 font-weight-regular text--primary">
-              {{title}}
+              {{ title }}
             </p>
-            <div class="text--primary" v-for="menu in posts[title]" :key="menu">
-              {{menu}}
+            <p v-if="!posts[title].length">오늘의 {{ title }}은 없습니다.</p>
+            <div v-else class="text--primary" v-for="menu in posts[title]" :key="menu">
+              {{ menu }}
             </div>
           </v-card-text>
         </v-card>
