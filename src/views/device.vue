@@ -21,7 +21,7 @@ function time () {
   var s = date.getSeconds()
   document.getElementById('clock').innerHTML = date.getHours() + ':' + (m < 10 ? '0' + m : m)
   document.getElementById('seconds').innerHTML = s < 10 ? '0' + s : s
-  document.getElementById('date').innerHTML = date.getMonth() + 1 + '월 ' + date.getDay() + '일 ' + week[date.getDay()] + '요일'
+  document.getElementById('date').innerHTML = date.getMonth() + 1 + '월 ' + date.getDate() + '일 ' + week[date.getDay()] + '요일'
 }
 
 setInterval(() => {
