@@ -27,7 +27,12 @@ exports.getRemainAdministratorByDate = async (ctx) => {
 }
 
 exports.addRemainAdministrator = async (ctx) => {
-  let administrator = ctx.request.body
+  let administrator = {
+    name: ctx.state.foundUser.name,
+    phone: ctx.state.foundUser.phone,
+    startDate: ctx.request.body.startDate,
+    endDate: ctx.request.body.endDate
+  }
 
   ctx.body = await RemainAdministrator.addAdministrator(administrator)
 }

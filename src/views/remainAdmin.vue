@@ -59,6 +59,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   data () {
     return {
@@ -78,11 +80,36 @@ export default {
       }
     },
     e4 () {
-      if (this.end != null) {
-        this.e1 = 3
+      let posts = {
+        startDate: this.convertedDate(this.start).toISOString(),
+        endDate: this.convertedDate(this.end).toISOString()
       }
+
+      axios
+        .post(`http://api.dorothy.gsmhs.kr/school/remain/administrator`, posts)
+        .then(response => {
+          if (response.status === 200) {
+            console.log(response.data)
+          }
+        })
+        .catch(err => console.log(err))
+        .finally(() => {
+          this.e1 = 1
+        })
     },
-    allowedStep: m => m % 5 === 0
+    allowedStep: m => m % 5 === 0,
+    convertedDate (time) {
+      let splited = time.split(':')
+
+      let hour = splited[0]
+      let minute = splited[1]
+
+      let date = new Date()
+      date.setHours(hour)
+      date.setMinutes(minute)
+
+      return date
+    }
   }
 }
 </script>
