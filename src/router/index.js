@@ -36,7 +36,16 @@ const routes = [
       {
         path: 'schedule',
         component: () => import('../views/schedule.vue')
-      },
+      }
+    ]
+  },
+  {
+    path: '',
+    component: () => import('../views/navigation.vue'),
+    meta: {
+      requiresDeviceAuth: true
+    },
+    children: [
       {
         path: 'fingerprint',
         component: () => import('../views/fingerprint.vue')
@@ -137,6 +146,15 @@ router.beforeEach((to, from, next) => {
       next('/meals')
     } else {
       window.alert('관리자만 접근가능합니다!')
+      next('/')
+    }
+  } else if (to.matched.some(record => record.meta.requiresDeviceAuth)) {
+    if (store.getters.device === 200) {
+      next()
+    } else if (store.getters.userType) {
+      next()
+    } else {
+      window.alert('로그인 후 접근가능합니다!')
       next('/')
     }
   } else {
