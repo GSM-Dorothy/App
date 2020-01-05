@@ -25,7 +25,7 @@
       <v-card-actions>
         <div>
           <v-timeline dense>
-            <v-timeline-item v-for="list in lists" :key="list" fill-dot>
+            <v-timeline-item v-for="list in weekSchedules" :key="list" fill-dot>
               <template v-slot:icon>
                 <span class="white--text">
                   {{list.date}}
@@ -46,39 +46,20 @@
 <script>
 import axios from 'axios'
 
-var today = new Date().toISOString().substr(0, 10)
-
 export default {
-  data: () => ({
-    lists: [{
-      date: '화',
-      text: '일정내용'
-    },
-    {
-      date: '수',
-      text: '일정내용'
-    },
-    {
-      date: '목',
-      text: '일정내용'
-    },
-    {
-      date: '금',
-      text: '일정내용'
-    },
-    {
-      date: '토',
-      text: '일정내용'
+  data () {
+    return {
+      weekSchedules: [],
+      today: new Date(),
+      focus: new Date(),
+      type: 'month',
+      start: null,
+      end: null,
+      events: [],
+      weekdays: ['일', '월', '화', '수', '목', '금', '토'],
+      colors: ['blue', 'indigo', 'deep-purple', 'teal', 'orange', 'yellow darken-2', 'light-green', 'pink', 'red']
     }
-    ],
-    today: today,
-    focus: today,
-    type: 'month',
-    start: null,
-    end: null,
-    events: [],
-    colors: ['blue', 'indigo', 'deep-purple', 'teal', 'orange', 'yellow darken-2', 'light-green', 'pink', 'red']
-  }),
+  },
   computed: {
     title () {
       const {
@@ -139,13 +120,42 @@ export default {
       let year = this.start.year
       let month = this.start.month
 
+      let todayYear = this.today.getFullYear()
+      let todayMonth = this.today.getMonth() + 1
+
+      axios
+        .get(`http://api.dorothy.gsmhs.kr/school/schedule/${todayYear}/${todayMonth}`)
+        .then(response => {
+          let schedules = response.data
+
+          let _today = new Date(this.today)
+          let _weekSchedules = []
+
+          for (let i = 0; i < 5; i++) {
+            let day = this.weekdays[_today.getDay()]
+
+            let exactDate = _today.toISOString().substr(0, 10)
+
+            let _schedule = schedules[exactDate].join(',')
+            let schedule = _schedule || '일정이 없습니다.'
+
+            _weekSchedules.push({ date: day, text: schedule })
+
+            _today.setDate(_today.getDate() + 1)
+          }
+
+          this.weekSchedules = _weekSchedules
+        })
+        .catch(err => console.log(err))
+
       axios
         .get(`http://api.dorothy.gsmhs.kr/school/schedule/${year}/${month}`)
         .then((response) => {
           let events = {}
           let schedules = response.data
 
-          Object.keys(schedules)
+          Object
+            .keys(schedules)
             .map(date => schedules[date]
               .filter(schedule => schedule)
               .map(schedule => {

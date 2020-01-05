@@ -26,7 +26,7 @@ exports.getMeal = async (ctx) => {
 
 exports.getSchedule = async (ctx) => {
   let year = ctx.params.year
-  let month = ctx.params.month
+  let month = ctx.params.month.toString().padStart(2, '0')
   let imported = await School.getCalendar(year, month)
 
   let schedules = {}
@@ -35,7 +35,9 @@ exports.getSchedule = async (ctx) => {
   delete imported.month
 
   for (let day in imported) {
-    let date = `${year}-${month}-${day}`
+    let _day = day.toString().padStart(2, '0')
+
+    let date = `${year}-${month}-${_day}`
     schedules[date] = jsonifySchedule(imported[day])
   }
 
