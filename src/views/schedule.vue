@@ -25,7 +25,7 @@
       <v-card-actions>
         <div>
           <v-timeline dense>
-            <v-timeline-item v-for="list in weekSchedules" :key="list" fill-dot>
+            <v-timeline-item v-for="list in weekSchedules" :key="list" fill-dot :color="list.today ? 'red' : 'blue'">
               <template v-slot:icon>
                 <span class="white--text">
                   {{list.date}}
@@ -131,7 +131,7 @@ export default {
           let _today = new Date(this.today)
           let _weekSchedules = []
 
-          for (let i = 0; i < 5; i++) {
+          for (let i = 0; i < 7; i++) {
             let day = this.weekdays[_today.getDay()]
 
             let exactDate = _today.toISOString().substr(0, 10)
@@ -139,7 +139,8 @@ export default {
             let _schedule = schedules[exactDate].join(',')
             let schedule = _schedule || '일정이 없습니다.'
 
-            _weekSchedules.push({ date: day, text: schedule })
+            if (i === 0) _weekSchedules.push({ today: true, date: day, text: schedule })
+            else _weekSchedules.push({ date: day, text: schedule })
 
             _today.setDate(_today.getDate() + 1)
           }
