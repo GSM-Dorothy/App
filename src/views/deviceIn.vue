@@ -15,6 +15,7 @@
 
 <script>
 import io from 'socket.io-client'
+import axios from 'axios'
 
 export default {
   data () {
@@ -36,7 +37,19 @@ export default {
         .catch(err => console.log(err))
     })
     this.socket.on('add', data => {
-      console.log(data)
+      let posts = {
+        code: data.code,
+        fingerprints: data.fingerprints
+      }
+
+      axios
+        .post(`http://api.dorothy.gsmhs.kr/auth/fingerprint`, posts)
+        .then(response => {
+          if (response.status === 200) {
+            // TO-DO: 유저 지문 등록에 대한 후 처리 & 상태 메시지 뷰
+          }
+        })
+        .catch(err => console.log(err))
     })
   }
 }
