@@ -25,7 +25,7 @@
       <v-card-actions>
         <div>
           <v-timeline dense>
-            <v-timeline-item v-for="list in weekSchedules" :key="list" fill-dot :color="list.today ? 'red' : 'blue'">
+            <v-timeline-item v-for="list in weekSchedules" :key="list" fill-dot :color="list.today ? 'red' : 'primary'">
               <template v-slot:icon>
                 <span class="white--text">
                   {{list.date}}
