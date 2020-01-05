@@ -65,6 +65,8 @@
 <script>
 import axios from 'axios'
 
+const week = ['일', '월', '화', '수', '목', '금', '토']
+
 export default {
   data () {
     return {
@@ -74,7 +76,7 @@ export default {
   },
   computed: {
     date: function () {
-      return this.currentDate.toLocaleDateString('ko-KR') || NaN
+      return this.currentDate.getFullYear() + '년 ' + (this.currentDate.getMonth() + 1) + '월 ' + this.currentDate.getDate() + '일 ' + week[this.currentDate.getDay()] + '요일'
     },
     breakfast: function () {
       return this.meals.조식 || []
@@ -94,8 +96,7 @@ export default {
       let month = this.currentDate.getMonth() + 1
       let day = this.currentDate.getDate()
 
-      axios
-        .get(`http://api.dorothy.gsmhs.kr/school/meal/${year}/${month}/${day}`)
+      axios.get(`http://api.dorothy.gsmhs.kr/school/meal/${year}/${month}/${day}`)
         .then((response) => {
           this.meals = response.data
         })
@@ -110,8 +111,7 @@ export default {
       let month = this.currentDate.getMonth() + 1
       let day = this.currentDate.getDate()
 
-      axios
-        .get(`http://api.dorothy.gsmhs.kr/school/meal/${year}/${month}/${day}`)
+      axios.get(`http://api.dorothy.gsmhs.kr/school/meal/${year}/${month}/${day}`)
         .then((response) => {
           this.meals = response.data
         })
@@ -126,8 +126,7 @@ export default {
       let month = this.currentDate.getMonth() + 1
       let day = this.currentDate.getDate()
 
-      axios
-        .get(`http://api.dorothy.gsmhs.kr/school/meal/${year}/${month}/${day}`)
+      axios.get(`http://api.dorothy.gsmhs.kr/school/meal/${year}/${month}/${day}`)
         .then((response) => {
           this.meals = response.data
         })
@@ -139,8 +138,7 @@ export default {
     let month = this.currentDate.getMonth() + 1
     let day = this.currentDate.getDate()
 
-    axios
-      .get(`http://api.dorothy.gsmhs.kr/school/meal/${year}/${month}/${day}`)
+    axios.get(`http://api.dorothy.gsmhs.kr/school/meal/${year}/${month}/${day}`)
       .then((response) => {
         this.meals = response.data
       })
