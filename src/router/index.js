@@ -36,6 +36,10 @@ const routes = [
       {
         path: 'schedule',
         component: () => import('../views/schedule.vue')
+      },
+      {
+        path: 'fingerprint',
+        component: () => import('../views/fingerprint.vue')
       }
     ]
   },
@@ -57,10 +61,6 @@ const routes = [
       {
         path: 'washer',
         component: () => import('../views/washer.vue')
-      },
-      {
-        path: 'fingerprint',
-        component: () => import('../views/fingerprint.vue')
       }
     ]
   },
@@ -90,6 +90,10 @@ const routes = [
       {
         path: 'device',
         component: () => import('../views/deviceAdmin.vue')
+      },
+      {
+        path: 'point',
+        component: () => import('../views/pointAdmin.vue')
       }
     ]
   },

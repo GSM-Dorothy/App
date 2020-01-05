@@ -35,6 +35,9 @@ export default {
         })
         .catch(err => console.log(err))
     })
+    this.socket.on('add', data => {
+      console.log(data)
+    })
   }
 }
 </script>

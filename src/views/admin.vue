@@ -44,6 +44,11 @@ export default {
       link: '/admin/code'
     },
     {
+      text: '상벌점',
+      icon: 'mdi-counter',
+      link: '/admin/point'
+    },
+    {
       text: '잔류 담당',
       icon: 'mdi-account-details',
       link: '/admin/remain'
