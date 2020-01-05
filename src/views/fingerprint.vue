@@ -105,7 +105,7 @@ export default {
         .then(response => {
           this.$router.push('/device/in')
         })
-        .catch(err => console.log(err))
+        .catch(() => alert('인증번호가 올바르지 않습니다!'))
     }
   }
 }
