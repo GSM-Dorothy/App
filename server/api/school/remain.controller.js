@@ -63,7 +63,14 @@ exports.findRemainEnroll = async (ctx) => {
 
   for (let i in foundStudents) {
     let user = await User.findUserByID(foundStudents[i].userID)
-    enrolledStudents.push({ name: user.name })
+
+    enrolledStudents.push({
+      grade: user.studentInfo.grade,
+      class: user.studentInfo.class,
+      number: user.studentInfo.number,
+      room: user.studentInfo.room,
+      name: user.name
+    })
   }
 
   ctx.body = enrolledStudents
@@ -110,7 +117,28 @@ exports.findRemainArchive = async (ctx) => {
     end = new Date(Date.UTC(year, month + 1, 1))
   }
 
-  ctx.body = await RemainArchive.findArchiveByDate(start, end)
+  let archives = await RemainArchive.findArchiveByDate(start, end)
+
+  for (let i in archives) {
+    let user = await User.findUserByID(archives[i].userID)
+
+    if (user) {
+      archives[i] = {
+        remainType: archives[i].remainType,
+        startDate: archives[i].startDate,
+        finishDate: archives[i].finishDate,
+        grade: user.studentInfo.grade,
+        class: user.studentInfo.class,
+        number: user.studentInfo.number,
+        room: user.studentInfo.room,
+        name: user.name
+      }
+    }
+
+    console.log(archives[i])
+  }
+
+  ctx.body = archives
 }
 
 exports.addRemainArchive = async (ctx) => {

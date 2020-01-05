@@ -84,8 +84,8 @@ AuthCode.statics.generateDeviceCode = async function (deviceInfo) {
   return result
 }
 
-AuthCode.statics.validateCode = async function (code) {
-  let foundUser = await this.findOne({ code: code }).exec()
+AuthCode.statics.validateCode = async function (_code) {
+  let foundUser = await this.findOne({ code: _code }).exec()
 
   return foundUser
 }

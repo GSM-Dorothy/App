@@ -9,7 +9,7 @@
               잔류 학생 총원
             </p>
             <p class="display-1 text--primary">
-              15명
+              {{ currentRemainStudents }}명
             </p>
           </v-card-text>
         </v-card>
@@ -21,7 +21,7 @@
               사내 학생 총원
             </p>
             <p class="display-1 text--primary">
-              9명
+              {{ currentInsideStudents }}명
             </p>
           </v-card-text>
         </v-card>
@@ -36,22 +36,22 @@
 
         <v-tab-item>
           <v-container fluid>
-            <v-data-table :headers="headersList" :items="dessertsList"></v-data-table>
+            <v-data-table :headers="enrollHeader" :items="enrollStudents"></v-data-table>
           </v-container>
         </v-tab-item>
         <v-tab-item>
           <v-container fluid>
-            <v-data-table :headers="headersSTUDYING" :items="dessertsSTUDYING"></v-data-table>
+            <v-data-table :headers="studyingHeader" :items="studyingStudents"></v-data-table>
           </v-container>
         </v-tab-item>
         <v-tab-item>
           <v-container fluid>
-            <v-data-table :headers="headersSTAYING_OUT" :items="dessertsSTAYING_OUT"></v-data-table>
+            <v-data-table :headers="stayingOutHeader" :items="stayingOutStudents"></v-data-table>
           </v-container>
         </v-tab-item>
         <v-tab-item>
           <v-container fluid>
-            <v-data-table :headers="headersLEFT" :items="dessertsLEFT"></v-data-table>
+            <v-data-table :headers="leftHeader" :items="leftStudents"></v-data-table>
           </v-container>
         </v-tab-item>
       </v-tabs>
@@ -61,10 +61,13 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   data () {
     return {
-      headersList: [{
+      currentDate: new Date(),
+      enrollHeader: [{
         text: '학년',
         value: 'grade'
       },
@@ -81,26 +84,7 @@ export default {
         value: 'name'
       }
       ],
-      dessertsList: [{
-        grade: 2,
-        class: 3,
-        number: 9,
-        name: '가나다'
-      },
-      {
-        grade: 2,
-        class: 4,
-        number: 4,
-        name: '라마바'
-      },
-      {
-        grade: 2,
-        class: 1,
-        number: 3,
-        name: '사아자'
-      }
-      ],
-      headersSTUDYING: [{
+      studyingHeader: [{
         text: '학년',
         value: 'grade'
       },
@@ -117,28 +101,9 @@ export default {
         value: 'name'
       }
       ],
-      dessertsSTUDYING: [{
-        grade: 2,
-        class: 3,
-        number: 9,
-        name: '가나다'
-      },
-      {
-        grade: 2,
-        class: 4,
-        number: 4,
-        name: '라마바'
-      },
-      {
-        grade: 2,
-        class: 1,
-        number: 3,
-        name: '사아자'
-      }
-      ],
-      headersSTAYING_OUT: [{
+      stayingOutHeader: [{
         text: '복귀 시간',
-        value: 'end'
+        value: 'finishDate'
       },
       {
         text: '호실',
@@ -161,38 +126,13 @@ export default {
         value: 'name'
       }
       ],
-      dessertsSTAYING_OUT: [{
-        end: '11시 30분',
-        room: 301,
-        grade: 2,
-        class: 3,
-        number: 9,
-        name: '가나다'
-      },
-      {
-        end: '13시 30분',
-        room: 302,
-        grade: 2,
-        class: 4,
-        number: 4,
-        name: '라마바'
-      },
-      {
-        end: '14시 30분',
-        room: 411,
-        grade: 2,
-        class: 1,
-        number: 3,
-        name: '사아자'
-      }
-      ],
-      headersLEFT: [{
+      leftHeader: [{
         text: '복귀 시간',
-        value: 'end'
+        value: 'finishDate'
       },
       {
         text: '사유',
-        value: 'log'
+        value: 'reason'
       },
       {
         text: '학년',
@@ -211,32 +151,50 @@ export default {
         value: 'name'
       }
       ],
-      dessertsLEFT: [{
-        end: '11시 30분',
-        log: '사유',
-        grade: 2,
-        class: 3,
-        number: 9,
-        name: '가나다'
-      },
-      {
-        end: '13시 30분',
-        log: '사유',
-        grade: 2,
-        class: 4,
-        number: 4,
-        name: '라마바'
-      },
-      {
-        end: '14시 30분',
-        log: '사유',
-        grade: 2,
-        class: 1,
-        number: 3,
-        name: '사아자'
-      }
-      ]
+      enrollStudents: [],
+      remainArchives: []
     }
+  },
+  computed: {
+    currentRemainStudents: function () {
+      return this.enrollStudents.length
+    },
+    currentInsideStudents: function () {
+      return this.remainArchives
+        .filter(archive => archive.remainType === 'STUDYING' || archive.remainType === 'STAYING_OUT')
+        .length
+    },
+    studyingStudents: function () {
+      return this.remainArchives
+        .filter(archive => archive.remainType === 'STUDYING')
+    },
+    stayingOutStudents: function () {
+      return this.remainArchives
+        .filter(archive => archive.remainType === 'STAYING_OUT')
+    },
+    leftStudents: function () {
+      return this.remainArchives
+        .filter(archive => archive.remainType === 'LEFT')
+    }
+  },
+  created () {
+    let year = this.currentDate.getFullYear()
+    let month = this.currentDate.getMonth() + 1
+    let day = this.currentDate.getDate()
+
+    axios
+      .get(`http://api.dorothy.gsmhs.kr/school/remain/enroll/${year}/${month}/${day}`)
+      .then(response => {
+        this.enrollStudents = response.data
+      })
+      .catch(err => console.log(err))
+
+    axios
+      .get(`http://api.dorothy.gsmhs.kr/school/remain/archive/${year}/${month}/${day}`)
+      .then(response => {
+        this.remainArchives = response.data
+      })
+      .catch(err => console.log(err))
   }
 }
 </script>
