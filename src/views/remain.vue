@@ -214,19 +214,22 @@ export default {
       return date
     }
   },
-  created () {
+  async created () {
     let year = this.currentTime.getFullYear()
     let month = this.currentTime.getMonth() + 1
     let day = this.currentTime.getDate() - 1
 
     axios
       .get(`http://api.dorothy.gsmhs.kr/school/remain/administrator/${year}/${month}/${day}`)
-      .then(response => {
+      .then(function (response) {
         if (response.status === 200) {
           this.todayAdmin = response.data
         }
-      })
+      }.bind(this))
       .catch(err => console.log(err))
+  },
+  mounted () {
+
   }
 }
 </script>

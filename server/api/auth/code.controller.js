@@ -14,10 +14,14 @@ exports.generateAdministratorCode = async (ctx) => {
 
 exports.generateDeviceCode = async (ctx) => {
   let deviceInfo = {
-    userID: userID
+    userID: ctx.state.userID
   }
 
-  ctx.body = await AuthCode.generateDeviceCode(deviceInfo)
+  let result = await AuthCode.generateDeviceCode(deviceInfo)
+
+  ctx.assert(Object.keys(result).length, 401, 'This device authentication code was already generated!')
+
+  ctx.body = result
 }
 
 exports.findStudentCode = async (ctx) => {

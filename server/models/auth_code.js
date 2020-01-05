@@ -59,7 +59,9 @@ AuthCode.statics.generateAdministratorCode = async function (administratorInfo) 
     code: cryptoRandomString({ length: 6 })
   })
 
-  await authCode.save()
+  let result = await authCode.save()
+
+  console.log(result)
 
   return authCode
 }
@@ -71,9 +73,15 @@ AuthCode.statics.generateDeviceCode = async function (deviceInfo) {
     code: cryptoRandomString({ length: 6, characters: '1234567890' })
   })
 
-  await authCode.save()
+  let result
 
-  return authCode
+  try {
+    result = await authCode.save()
+  } catch {
+    return {}
+  }
+
+  return result
 }
 
 AuthCode.statics.validateCode = async function (code) {
@@ -105,6 +113,8 @@ AuthCode.statics.revokeCode = async function (code) {
 
   return result
 }
+
+AuthCode.index({ 'userID': 1 }, { unique: true })
 
 const _authCode = mongoose.models.AuthCode || mongoose.model('AuthCode', AuthCode, 'AuthCode')
 
