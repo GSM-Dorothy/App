@@ -43,7 +43,7 @@
             <div>
               <v-btn color="red accent-4" class="ma-1" outlined x-large @click="code=''">DEL</v-btn>
               <v-btn class="ma-1" outlined x-large @click="code+='0'">0</v-btn>
-              <v-btn color="green accent-4" class="ma-1" outlined x-large @click="ok" :disabled="!valid">OK</v-btn>
+              <v-btn color="green accent-4" class="ma-1" outlined x-large @click="validateDeviceCode" :disabled="!valid">OK</v-btn>
             </div>
           </v-card-text>
           <v-card-actions class="body-2">
@@ -57,7 +57,10 @@
             지문 등록
           </v-card-title>
           <v-card-text align="center">
-            <v-btn color="deep-purple accent-4" outlined x-large>인증번호 발급</v-btn>
+            <v-btn @click="getDeviceCode" color="deep-purple accent-4" outlined x-large>인증번호 발급</v-btn>
+          </v-card-text>
+          <v-card-text align="center" v-if="code">
+            <h2>사용자의 코드는 {{ code }}입니다!</h2>
           </v-card-text>
           <v-card-actions class="body-2">
             지문 등록 인증번호 발급 후 가까운 디바이스를 찾아 인증번호를 입력하여 등록 가능합니다
@@ -71,6 +74,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   data: () => ({
     valid: true,
@@ -81,10 +86,26 @@ export default {
     ]
   }),
   methods: {
-    ok () {
+    getDeviceCode () {
+      axios
+        .post(`http://api.dorothy.gsmhs.kr/auth/code/device`)
+        .then(response => {
+          this.code = response.data.code
+        })
+        .catch(err => console.log(err))
+    },
+    validateDeviceCode () {
       let code = this.code
-      console.log(code)
-      this.$router.push('/device/in')
+      let posts = {
+        code: code
+      }
+
+      axios
+        .post(`http://api.dorothy.gsmhs.kr/auth/device/enroll`, posts)
+        .then(response => {
+          this.$router.push('/device/in')
+        })
+        .catch(err => console.log(err))
     }
   }
 }

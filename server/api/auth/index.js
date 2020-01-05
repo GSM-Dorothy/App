@@ -22,6 +22,7 @@ auth.get('/fingerprint', fingerprintCtrl.findAllFingerprints)
 auth.post('/fingerprint', fingerprintCtrl.addFingerprint)
 
 auth.get('/device/enroll', deviceCtrl.validateDevice)
+auth.post('/device/enroll', deviceCtrl.enrollDevice)
 auth.get('/device', validateTokenMiddleware, validateAdministrator, deviceCtrl.getAllDevices)
 auth.get('/device/validate', deviceCtrl.validateDeviceList)
 auth.post('/device', validateTokenMiddleware, validateAdministrator, deviceCtrl.addDeviceToList)

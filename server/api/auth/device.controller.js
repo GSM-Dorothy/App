@@ -1,5 +1,24 @@
 const DeviceEnroll = require('models/device_enroll')
+const AuthCode = require('models/auth_code')
 const DeviceList = require('models/device_list')
+
+const { DEVICE } = require('actions/auth_code')
+
+exports.enrollDevice = async (ctx) => {
+  let ip = ctx.request.ip.substr(7)
+  let code = ctx.request.body.code
+
+  let foundUser = await AuthCode.validateCode(code)
+
+  ctx.assert(foundUser && foundUser.type === DEVICE, 401, 'Entered device code is invalid!')
+
+  let enrollInfo = {
+    IP: ip,
+    code: code
+  }
+
+  ctx.body = await DeviceEnroll.addDeviceInfo(enrollInfo)
+}
 
 exports.validateDevice = async (ctx) => {
   let currentIP = ctx.request.ip.substr(7)
