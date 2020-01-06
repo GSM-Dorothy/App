@@ -30,7 +30,7 @@
               <v-btn
                 outlined
                 color="red"
-                @click="remove"
+                @click="deleteDeviceList"
                 class="ma-3"
               >
                 삭제
@@ -75,9 +75,6 @@ export default {
           }
         })
     },
-    remove: function () {
-      alert('msg')
-    },
     getDeviceList: function () {
       return new Promise((resolve) => {
         axios
@@ -92,6 +89,22 @@ export default {
             }))
           })
       })
+    },
+    deleteDeviceList: function () {
+      let deletes = this.deviceList
+        .map(device => device.IP)
+
+      axios
+        .delete(`http://api.dorothy.gsmhs.kr/auth/device`, { data: deletes })
+        .then(response => {
+          this.deviceList = this.deviceList
+            .filter(device => !this.selected.includes(device))
+
+          this.selected = []
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
   },
   async created () {

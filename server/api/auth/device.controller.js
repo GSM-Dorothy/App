@@ -56,15 +56,11 @@ exports.addDeviceToList = async (ctx) => {
 }
 
 exports.deleteDeviceFromList = async (ctx) => {
-  let ip = ctx.request.body.IP
+  let ips = ctx.request.body
 
-  let result = await DeviceList.deleteDeviceFromList(ip)
+  let result = await DeviceList.deleteDeviceFromList(ips)
 
-  ctx.assert(result.n === 1 && result.deleteCount === 1 && result.ok === 1, 401, 'Your device info wasn\'t completely deleted from the list!')
+  ctx.assert(result.n === 1 && result.deleteCount === ips.length && result.ok === ips.length, 401, 'Your device info wasn\'t completely deleted from the list!')
 
-  let response = {
-    IP: ip
-  }
-
-  ctx.body = response
+  ctx.body = 'Your device info was completely deleted from device list!'
 }

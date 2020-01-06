@@ -27,8 +27,8 @@ DeviceList.statics.addDeviceToList = async function (ip) {
   return _deviceList
 }
 
-DeviceList.statics.deleteDeviceFromList = async function (ip) {
-  let result = this.deleteOne({ IP: ip }).exec()
+DeviceList.statics.deleteDeviceFromList = async function (ips) {
+  let result = this.deleteMany({ IP: ips }).exec()
 
   return result
 }
