@@ -15,6 +15,7 @@
 
 <script>
 import io from 'socket.io-client'
+import axios from 'axios'
 
 export default {
   data () {
@@ -23,18 +24,21 @@ export default {
     }
   },
   mounted () {
-    this.socket.emit('in', 'emit')
-    this.socket.on('in', id => {
-      console.log(id)
-      this.$store.dispatch('signin', { id })
-        .then(() => {
-          if (this.$store.state.userType === 'STUDENT') {
+    this.socket.emit('add', 'emit')
+    this.socket.on('add', ({ code, fingerprints }) => {
+      axios
+        .post(`http://api.dorothy.gsmhs.kr/auth/fingerprint`, {
+          code: code,
+          fingerprints: fingerprints
+        })
+        .then(response => {
+          if (response.status === 200) {
             this.$router.push('/device')
-          } else if (this.$store.state.userType === 'ADMINISTRATOR') {
-            this.$router.push('/admin')
           }
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+          console.log(err)
+        })
     })
   }
 }

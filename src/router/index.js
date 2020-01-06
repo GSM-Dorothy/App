@@ -119,6 +119,10 @@ const routes = [
   {
     path: '/device/in',
     component: () => import('../views/deviceIn.vue')
+  },
+  {
+    path: '/device/add',
+    component: () => import('../views/deviceAdd.vue')
   }
 ]
 

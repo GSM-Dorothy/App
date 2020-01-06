@@ -103,7 +103,7 @@ export default {
       axios
         .post(`http://api.dorothy.gsmhs.kr/auth/device/enroll`, posts)
         .then(response => {
-          this.$router.push('/device/in')
+          this.$router.push('/device/add')
         })
         .catch(() => alert('인증번호가 올바르지 않습니다!'))
     }
