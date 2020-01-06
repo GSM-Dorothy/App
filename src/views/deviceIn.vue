@@ -29,35 +29,22 @@ export default {
       this.$store.dispatch('signin', { id })
         .then(() => {
           if (this.$store.state.userType === 'STUDENT') {
-            this.$router.go(-1)
+            this.$router.push('/device')
           } else if (this.$store.state.userType === 'ADMINISTRATOR') {
             this.$router.push('/admin')
           }
         })
         .catch(err => console.log(err))
     })
-    this.socket.on('add', data => {
-      let posts = {
-        code: data.code,
-        fingerprints: data.fingerprints
-      }
-
+    this.socket.on('add', ({ code, fingerprints }) => {
       axios
-        .post(`http://api.dorothy.gsmhs.kr/auth/fingerprint`, posts)
+        .post(`http://api.dorothy.gsmhs.kr/auth/fingerprint`, {
+          code: code,
+          fingerprints: fingerprints
+        })
         .then(response => {
           if (response.status === 200) {
-            axios
-              .post(`http://api.dorothy.gsmhs.kr/auth/device/enroll`, {
-                code: data.code
-              })
-              .then(response => {
-                if (response.status === 200) {
-                  console.log(response.data)
-                }
-              })
-              .catch(err => {
-                console.log(err)
-              })
+            this.$router.push('/device')
           }
         })
         .catch(err => {
