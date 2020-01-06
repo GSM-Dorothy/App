@@ -8,9 +8,7 @@ const { STUDENT } = require('actions/auth_code')
 
 exports.createUser = async (ctx) => {
   let registerInfo = ctx.request.body
-  let code = {
-    code: registerInfo.code
-  }
+  let code = registerInfo.code
 
   let foundUser = await AuthCode.validateCode(code)
 
