@@ -17,7 +17,7 @@ exports.addFingerprint = async (ctx) => {
 
   ctx.assert(result.n === 1 && result.nModified === 1 && result.ok === 1, 401, "Your fingerprint datas weren't successfully forwarded.")
 
-  ctx.response.code = 200
+  ctx.body = 'Your fingerprint datas were successfully forwarded.'
 }
 
 exports.findAllFingerprints = async (ctx) => {
