@@ -1,6 +1,6 @@
 <template>
 <v-content>
-  <v-img :src="$vuetify.theme.dark ? require('../assets/night.jpg') : require('../assets/day.jpeg')" height="100vh" gradient="to bottom, rgba(0,0,0,.0), rgba(0,0,0,.1)">
+  <v-img :src="$vuetify.theme.dark ? require('../assets/night.jpg') : require('../assets/day.png')" height="100vh" gradient="to bottom, rgba(0,0,0,.0), rgba(0,0,0,.1)">
     <v-row align="end" class="lightbox white--text pl-5 fill-height">
       <v-col>
         <span id="clock" class="font-weight-black display-4"></span>
