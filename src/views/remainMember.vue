@@ -187,9 +187,10 @@ export default {
           })
           .catch(err => {
             console.log(err)
-            resolve(this.getEnrolledStudents(year, month, day).then((data) => {
-              return data
-            }))
+            resolve(this.getEnrolledStudents(year, month, day)
+              .then((data) => {
+                return data
+              }))
           })
       })
     },
@@ -202,9 +203,10 @@ export default {
           })
           .catch(err => {
             console.log(err)
-            resolve(this.getRemainArchives(year, month, day).then((data) => {
-              return data
-            }))
+            resolve(this.getRemainArchives(year, month, day)
+              .then((data) => {
+                return data
+              }))
           })
       })
     }
@@ -215,13 +217,15 @@ export default {
     let day = this.currentDate.getDate()
 
     this.$nextTick(() => {
-      this.getEnrolledStudents(year, month, day).then((data) => {
-        this.enrollStudents = data
-      })
+      this.getEnrolledStudents(year, month, day)
+        .then((data) => {
+          this.enrollStudents = data
+        })
 
-      this.getRemainArchives(year, month, day).then((data) => {
-        this.remainArchives = data
-      })
+      this.getRemainArchives(year, month, day)
+        .then((data) => {
+          this.remainArchives = data
+        })
     })
   }
 }

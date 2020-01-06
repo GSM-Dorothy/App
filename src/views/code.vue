@@ -232,9 +232,10 @@ export default {
           })
           .catch(err => {
             console.log(err)
-            resolve(this.getStudentCode().then(data => {
-              return data
-            }))
+            resolve(this.getStudentCode()
+              .then(data => {
+                return data
+              }))
           })
       })
     },
@@ -247,9 +248,10 @@ export default {
           })
           .catch(err => {
             console.log(err)
-            resolve(this.getAdminCode().then(data => {
-              return data
-            }))
+            resolve(this.getAdminCode()
+              .then(data => {
+                return data
+              }))
           })
       })
     },
@@ -288,13 +290,15 @@ export default {
   },
   async created () {
     this.$nextTick(() => {
-      this.getStudentCode().then(data => {
-        this.students = data
-      })
+      this.getStudentCode()
+        .then(data => {
+          this.students = data
+        })
 
-      this.getAdminCode().then(data => {
-        this.admins = data
-      })
+      this.getAdminCode()
+        .then(data => {
+          this.admins = data
+        })
     })
   }
 }
