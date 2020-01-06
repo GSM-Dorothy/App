@@ -44,7 +44,7 @@ exports.findStudent = async (ctx) => {
   ctx.body = foundUser
 }
 
-exports.findStudent = async (ctx) => {
+exports.findAllStudents = async (ctx) => {
   let foundUsers = await User.findAllStudents()
 
   for (let i in foundUsers) {

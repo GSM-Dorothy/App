@@ -13,7 +13,7 @@
 
         <v-stepper-items>
           <v-stepper-content step="1">
-            <v-data-table v-model="selected" :headers="sHeaders" :items="sList" item-key="학번" single-select show-select class="elevation-1">
+            <v-data-table v-model="selectedStudents" :headers="studentHeaders" :items="students" item-key="학번" single-select show-select class="elevation-1">
               <template v-slot:top>
                 <v-btn outlined color="primary" @click="selectStudent" class="ma-3">
                   선택
@@ -81,10 +81,12 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   data: () => ({
-    selected: [],
-    sHeaders: [{
+    selectedStudents: [],
+    studentHeaders: [{
       text: '학년',
       value: 'grade'
     },
@@ -105,7 +107,7 @@ export default {
       value: 'name'
     }
     ],
-    sList: [],
+    students: [],
     e1: 0,
     dialog: false,
     headers: [{
@@ -150,11 +152,6 @@ export default {
       val || this.close()
     }
   },
-
-  created () {
-    this.initialize()
-  },
-
   methods: {
     selectStudent () {
       this.e1 = 2
@@ -194,7 +191,36 @@ export default {
         this.desserts.push(this.editedItem)
       }
       this.close()
+    },
+    getStudents () {
+      return new Promise((resolve) => {
+        axios
+          .get(`http://api.dorothy.gsmhs.kr/user/students`)
+          .then(response => {
+            resolve(response.data)
+          })
+          .catch(err => {
+            console.log(err)
+            resolve(this.getStudents()
+              .then(students => {
+                return students
+              }))
+          })
+      })
     }
+  },
+  async created () {
+    this.initialize()
+
+    this.$nextTick()
+      .then(this.getStudents()
+        .then(students => {
+          console.log(students)
+          this.students = students
+        }))
+      .catch(err => {
+        console.log(err)
+      })
   }
 }
 </script>
