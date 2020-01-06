@@ -46,10 +46,23 @@ export default {
         .post(`http://api.dorothy.gsmhs.kr/auth/fingerprint`, posts)
         .then(response => {
           if (response.status === 200) {
-            // TO-DO: 유저 지문 등록에 대한 후 처리 & 상태 메시지 뷰
+            axios
+              .post(`http://api.dorothy.gsmhs.kr/auth/device/enroll`, {
+                code: data.code
+              })
+              .then(response => {
+                if (response.status === 200) {
+                  console.log(response.data)
+                }
+              })
+              .catch(err => {
+                console.log(err)
+              })
           }
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+          console.log(err)
+        })
     })
   }
 }

@@ -11,6 +11,7 @@ DeviceEnroll.statics.getDeviceInfo = async function (ip) {
 
   return result
 }
+
 DeviceEnroll.statics.addDeviceInfo = async function (deviceInfo) {
   let deviceInfoData = new this({
     IP: deviceInfo.IP,
