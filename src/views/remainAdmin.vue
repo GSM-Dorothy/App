@@ -50,7 +50,7 @@
           </v-stepper>
         </v-tab-item>
         <v-tab-item>
-          <v-data-table v-model="selected" :headers="adminHeaders" :items="admins" item-key="name" show-select class="elevation-1">
+          <v-data-table v-model="selected" :headers="adminHeaders" :items="admins" item-key="startDate" show-select class="elevation-1">
             <template v-slot:top>
               <v-btn
                 outlined

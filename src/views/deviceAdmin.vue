@@ -25,7 +25,7 @@
           </v-container>
         </v-tab-item>
         <v-tab-item>
-          <v-data-table v-model="selected" :headers="deviceHeaders" :items="deviceList" item-key="name" show-select class="elevation-1">
+          <v-data-table v-model="selected" :headers="deviceHeaders" :items="deviceList" item-key="IP" show-select class="elevation-1">
             <template v-slot:top>
               <v-btn
                 outlined

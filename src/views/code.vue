@@ -68,7 +68,7 @@
               <v-container fluid>
                 <v-row>
                   <v-col>
-                    <v-data-table v-model="selectedStudent" :headers="studentHeaders" :items="students" item-key="name" show-select class="elevation-1">
+                    <v-data-table v-model="selectedStudent" :headers="studentHeaders" :items="students" item-key="code" show-select class="elevation-1">
                       <template v-slot:top>
                         <v-btn
                           outlined
@@ -88,7 +88,7 @@
               <v-container fluid>
                 <v-row>
                   <v-col>
-                    <v-data-table v-model="selectedAdmin" :headers="adminHeaders" :items="admins" item-key="name" show-select class="elevation-1">
+                    <v-data-table v-model="selectedAdmin" :headers="adminHeaders" :items="admins" item-key="code" show-select class="elevation-1">
                       <template v-slot:top>
                         <v-btn
                           outlined
