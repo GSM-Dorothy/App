@@ -25,7 +25,18 @@
           </v-container>
         </v-tab-item>
         <v-tab-item>
-          목록
+          <v-data-table v-model="selected" :headers="headers" :items="desserts" item-key="name" show-select class="elevation-1">
+            <template v-slot:top>
+              <v-btn
+                outlined
+                color="red"
+                @click="remove"
+                class="ma-3"
+              >
+                삭제
+              </v-btn>
+            </template>
+          </v-data-table>
         </v-tab-item>
       </v-tabs>
     </v-card>
@@ -38,11 +49,21 @@ import axios from 'axios'
 
 export default {
   data: () => ({
-    valid: true,
-    lazy: false,
-    ip: '',
-    defaultRules: [
-      v => !!v || ''
+    selected: [],
+    headers: [{
+      text: 'IP Address',
+      value: 'ip'
+    }
+    ],
+    desserts: [{
+      ip: '10.120.75.121'
+    },
+    {
+      ip: '10.120.75.122'
+    },
+    {
+      ip: '10.120.75.123'
+    }
     ]
   }),
   methods: {
@@ -53,13 +74,18 @@ export default {
         return false
       }
 
-      axios.post('http://api.dorothy.gsmhs.kr/auth/device', { IP: ip })
+      axios.post('http://api.dorothy.gsmhs.kr/auth/device', {
+        IP: ip
+      })
         .then(res => {
           if (res.status === 200) {
             alert('등록 완료')
             this.$router.go(0)
           }
         })
+    },
+    remove () {
+      alert('msg')
     }
   }
 }
