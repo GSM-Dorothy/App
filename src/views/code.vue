@@ -68,7 +68,7 @@
               <v-container fluid>
                 <v-row>
                   <v-col>
-                    <v-data-table v-model="selected" :headers="headers" :items="desserts" item-key="name" show-select class="elevation-1">
+                    <v-data-table v-model="selectedStudent" :headers="studentHeaders" :items="students" item-key="name" show-select class="elevation-1">
                       <template v-slot:top>
                         <v-btn
                           outlined
@@ -88,7 +88,7 @@
               <v-container fluid>
                 <v-row>
                   <v-col>
-                    <v-data-table v-model="selectedB" :headers="headersB" :items="dessertsB" item-key="name" show-select class="elevation-1">
+                    <v-data-table v-model="selectedAdmin" :headers="adminHeaders" :items="admins" item-key="name" show-select class="elevation-1">
                       <template v-slot:top>
                         <v-btn
                           outlined
@@ -117,81 +117,49 @@ import axios from 'axios'
 
 export default {
   data: () => ({
-    selected: [],
-    headers: [
+    selectedStudent: [],
+    studentHeaders: [
       {
         text: '이름',
-        value: 'name'
+        value: 'userInfo.name'
       },
       {
         text: '학년',
-        value: 'grade'
+        value: 'userInfo.studentInfo.grade'
       },
       {
         text: '반',
-        value: 'class'
+        value: 'userInfo.studentInfo.class'
       },
       {
         text: '번호',
-        value: 'number'
+        value: 'userInfo.studentInfo.number'
+      },
+      {
+        text: '호실',
+        value: 'userInfo.studentInfo.room'
       },
       {
         text: '인증번호',
         value: 'code'
       }
     ],
-    desserts: [{
-      name: '가나다',
-      grade: 2,
-      class: 3,
-      number: 6,
-      code: 213124
-    },
-    {
-      name: '가나다',
-      grade: 2,
-      class: 3,
-      number: 6,
-      code: 213124
-    },
-    {
-      name: '가나다',
-      grade: 2,
-      class: 3,
-      number: 6,
-      code: 213124
-    }
-    ],
-    selectedB: [],
-    headersB: [{
+    students: [],
+    selectedAdmin: [],
+    adminHeaders: [{
       text: '이름',
-      value: 'name'
+      value: 'userInfo.name'
     },
     {
       text: '담당 업무',
-      value: 'res'
+      value: 'userInfo.administratorInfo.responsibility'
     },
     {
       text: '인증번호',
       value: 'code'
     }
     ],
-    dessertsB: [{
-      name: '가나다',
-      res: '가나다',
-      code: 123141
-    },
-    {
-      name: '가나다',
-      res: '가나다',
-      code: 123141
-    },
-    {
-      name: '가나다',
-      res: '가나다',
-      code: 123141
-    }
-    ],
+    admins: [],
     valid: true,
     lazy: false,
     validB: true,
@@ -248,7 +216,48 @@ export default {
             this.$router.go(0)
           }
         })
+    },
+    getStudentCode: function () {
+      return new Promise((resolve) => {
+        axios
+          .get(`http://api.dorothy.gsmhs.kr/auth/code/student`)
+          .then(response => {
+            resolve(response.data)
+          })
+          .catch(err => {
+            console.log(err)
+            resolve(this.getStudentCode().then(data => {
+              return data
+            }))
+          })
+      })
+    },
+    getAdminCode: function () {
+      return new Promise((resolve) => {
+        axios
+          .get(`http://api.dorothy.gsmhs.kr/auth/code/administrator`)
+          .then(response => {
+            resolve(response.data)
+          })
+          .catch(err => {
+            console.log(err)
+            resolve(this.getAdminCode().then(data => {
+              return data
+            }))
+          })
+      })
     }
+  },
+  async created () {
+    this.$nextTick(() => {
+      this.getStudentCode().then(data => {
+        this.students = data
+      })
+
+      this.getAdminCode().then(data => {
+        this.admins = data
+      })
+    })
   }
 }
 </script>

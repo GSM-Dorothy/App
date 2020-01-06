@@ -89,12 +89,30 @@ export default {
         .reduce((a, b) => a + b, 0)
     }
   },
-  created () {
-    axios.get(`http://api.dorothy.gsmhs.kr/user/point_archive`)
-      .then(response => {
-        this.archives = response.data
+  methods: {
+    getArchives: function () {
+      return new Promise((resolve) => {
+        axios.get(`http://api.dorothy.gsmhs.kr/user/point_archive`)
+          .then(response => {
+            resolve(response.data)
+          })
+          .catch(err => {
+            console.log(err)
+            resolve(this.getArchives().then((data) => {
+              return data
+            }))
+          })
       })
-      .catch(err => console.log(err))
+    }
+  },
+  async created () {
+    this.$nextTick()
+      .then(this.getArchives().then((data) => {
+        this.archives = data
+      }))
+      .catch((err) => {
+        console.log(err)
+      })
   }
 }
 </script>

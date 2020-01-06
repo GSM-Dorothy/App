@@ -212,6 +212,21 @@ export default {
       date.setMinutes(minute)
 
       return date
+    },
+    getRemainAdmins: function (year, month, day) {
+      return new Promise((resolve) => {
+        axios
+          .get(`http://api.dorothy.gsmhs.kr/school/remain/administrator/${year}/${month}/${day}`)
+          .then(function (response) {
+            resolve(response.data)
+          })
+          .catch(err => {
+            console.log(err)
+            resolve(this.getRemainAdmins(year, month, day).then(data => {
+              return data
+            }))
+          })
+      })
     }
   },
   async created () {
@@ -219,17 +234,13 @@ export default {
     let month = this.currentTime.getMonth() + 1
     let day = this.currentTime.getDate() - 1
 
-    axios
-      .get(`http://api.dorothy.gsmhs.kr/school/remain/administrator/${year}/${month}/${day}`)
-      .then(function (response) {
-        if (response.status === 200) {
-          this.todayAdmin = response.data
-        }
-      }.bind(this))
-      .catch(err => console.log(err))
-  },
-  mounted () {
-
+    this.$nextTick()
+      .then(this.getRemainAdmins(year, month, day).then((data) => {
+        this.todayAdmin = data
+      }))
+      .catch(err => {
+        console.log(err)
+      })
   }
 }
 </script>

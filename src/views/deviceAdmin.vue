@@ -25,7 +25,7 @@
           </v-container>
         </v-tab-item>
         <v-tab-item>
-          <v-data-table v-model="selected" :headers="headers" :items="desserts" item-key="name" show-select class="elevation-1">
+          <v-data-table v-model="selected" :headers="deviceHeaders" :items="deviceList" item-key="name" show-select class="elevation-1">
             <template v-slot:top>
               <v-btn
                 outlined
@@ -50,24 +50,15 @@ import axios from 'axios'
 export default {
   data: () => ({
     selected: [],
-    headers: [{
+    deviceHeaders: [{
       text: 'IP Address',
-      value: 'ip'
+      value: 'IP'
     }
     ],
-    desserts: [{
-      ip: '10.120.75.121'
-    },
-    {
-      ip: '10.120.75.122'
-    },
-    {
-      ip: '10.120.75.123'
-    }
-    ]
+    deviceList: []
   }),
   methods: {
-    add () {
+    add: function () {
       const ip = this.ip
 
       if (!ip) {
@@ -84,9 +75,33 @@ export default {
           }
         })
     },
-    remove () {
+    remove: function () {
       alert('msg')
+    },
+    getDeviceList: function () {
+      return new Promise((resolve) => {
+        axios
+          .get(`http://api.dorothy.gsmhs.kr/auth/device`)
+          .then(response => {
+            resolve(response.data)
+          })
+          .catch(err => {
+            console.log(err)
+            resolve(this.getDeviceList().then(data => {
+              return data
+            }))
+          })
+      })
     }
+  },
+  async created () {
+    this.$nextTick()
+      .then(this.getDeviceList().then((data) => {
+        this.deviceList = data
+      }))
+      .catch(err => {
+        console.log(err)
+      })
   }
 }
 </script>

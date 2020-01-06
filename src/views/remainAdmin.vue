@@ -50,7 +50,7 @@
           </v-stepper>
         </v-tab-item>
         <v-tab-item>
-          <v-data-table v-model="selected" :headers="headers" :items="desserts" item-key="name" show-select class="elevation-1">
+          <v-data-table v-model="selected" :headers="adminHeaders" :items="admins" item-key="name" show-select class="elevation-1">
             <template v-slot:top>
               <v-btn
                 outlined
@@ -75,42 +75,24 @@ import axios from 'axios'
 export default {
   data: () => ({
     selected: [],
-    headers: [{
+    adminHeaders: [{
       text: '이름',
       value: 'name'
     },
     {
-      text: '담당 업무',
-      value: 'res'
+      text: '연락처',
+      value: 'phone'
     },
     {
       text: '시작 시간',
-      value: 'start'
+      value: 'startDate'
     },
     {
       text: '종료 시간',
-      value: 'end'
+      value: 'endDate'
     }
     ],
-    desserts: [{
-      name: '가나다',
-      res: '가나다',
-      start: '시작 시간',
-      end: '종료 시간'
-    },
-    {
-      name: '가나다',
-      res: '가나다',
-      start: '시작 시간',
-      end: '종료 시간'
-    },
-    {
-      name: '가나다',
-      res: '가나다',
-      start: '시작 시간',
-      end: '종료 시간'
-    }
-    ],
+    admins: [],
     e1: 0,
     date: new Date().toISOString().substr(0, 10),
     start: null,
@@ -155,7 +137,35 @@ export default {
       date.setMinutes(minute)
 
       return date
+    },
+    getAdmins: function (year, month, day) {
+      return new Promise((resolve) => {
+        axios
+          .get(`http://api.dorothy.gsmhs.kr/school/remain/administrator/${year}/${month}/${day}`)
+          .then(response => {
+            resolve(response.data)
+          })
+          .catch(err => {
+            console.log(err)
+            resolve(this.getAdmins(year, month, day).then((data) => {
+              return data
+            }))
+          })
+      })
     }
+  },
+  async created () {
+    let year = new Date().getFullYear()
+    let month = new Date().getMonth() + 1
+    let day = new Date().getDate()
+
+    this.$nextTick()
+      .then(this.getAdmins(year, month, day).then((data) => {
+        this.admins = data
+      }))
+      .catch(err => {
+        console.log(err)
+      })
   }
 }
 </script>

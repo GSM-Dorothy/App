@@ -114,8 +114,6 @@ AuthCode.statics.revokeCode = async function (code) {
   return result
 }
 
-AuthCode.index({ 'userID': 1 }, { unique: true })
-
 const _authCode = mongoose.models.AuthCode || mongoose.model('AuthCode', AuthCode, 'AuthCode')
 
 module.exports = _authCode

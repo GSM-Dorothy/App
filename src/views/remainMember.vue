@@ -177,24 +177,52 @@ export default {
         .filter(archive => archive.remainType === 'LEFT')
     }
   },
-  created () {
+  methods: {
+    getEnrolledStudents: function (year, month, day) {
+      return new Promise((resolve) => {
+        axios
+          .get(`http://api.dorothy.gsmhs.kr/school/remain/enroll/${year}/${month}/${day}`)
+          .then(response => {
+            resolve(response.data)
+          })
+          .catch(err => {
+            console.log(err)
+            resolve(this.getEnrolledStudents(year, month, day).then((data) => {
+              return data
+            }))
+          })
+      })
+    },
+    getRemainArchives: function (year, month, day) {
+      return new Promise((resolve) => {
+        axios
+          .get(`http://api.dorothy.gsmhs.kr/school/remain/archive/${year}/${month}/${day}`)
+          .then(response => {
+            resolve(response.data)
+          })
+          .catch(err => {
+            console.log(err)
+            resolve(this.getRemainArchives(year, month, day).then((data) => {
+              return data
+            }))
+          })
+      })
+    }
+  },
+  async created () {
     let year = this.currentDate.getFullYear()
     let month = this.currentDate.getMonth() + 1
     let day = this.currentDate.getDate()
 
-    axios
-      .get(`http://api.dorothy.gsmhs.kr/school/remain/enroll/${year}/${month}/${day}`)
-      .then(response => {
-        this.enrollStudents = response.data
+    this.$nextTick(() => {
+      this.getEnrolledStudents(year, month, day).then((data) => {
+        this.enrollStudents = data
       })
-      .catch(err => console.log(err))
 
-    axios
-      .get(`http://api.dorothy.gsmhs.kr/school/remain/archive/${year}/${month}/${day}`)
-      .then(response => {
-        this.remainArchives = response.data
+      this.getRemainArchives(year, month, day).then((data) => {
+        this.remainArchives = data
       })
-      .catch(err => console.log(err))
+    })
   }
 }
 </script>
