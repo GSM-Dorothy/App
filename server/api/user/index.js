@@ -8,6 +8,7 @@ const { validateStudent, validateAdministrator } = require('lib/validate_user_ty
 user.post('/create', userCtrl.createUser)
 
 user.get('/student', validateTokenMiddleware, validateStudent, userCtrl.findStudent)
+user.get('/students', validateTokenMiddleware, validateAdministrator, userCtrl.findAllStudents)
 
 user.get('/point_archive', validateTokenMiddleware, validateStudent, userCtrl.findPointArchiveByStudent)
 user.get('/point_archive/:grade/:class/:number', validateTokenMiddleware, validateAdministrator, userCtrl.findPointArchiveByAdmin)

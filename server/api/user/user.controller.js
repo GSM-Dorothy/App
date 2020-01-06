@@ -44,6 +44,20 @@ exports.findStudent = async (ctx) => {
   ctx.body = foundUser
 }
 
+exports.findStudent = async (ctx) => {
+  let foundUsers = await User.findAllStudents()
+
+  for (let i in foundUsers) {
+    delete foundUsers[i].password
+    delete foundUsers[i].__v
+    delete foundUsers[i].refreshToken
+    delete foundUsers[i].fingerprint
+    delete foundUsers[i].userType
+  }
+
+  ctx.body = foundUsers
+}
+
 exports.findPointArchiveByStudent = async (ctx) => {
   let foundUser = ctx.state.foundUser
 

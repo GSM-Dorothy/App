@@ -54,6 +54,12 @@ User.statics.findUserByID = async function (id) {
   return foundUser
 }
 
+User.statics.findAllStudents = async function () {
+  let foundUsers = this.find({}).exec()
+
+  return foundUsers
+}
+
 User.statics.findUserWithStudentInfo = async function (studentInfo) {
   let foundUser
 
@@ -62,7 +68,7 @@ User.statics.findUserWithStudentInfo = async function (studentInfo) {
       { grade: studentInfo.grade },
       { class: studentInfo.class },
       { number: studentInfo.number }
-    ]}).exec()
+    ] }).exec()
   } catch (e) {
     console.log(e)
   }
