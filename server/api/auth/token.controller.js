@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 
 const Token = require('models/token')
-const User = require('models/User')
+const User = require('models/user')
 
 const { TOKEN_EXPIRED, TOKEN_NON_EXIST } = require('actions/token')
 
