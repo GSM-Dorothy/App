@@ -110,7 +110,7 @@ AuthCode.statics.findDeviceCode = async function () {
 }
 
 AuthCode.statics.revokeCode = async function (codes) {
-  let result = await this.deleteOne({ code: codes }).exec()
+  let result = await this.deleteMany({ code: codes }).exec()
 
   return result
 }
