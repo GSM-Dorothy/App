@@ -48,11 +48,12 @@ exports.findAllStudents = async (ctx) => {
   let foundUsers = await User.findAllStudents()
 
   for (let i in foundUsers) {
-    delete foundUsers[i].password
-    delete foundUsers[i].__v
-    delete foundUsers[i].refreshToken
-    delete foundUsers[i].fingerprint
-    delete foundUsers[i].userType
+    foundUsers[i] = {
+      userType: foundUsers[i].userType,
+      studentInfo: foundUsers[i].studentInfo,
+      _id: foundUsers[i]._id,
+      name: foundUsers[i].name
+    }
   }
 
   ctx.body = foundUsers

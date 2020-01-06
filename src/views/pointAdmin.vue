@@ -13,7 +13,7 @@
 
         <v-stepper-items>
           <v-stepper-content step="1">
-            <v-data-table v-model="selectedStudents" :headers="studentHeaders" :items="students" item-key="학번" single-select show-select class="elevation-1">
+            <v-data-table v-model="selectedStudents" :headers="studentHeaders" :items="students" item-key="_id" single-select show-select class="elevation-1">
               <template v-slot:top>
                 <v-btn outlined color="primary" @click="selectStudent" class="ma-3">
                   선택
@@ -23,10 +23,10 @@
           </v-stepper-content>
 
           <v-stepper-content step="2">
-            <v-data-table :headers="headers" :items="desserts" sort-by="calories" class="elevation-1">
+            <v-data-table :headers="archiveHeaders" :items="archives" sort-by="calories" class="elevation-1">
               <template v-slot:top>
                 <v-toolbar flat color="white">
-                  <v-toolbar-title>318호 서OO <span class="body-2">2학년 4반 9번</span></v-toolbar-title>
+                  <v-toolbar-title>{{ selectedStudentRoom }}호 {{ selectedStudentName }} <span class="body-2">{{ selectedStudentGrade }}학년 {{ selectedStudentClass }}반 {{ selectedStudentNumber }}번</span></v-toolbar-title>
                   <v-divider class="mx-4" inset vertical></v-divider>
                   <v-spacer></v-spacer>
                   <v-dialog v-model="dialog" max-width="500px">
@@ -88,19 +88,19 @@ export default {
     selectedStudents: [],
     studentHeaders: [{
       text: '학년',
-      value: 'grade'
+      value: 'studentInfo.grade'
     },
     {
       text: '반',
-      value: 'class'
+      value: 'studentInfo.class'
     },
     {
       text: '번호',
-      value: 'number'
+      value: 'studentInfo.number'
     },
     {
       text: '호실',
-      value: 'room'
+      value: 'studentInfo.room'
     },
     {
       text: '이름',
@@ -110,7 +110,7 @@ export default {
     students: [],
     e1: 0,
     dialog: false,
-    headers: [{
+    archiveHeaders: [{
       text: '점수',
       value: 'point'
     },
@@ -128,7 +128,7 @@ export default {
       sortable: false
     }
     ],
-    desserts: [],
+    archives: [],
     editedIndex: -1,
     editedItem: {
       point: '기존점수',
@@ -144,6 +144,31 @@ export default {
   computed: {
     formTitle () {
       return this.editedIndex === -1 ? '점수 추가' : '점수 수정'
+    },
+    selectedStudentRoom () {
+      let student = this.selectedStudents[0]
+
+      return student ? student.studentInfo.room : ''
+    },
+    selectedStudentName () {
+      let student = this.selectedStudents[0]
+
+      return student ? student.name : ''
+    },
+    selectedStudentGrade () {
+      let student = this.selectedStudents[0]
+
+      return student ? student.studentInfo.grade : ''
+    },
+    selectedStudentClass () {
+      let student = this.selectedStudents[0]
+
+      return student ? student.studentInfo.class : ''
+    },
+    selectedStudentNumber () {
+      let student = this.selectedStudents[0]
+
+      return student ? student.studentInfo.number : ''
     }
   },
 
@@ -154,6 +179,7 @@ export default {
   },
   methods: {
     selectStudent () {
+      this.getPointArchive()
       this.e1 = 2
     },
 
@@ -207,6 +233,20 @@ export default {
               }))
           })
       })
+    },
+    getPointArchive () {
+      let _grade = this.selectedStudents[0].studentInfo.grade
+      let _class = this.selectedStudents[0].studentInfo.class
+      let _number = this.selectedStudents[0].studentInfo.number
+
+      axios
+        .get(`http://api.dorothy.gsmhs.kr/user/point_archive/${_grade}/${_class}/${_number}`)
+        .then(response => {
+          this.archives = response.data
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
   },
   async created () {

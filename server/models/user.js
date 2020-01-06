@@ -1,6 +1,8 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
+const { STUDENT } = require('actions/auth_code')
+
 const User = new Schema({
   userType: String,
   email: String,
@@ -55,7 +57,7 @@ User.statics.findUserByID = async function (id) {
 }
 
 User.statics.findAllStudents = async function () {
-  let foundUsers = this.find({}).exec()
+  let foundUsers = this.find({ userType: STUDENT }).exec()
 
   return foundUsers
 }
