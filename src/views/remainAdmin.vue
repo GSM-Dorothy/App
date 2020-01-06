@@ -50,7 +50,18 @@
           </v-stepper>
         </v-tab-item>
         <v-tab-item>
-          목록
+          <v-data-table v-model="selected" :headers="headers" :items="desserts" item-key="name" show-select class="elevation-1">
+            <template v-slot:top>
+              <v-btn
+                outlined
+                color="red"
+                @click="remove"
+                class="ma-3"
+              >
+                삭제
+              </v-btn>
+            </template>
+          </v-data-table>
         </v-tab-item>
       </v-tabs>
     </v-card>
@@ -62,14 +73,49 @@
 import axios from 'axios'
 
 export default {
-  data () {
-    return {
-      e1: 0,
-      date: new Date().toISOString().substr(0, 10),
-      start: null,
-      end: null
+  data: () => ({
+    selected: [],
+    headers: [{
+      text: '이름',
+      value: 'name'
+    },
+    {
+      text: '담당 업무',
+      value: 'res'
+    },
+    {
+      text: '시작 시간',
+      value: 'start'
+    },
+    {
+      text: '종료 시간',
+      value: 'end'
     }
-  },
+    ],
+    desserts: [{
+      name: '가나다',
+      res: '가나다',
+      start: '시작 시간',
+      end: '종료 시간'
+    },
+    {
+      name: '가나다',
+      res: '가나다',
+      start: '시작 시간',
+      end: '종료 시간'
+    },
+    {
+      name: '가나다',
+      res: '가나다',
+      start: '시작 시간',
+      end: '종료 시간'
+    }
+    ],
+    e1: 0,
+    date: new Date().toISOString().substr(0, 10),
+    start: null,
+    end: null
+  }),
   methods: {
     e3 () {
       if (this.start != null) {
