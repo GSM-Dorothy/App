@@ -8,7 +8,9 @@ const { STUDENT } = require('actions/auth_code')
 
 exports.createUser = async (ctx) => {
   let registerInfo = ctx.request.body
-  let code = registerInfo.code
+  let code = {
+    code: registerInfo.code
+  }
 
   let foundUser = await AuthCode.validateCode(code)
 
@@ -109,7 +111,7 @@ exports.deletePointArchive = async (ctx) => {
 
   let result = await PointArchive.deletePointArchive(studentInfo, archive)
 
-  ctx.assert(result.n === 1 && result.deleteCount === 1 && result.ok === 1, 401, 'Part of the archive of point wasn\'t deleted properly.')
+  ctx.assert(result.n === 1 && result.deletedCount === 1 && result.ok === 1, 401, 'Part of the archive of point wasn\'t deleted properly.')
 
   ctx.body = 'Part of the archive of point was deleted as you requested.'
 }

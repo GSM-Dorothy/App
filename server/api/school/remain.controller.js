@@ -48,6 +48,16 @@ exports.replaceRemainAdministrator = async (ctx) => {
   ctx.body = 'Remain administrator has just completely replaced!'
 }
 
+exports.deleteRemainAdministrator = async (ctx) => {
+  let administrators = ctx.request.body
+
+  let result = await RemainAdministrator.deleteAdministrator(administrators)
+
+  ctx.assert(result.n === 1 && result.ok === administrators.length && result.deletedCount === administrators.length, 401, 'Remain administrator hasn\'t just completely deleted.')
+
+  ctx.body = 'Remain administrator has just completely deleted!'
+}
+
 exports.findRemainEnroll = async (ctx) => {
   let year = parseInt(ctx.params.year)
   let month = parseInt(ctx.params.month) - 1
@@ -102,7 +112,7 @@ exports.deleteEnrollList = async (ctx) => {
 
   let result = await RemainEnroll.deleteEnrollList(enrollInfo)
 
-  ctx.assert(result.n === 1 && result.deleteCount === 1 && result.ok === 1, 401, 'You weren\'t left from remain enroll list.')
+  ctx.assert(result.n === 1 && result.deletedCount === 1 && result.ok === 1, 401, 'You weren\'t left from remain enroll list.')
 
   ctx.body = 'You were left from remain enroll list!'
 }
@@ -171,7 +181,7 @@ exports.deleteRemainArchive = async (ctx) => {
 
   let result = await RemainArchive.deleteArchive(_archiveInfo)
 
-  ctx.assert(result.n === 1 && result.deleteCount === 1 && result.ok === 1, 401, 'The info you requested wasn\'t deleted from archive.')
+  ctx.assert(result.n === 1 && result.deletedCount === 1 && result.ok === 1, 401, 'The info you requested wasn\'t deleted from archive.')
 
   ctx.body = 'The info you requested was deleted from archive.'
 }

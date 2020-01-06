@@ -55,7 +55,7 @@
               <v-btn
                 outlined
                 color="red"
-                @click="remove"
+                @click="deleteAdmins"
                 class="ma-3"
               >
                 삭제
@@ -117,7 +117,7 @@ export default {
         .post(`http://api.dorothy.gsmhs.kr/school/remain/administrator`, posts)
         .then(response => {
           if (response.status === 200) {
-            console.log(response.data)
+            this.admins.push(response.data)
           }
         })
         .catch(err => console.log(err))
@@ -135,6 +135,8 @@ export default {
       let date = new Date()
       date.setHours(hour)
       date.setMinutes(minute)
+      date.setSeconds(0)
+      date.setMilliseconds(0)
 
       return date
     },
@@ -152,6 +154,22 @@ export default {
             }))
           })
       })
+    },
+    deleteAdmins: function () {
+      let deletes = this.selected
+        .map(selected => selected.startDate)
+
+      axios
+        .delete(`http://api.dorothy.gsmhs.kr/school/remain/administrator`, { data: deletes })
+        .then(response => {
+          this.admins = this.admins
+            .filter(admin => !this.selected.includes(admin))
+
+          this.selected = []
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
   },
   async created () {

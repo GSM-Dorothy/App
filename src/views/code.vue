@@ -28,6 +28,9 @@
                         <v-text-field v-model="number" type="number" :rules="defaultRules" :color="$vuetify.theme.dark ? 'white' : 'black'" label="번호" required outlined dense></v-text-field>
                       </v-list-item>
                       <v-list-item>
+                        <v-text-field v-model="room" type="number" :rules="defaultRules" :color="$vuetify.theme.dark ? 'white' : 'black'" label="호실" required outlined dense></v-text-field>
+                      </v-list-item>
+                      <v-list-item>
                         <v-btn :disabled="!valid" :outlined="!valid" color="red" @click="student" width="60" height="60">
                           <v-icon color="white">mdi-arrow-right</v-icon>
                         </v-btn>
@@ -46,7 +49,7 @@
                         <v-text-field v-model="adminName" :rules="defaultRules" :color="$vuetify.theme.dark ? 'white' : 'black'" label="이름" required outlined dense></v-text-field>
                       </v-list-item>
                       <v-list-item>
-                        <v-text-field v-model="responibility" :rules="defaultRules" :color="$vuetify.theme.dark ? 'white' : 'black'" label="담당 업무" required outlined dense></v-text-field>
+                        <v-text-field v-model="responsibility" :rules="defaultRules" :color="$vuetify.theme.dark ? 'white' : 'black'" label="담당 업무" required outlined dense></v-text-field>
                       </v-list-item>
                       <v-list-item>
                         <v-btn :disabled="!validB" :outlined="!validB" color="red" @click="admin" width="60" height="60">
@@ -73,7 +76,7 @@
                         <v-btn
                           outlined
                           color="red"
-                          @click="remove"
+                          @click="deleteStudentCodes"
                           class="ma-3"
                         >
                           삭제
@@ -93,7 +96,7 @@
                         <v-btn
                           outlined
                           color="red"
-                          @click="_remove"
+                          @click="deleteAdminCodes"
                           class="ma-3"
                         >
                           삭제
@@ -168,8 +171,9 @@ export default {
     grade: '',
     classRoom: '',
     number: '',
+    room: '',
     adminName: '',
-    responibility: '',
+    responsibility: '',
     defaultRules: [
       v => !!v || ''
     ]
@@ -180,8 +184,9 @@ export default {
       const grade = this.grade
       const classRoom = this.classRoom
       const number = this.number
+      const room = this.room
 
-      if (!name || !grade || !classRoom || !number) {
+      if (!name || !grade || !classRoom || !number || !room) {
         return false
       }
 
@@ -189,7 +194,8 @@ export default {
         name: name,
         grade: grade,
         class: classRoom,
-        number: number
+        number: number,
+        room: room
       })
         .then(res => {
           if (res.status === 200) {
@@ -200,15 +206,15 @@ export default {
     },
     admin () {
       const adminName = this.adminName
-      const responibility = this.responibility
+      const responsibility = this.responsibility
 
-      if (!adminName || !responibility) {
+      if (!adminName || !responsibility) {
         return false
       }
 
       axios.post('http://api.dorothy.gsmhs.kr/auth/code/administrator', {
         name: adminName,
-        responibility: responibility
+        responsibility: responsibility
       })
         .then(res => {
           if (res.status === 200) {
@@ -246,6 +252,38 @@ export default {
             }))
           })
       })
+    },
+    deleteStudentCodes: function () {
+      let deletes = this.selectedStudent
+        .map(admin => admin.code)
+
+      axios
+        .delete(`http://api.dorothy.gsmhs.kr/auth/code`, deletes)
+        .then(response => {
+          this.students = this.students
+            .filter(student => !this.selectedStudent.includes(student))
+
+          this.selectedStudent = []
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    deleteAdminCodes: function () {
+      let deletes = this.selectedAdmin
+        .map(admin => admin.code)
+
+      axios
+        .delete(`http://api.dorothy.gsmhs.kr/auth/code`, { data: deletes })
+        .then(response => {
+          this.admins = this.admins
+            .filter(admin => !this.selectedAdmin.includes(admin))
+
+          this.selectedAdmin = []
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
   },
   async created () {

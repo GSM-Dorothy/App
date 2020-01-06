@@ -18,6 +18,7 @@ school.get('/remain/administrator/:year/:month', validateTokenMiddleware, valida
 school.get('/remain/administrator/:year/:month/:day', validateTokenMiddleware, validateUser, remainCtrl.getRemainAdministratorByDate)
 school.post('/remain/administrator', validateTokenMiddleware, validateAdministrator, remainCtrl.addRemainAdministrator)
 school.put('/remain/administrator', validateTokenMiddleware, validateAdministrator, remainCtrl.replaceRemainAdministrator)
+school.delete('/remain/administrator', validateTokenMiddleware, validateAdministrator, remainCtrl.deleteRemainAdministrator)
 
 school.get('/remain/enroll/:year/:month', validateTokenMiddleware, validateUser, remainCtrl.findRemainEnroll)
 school.get('/remain/enroll/:year/:month/:day', validateTokenMiddleware, validateUser, remainCtrl.findRemainEnroll)

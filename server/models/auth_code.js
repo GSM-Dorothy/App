@@ -35,7 +35,8 @@ AuthCode.statics.generateStudentCode = async function (studentInfo) {
       studentInfo: {
         grade: studentInfo.grade,
         class: studentInfo.class,
-        number: studentInfo.number
+        number: studentInfo.number,
+        room: studentInfo.room
       }
     },
     code: cryptoRandomString({ length: 6 })
@@ -108,8 +109,8 @@ AuthCode.statics.findDeviceCode = async function () {
   return deviceCode
 }
 
-AuthCode.statics.revokeCode = async function (code) {
-  let result = await this.deleteOne({ code: code }).exec()
+AuthCode.statics.revokeCode = async function (codes) {
+  let result = await this.deleteOne({ code: codes }).exec()
 
   return result
 }

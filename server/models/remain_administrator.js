@@ -53,6 +53,12 @@ RemainAdministrator.statics.replaceAdministrator = async function (administrator
   return results
 }
 
+RemainAdministrator.statics.deleteAdministrator = async function (datas) {
+  let result = await this.deleteMany({ startDate: datas }).exec()
+
+  return result
+}
+
 const _remainAdministrator = mongoose.models.RemainAdministrator || mongoose.model('RemainAdministrator', RemainAdministrator, 'RemainAdministrator')
 
 module.exports = _remainAdministrator
