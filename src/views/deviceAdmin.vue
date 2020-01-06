@@ -91,8 +91,8 @@ export default {
       })
     },
     deleteDeviceList: function () {
-      let deletes = this.deviceList
-        .map(device => device.IP)
+      let deletes = this.selected
+        .map(selected => selected.IP)
 
       axios
         .delete(`http://api.dorothy.gsmhs.kr/auth/device`, { data: deletes })
