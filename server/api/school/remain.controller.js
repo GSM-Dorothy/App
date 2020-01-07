@@ -53,7 +53,7 @@ exports.deleteRemainAdministrator = async (ctx) => {
 
   let result = await RemainAdministrator.deleteAdministrator(administrators)
 
-  ctx.assert(result.n === 1 && result.ok === administrators.length && result.deletedCount === administrators.length, 401, 'Remain administrator hasn\'t just completely deleted.')
+  ctx.assert(result.n === administrators.length && result.ok === 1 && result.deletedCount === administrators.length, 401, 'Remain administrator hasn\'t just completely deleted.')
 
   ctx.body = 'Remain administrator has just completely deleted!'
 }

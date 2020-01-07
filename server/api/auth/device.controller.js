@@ -60,7 +60,7 @@ exports.deleteDeviceFromList = async (ctx) => {
 
   let result = await DeviceList.deleteDeviceFromList(ips)
 
-  ctx.assert(result.n === 1 && result.deleteCount === ips.length && result.ok === ips.length, 401, 'Your device info wasn\'t completely deleted from the list!')
+  ctx.assert(result.n === ips.length && result.deleteCount === ips.length && result.ok === 1, 401, 'Your device info wasn\'t completely deleted from the list!')
 
   ctx.body = 'Your device info was completely deleted from device list!'
 }
