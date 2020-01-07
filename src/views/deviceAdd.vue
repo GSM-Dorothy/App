@@ -30,7 +30,7 @@ export default {
     this.socket.emit('add', 'emit')
     this.socket.on('add', ({ code, fingerprints }) => {
       axios
-        .post(`http://api.dorothy.gsmhs.kr/auth/fingerprint`, {
+        .post(`/auth/fingerprint`, {
           code: code,
           fingerprints: fingerprints
         })

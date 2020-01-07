@@ -133,11 +133,11 @@ User.statics.revokeRefreshToken = async function (refreshToken) {
 }
 
 User.statics.findPointArchive = async function (studentInfo) {
-  let found = await this.findOne({ studentInfo: {
-    grade: studentInfo.grade,
-    class: studentInfo.class,
-    number: studentInfo.number
-  } }).exec()
+  let found = await this.findOne({ $and: [
+    { 'studentInfo.grade': studentInfo.grade },
+    { 'studentInfo.class': studentInfo.class },
+    { 'studentInfo.number': studentInfo.number }
+  ] }).exec()
 
   if (found) {
     return found.archive

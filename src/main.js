@@ -5,6 +5,9 @@ import './registerServiceWorker'
 import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
+import axios from 'axios'
+
+axios.defaults.baseURL = process.env.VUE_APP_API_URI
 
 Vue.config.productionTip = false
 

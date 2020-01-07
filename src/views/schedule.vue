@@ -124,7 +124,7 @@ export default {
       let todayMonth = this.today.getMonth() + 1
 
       axios
-        .get(`http://api.dorothy.gsmhs.kr/school/schedule/${todayYear}/${todayMonth}`)
+        .get(`/school/schedule/${todayYear}/${todayMonth}`)
         .then(response => {
           let schedules = response.data
 
@@ -150,7 +150,7 @@ export default {
         .catch(err => console.log(err))
 
       axios
-        .get(`http://api.dorothy.gsmhs.kr/school/schedule/${year}/${month}`)
+        .get(`/school/schedule/${year}/${month}`)
         .then((response) => {
           let events = {}
           let schedules = response.data

@@ -88,7 +88,7 @@ export default {
   methods: {
     getDeviceCode () {
       axios
-        .post(`http://api.dorothy.gsmhs.kr/auth/code/device`)
+        .post(`/auth/code/device`)
         .then(response => {
           this.code = response.data.code
         })
@@ -101,7 +101,7 @@ export default {
       }
 
       axios
-        .post(`http://api.dorothy.gsmhs.kr/auth/device/enroll`, posts)
+        .post(`/auth/device/enroll`, posts)
         .then(response => {
           this.$router.push('/device/add')
         })

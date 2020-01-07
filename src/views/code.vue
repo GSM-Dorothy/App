@@ -190,7 +190,7 @@ export default {
         return false
       }
 
-      axios.post('http://api.dorothy.gsmhs.kr/auth/code/student', {
+      axios.post('/auth/code/student', {
         name: name,
         grade: grade,
         class: classRoom,
@@ -212,7 +212,7 @@ export default {
         return false
       }
 
-      axios.post('http://api.dorothy.gsmhs.kr/auth/code/administrator', {
+      axios.post('/auth/code/administrator', {
         name: adminName,
         responsibility: responsibility
       })
@@ -226,7 +226,7 @@ export default {
     getStudentCode: function () {
       return new Promise((resolve) => {
         axios
-          .get(`http://api.dorothy.gsmhs.kr/auth/code/student`)
+          .get(`/auth/code/student`)
           .then(response => {
             resolve(response.data)
           })
@@ -242,7 +242,7 @@ export default {
     getAdminCode: function () {
       return new Promise((resolve) => {
         axios
-          .get(`http://api.dorothy.gsmhs.kr/auth/code/administrator`)
+          .get(`/auth/code/administrator`)
           .then(response => {
             resolve(response.data)
           })
@@ -260,7 +260,7 @@ export default {
         .map(admin => admin.code)
 
       axios
-        .delete(`http://api.dorothy.gsmhs.kr/auth/code`, deletes)
+        .delete(`/auth/code`, deletes)
         .then(response => {
           this.students = this.students
             .filter(student => !this.selectedStudent.includes(student))
@@ -276,7 +276,7 @@ export default {
         .map(admin => admin.code)
 
       axios
-        .delete(`http://api.dorothy.gsmhs.kr/auth/code`, { data: deletes })
+        .delete(`/auth/code`, { data: deletes })
         .then(response => {
           this.admins = this.admins
             .filter(admin => !this.selectedAdmin.includes(admin))

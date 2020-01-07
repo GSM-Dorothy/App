@@ -183,23 +183,38 @@ export default {
       this.e1 = 2
     },
 
-    initialize () {
-      this.desserts = [{
-        point: 10,
-        reason: '사유 들어가는 곳',
-        date: '2019-12-12'
-      }]
-    },
-
     editItem (item) {
-      this.editedIndex = this.desserts.indexOf(item)
+      this.editedIndex = this.archives.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialog = true
     },
 
     deleteItem (item) {
-      const index = this.desserts.indexOf(item)
-      confirm('이 항목을 정말 삭제하시겠습니까?') && this.desserts.splice(index, 1)
+      if (!confirm('이 항목을 정말 삭제하시겠습니까?')) {
+        return
+      }
+
+      const index = this.archives.indexOf(item)
+
+      let deletes = {
+        studentInfo: {
+          grade: this.selectedStudentGrade,
+          class: this.selectedStudentClass,
+          number: this.selectedStudentNumber
+        },
+        archive: {
+          date: this.archives[index].date
+        }
+      }
+
+      axios
+        .delete(`/user/point_archive`, { data: deletes })
+        .then(response => {
+          this.archives.splice(index, 1)
+        })
+        .catch(err => {
+          console.log(err)
+        })
     },
 
     close () {
@@ -211,17 +226,46 @@ export default {
     },
 
     save () {
-      if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex], this.editedItem)
-      } else {
-        this.desserts.push(this.editedItem)
+      let date = this.editedIndex > -1 ? this.archives[this.editedIndex].date : new Date().toISOString()
+
+      let puts = {
+        studentInfo: {
+          grade: this.selectedStudentGrade,
+          class: this.selectedStudentClass,
+          number: this.selectedStudentNumber
+        },
+        archive: {
+          date: date,
+          point: this.editedItem.point,
+          reason: this.editedItem.reason
+        }
       }
+
+      axios
+        .put(`/user/point_archive`, puts)
+        .then(response => {
+          let archive = {
+            date: date,
+            point: this.editedItem.point,
+            reason: this.editedItem.reason
+          }
+
+          if (this.editedIndex > -1) {
+            Object.assign(this.archives[this.editedIndex], archive)
+          } else {
+            this.archives.push(archive)
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
+
       this.close()
     },
     getStudents () {
       return new Promise((resolve) => {
         axios
-          .get(`http://api.dorothy.gsmhs.kr/user/students`)
+          .get(`/user/students`)
           .then(response => {
             resolve(response.data)
           })
@@ -235,12 +279,12 @@ export default {
       })
     },
     getPointArchive () {
-      let _grade = this.selectedStudents[0].studentInfo.grade
-      let _class = this.selectedStudents[0].studentInfo.class
-      let _number = this.selectedStudents[0].studentInfo.number
+      let _grade = this.selectedStudentGrade
+      let _class = this.selectedStudentClass
+      let _number = this.selectedStudentNumber
 
       axios
-        .get(`http://api.dorothy.gsmhs.kr/user/point_archive/${_grade}/${_class}/${_number}`)
+        .get(`/user/point_archive/${_grade}/${_class}/${_number}`)
         .then(response => {
           this.archives = response.data
         })
@@ -250,16 +294,15 @@ export default {
     }
   },
   async created () {
-    this.initialize()
-
-    this.$nextTick()
-      .then(this.getStudents()
+    this.$nextTick(() => {
+      this.getStudents()
         .then(students => {
           this.students = students
-        }))
-      .catch(err => {
-        console.log(err)
-      })
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    })
   }
 }
 </script>

@@ -73,7 +73,7 @@ export default {
         return false
       }
 
-      axios.post('http://api.dorothy.gsmhs.kr/user/create', {
+      axios.post('/user/create', {
         email: email,
         password: password,
         phone: phone,
