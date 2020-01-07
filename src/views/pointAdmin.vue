@@ -255,7 +255,6 @@ export default {
     this.$nextTick()
       .then(this.getStudents()
         .then(students => {
-          console.log(students)
           this.students = students
         }))
       .catch(err => {

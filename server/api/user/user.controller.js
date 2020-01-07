@@ -2,7 +2,6 @@ const _ = require('lodash')
 
 const User = require('models/user')
 const AuthCode = require('models/auth_code')
-const PointArchive = require('models/point_archive')
 
 const { STUDENT } = require('actions/auth_code')
 
@@ -68,7 +67,7 @@ exports.findPointArchiveByStudent = async (ctx) => {
     number: foundUser.studentInfo.number
   }
 
-  ctx.body = await PointArchive.findPointArchive(studentInfo)
+  ctx.body = await User.findPointArchive(studentInfo)
 }
 
 exports.findPointArchiveByAdmin = async (ctx) => {
@@ -78,7 +77,7 @@ exports.findPointArchiveByAdmin = async (ctx) => {
     number: ctx.params.number
   }
 
-  ctx.body = await PointArchive.findPointArchive(studentInfo)
+  ctx.body = await User.findPointArchive(studentInfo)
 }
 
 exports.addPointArchive = async (ctx) => {
@@ -104,14 +103,14 @@ exports.addPointArchive = async (ctx) => {
   foundUserInfo.room = foundUser.studentInfo.room
   foundUserInfo.name = foundUser.name
 
-  ctx.body = await PointArchive.addPointArchive(userInfo)
+  ctx.body = await User.addPointArchive(userInfo)
 }
 
 exports.updatePointArchive = async (ctx) => {
   let studentInfo = ctx.request.body.studentInfo
   let archive = ctx.request.body.archive
 
-  let result = await PointArchive.updatePointArchive(studentInfo, archive)
+  let result = await User.updatePointArchive(studentInfo, archive)
 
   ctx.assert(result.n === 1 && result.nModified === 1 && result.ok === 1, 401, 'This student\'s point archive wasn\'t successfully added/updated.')
 
@@ -122,7 +121,7 @@ exports.deletePointArchive = async (ctx) => {
   let studentInfo = ctx.request.body.studentInfo
   let archive = ctx.request.body.archive
 
-  let result = await PointArchive.deletePointArchive(studentInfo, archive)
+  let result = await User.deletePointArchive(studentInfo, archive)
 
   ctx.assert(result.n === 1 && result.deletedCount === 1 && result.ok === 1, 401, 'Part of the archive of point wasn\'t deleted properly.')
 

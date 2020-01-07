@@ -23,7 +23,8 @@ const User = new Schema({
   refreshToken: {
     value: String,
     expireDate: Date
-  }
+  },
+  archive: [new Schema({ date: Date, reason: String, point: Number }, { _id: false })]
 })
 
 User.statics.createUser = async function (userInfo) {
@@ -34,6 +35,7 @@ User.statics.createUser = async function (userInfo) {
     phone: userInfo.phone,
     name: userInfo.name,
     studentInfo: userInfo.studentInfo,
+    archive: [],
     administratorInfo: userInfo.administratorInfo
   }
 
@@ -128,6 +130,55 @@ User.statics.revokeRefreshToken = async function (refreshToken) {
     } }).exec()
 
   return results
+}
+
+User.statics.findPointArchive = async function (studentInfo) {
+  let found = await this.findOne({ studentInfo: {
+    grade: studentInfo.grade,
+    class: studentInfo.class,
+    number: studentInfo.number
+  } }).exec()
+
+  if (found) {
+    return found.archive
+  } else {
+    return []
+  }
+}
+
+User.statics.updatePointArchive = async function (studentInfo, archive) {
+  let result = await this.updateOne({ $and: [
+    { 'studentInfo.grade': studentInfo.grade },
+    { 'studentInfo.class': studentInfo.class },
+    { 'studentInfo.number': studentInfo.number },
+    { 'archive.date': archive.date }
+  ] }, { $set:
+    { 'archive.$.reason': archive.reason, 'archive.$.point': archive.point }
+  }).exec()
+
+  if (result.n === 0 || result.nModified === 0) {
+    result = await this.updateOne({ $and: [
+      { 'studentInfo.grade': studentInfo.grade },
+      { 'studentInfo.class': studentInfo.class },
+      { 'studentInfo.number': studentInfo.number },
+      { 'archive.date': { $ne: archive.date } }
+    ] }, { $push: {
+      archive: { date: archive.date, reason: archive.reason, point: archive.point }
+    } }).exec()
+  }
+
+  return result
+}
+
+User.statics.deletePointArchive = async function (studentInfo, archive) {
+  let result = await this.updateOne({ $and: [
+    { 'studentInfo.grade': studentInfo.grade },
+    { 'studentInfo.class': studentInfo.class },
+    { 'studentInfo.number': studentInfo.number },
+    { 'archive.date': archive.date }
+  ] }, { $pull: { archive: { date: archive.date } } }).exec()
+
+  return result
 }
 
 const _user = mongoose.models.User || mongoose.model('User', User, 'User')
