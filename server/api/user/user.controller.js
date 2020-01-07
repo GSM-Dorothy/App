@@ -123,7 +123,7 @@ exports.deletePointArchive = async (ctx) => {
 
   let result = await User.deletePointArchive(studentInfo, archive)
 
-  ctx.assert(result.n === 1 && result.deletedCount === 1 && result.ok === 1, 401, 'Part of the archive of point wasn\'t deleted properly.')
+  ctx.assert(result.n === 1 && result.nModified === 1 && result.ok === 1, 401, 'Part of the archive of point wasn\'t deleted properly.')
 
   ctx.body = 'Part of the archive of point was deleted as you requested.'
 }
