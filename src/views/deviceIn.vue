@@ -6,6 +6,9 @@
           <v-col align="center">
             <v-icon color="white" size="75">mdi-fingerprint</v-icon>
             <div class="display-1">지문을 인식해주세요!</div>
+            <v-btn x-large outlined dark tag elevation=12 class="mt-12" to="/device">
+              <h3>뒤로가기</h3>
+            </v-btn>
           </v-col>
         </v-row>
       </v-img>
