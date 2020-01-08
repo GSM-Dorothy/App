@@ -26,6 +26,16 @@
               <v-list-item-title v-text="item.text"></v-list-item-title>
             </v-list-item-content>
           </v-list-item>
+          <v-list-item @click="signout">
+            <v-list-item-icon>
+              <v-btn color="red" dark tag fab elevation=12 :small="$vuetify.breakpoint.smAndUp" :x-small="$vuetify.breakpoint.xsOnly">
+                <v-icon>mdi-account-arrow-left-outline</v-icon>
+              </v-btn>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>로그아웃</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
         </v-list-item-group>
       </v-list>
     </template>
@@ -69,6 +79,14 @@ export default {
       color: 'deep-purple accent-4'
     }
     ]
-  })
+  }),
+  methods: {
+    signout () {
+      this.$store.dispatch('signout')
+        .then(() => {
+          this.$router.push('/')
+        })
+    }
+  }
 }
 </script>
