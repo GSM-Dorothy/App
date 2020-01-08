@@ -134,10 +134,10 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (store.getters.device === 200) {
-      next('/device/in')
-    } else if (store.getters.userType) {
+    if (store.getters.userType) {
       next()
+    } else if (store.getters.device === 200) {
+      next('/device/in')
     } else {
       window.alert('로그인 후 접근가능합니다!')
       next('/')
