@@ -84,7 +84,14 @@ export default {
     signout () {
       this.$store.dispatch('signout')
         .then(() => {
-          this.$router.push('/')
+          this.$store.dispatch('device')
+            .then(res => {
+              if (res.status === 200) {
+                this.$router.push('/device')
+              } else {
+                this.$router.push('/')
+              }
+            })
         })
     }
   }
