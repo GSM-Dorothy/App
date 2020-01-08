@@ -29,7 +29,7 @@ export default new Vuex.Store({
   actions: {
     signin ({ commit }, data) {
       return new Promise((resolve, reject) => {
-        axios.post('/auth/token/grant', {
+        axios.post('http://api.dorothy.gsmhs.kr/auth/token/grant', {
           ID: data.name,
           password: data.password,
           userID: data.id
@@ -39,7 +39,7 @@ export default new Vuex.Store({
             const refreshToken = res.data.refreshToken
             localStorage.setItem('refreshToken', refreshToken)
             axios.defaults.headers.common['x-access-token'] = accessToken
-            axios.get('/auth/token')
+            axios.get('http://api.dorothy.gsmhs.kr/auth/token')
               .then(response => {
                 const userType = response.data.userType
                 const expireDate = response.data.expireDate
@@ -73,7 +73,7 @@ export default new Vuex.Store({
     },
     refresh ({ commit }) {
       return new Promise((resolve, reject) => {
-        axios.post(`/auth/token/refresh`, {
+        axios.post(`http://api.dorothy.gsmhs.kr/auth/token/refresh`, {
           refreshToken: localStorage.getItem('refreshToken')
         })
           .then(res => {
@@ -101,7 +101,7 @@ export default new Vuex.Store({
           localStorage.removeItem('refreshToken')
           delete axios.defaults.headers.common['x-access-token']
         }
-        axios.get('/auth/device/validate')
+        axios.get('http://api.dorothy.gsmhs.kr/auth/device/validate')
           .then(res => {
             if (res.status === 200) {
               commit('device', 200)
