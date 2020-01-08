@@ -171,7 +171,7 @@ export default {
       }
 
       axios
-        .post(`/school/remain/archive`, posts)
+        .post(`http://api.dorothy.gsmhs.kr/school/remain/archive`, posts)
         .then(response => {
           if (response.status === 200) {
             // TO-DO: 아카이브 추가에 대한 상태 메시지
@@ -216,7 +216,7 @@ export default {
     getRemainAdmins: function (year, month, day) {
       return new Promise((resolve) => {
         axios
-          .get(`/school/remain/administrator/${year}/${month}/${day}`)
+          .get(`http://api.dorothy.gsmhs.kr/school/remain/administrator/${year}/${month}/${day}`)
           .then(function (response) {
             resolve(response.data)
           })

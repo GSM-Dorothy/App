@@ -181,7 +181,7 @@ export default {
     getEnrolledStudents: function (year, month, day) {
       return new Promise((resolve) => {
         axios
-          .get(`/school/remain/enroll/${year}/${month}/${day}`)
+          .get(`http://api.dorothy.gsmhs.kr/school/remain/enroll/${year}/${month}/${day}`)
           .then(response => {
             resolve(response.data)
           })
@@ -197,7 +197,7 @@ export default {
     getRemainArchives: function (year, month, day) {
       return new Promise((resolve) => {
         axios
-          .get(`/school/remain/archive/${year}/${month}/${day}`)
+          .get(`http://api.dorothy.gsmhs.kr/school/remain/archive/${year}/${month}/${day}`)
           .then(response => {
             resolve(response.data)
           })

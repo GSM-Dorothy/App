@@ -65,7 +65,7 @@ export default {
         return false
       }
 
-      axios.post('/auth/device', {
+      axios.post('http://api.dorothy.gsmhs.kr/auth/device', {
         IP: ip
       })
         .then(res => {
@@ -78,7 +78,7 @@ export default {
     getDeviceList: function () {
       return new Promise((resolve) => {
         axios
-          .get(`/auth/device`)
+          .get(`http://api.dorothy.gsmhs.kr/auth/device`)
           .then(response => {
             resolve(response.data)
           })
@@ -95,7 +95,7 @@ export default {
         .map(selected => selected.IP)
 
       axios
-        .delete(`/auth/device`, { data: deletes })
+        .delete(`http://api.dorothy.gsmhs.kr/auth/device`, { data: deletes })
         .then(response => {
           this.deviceList = this.deviceList
             .filter(device => !this.selected.includes(device))

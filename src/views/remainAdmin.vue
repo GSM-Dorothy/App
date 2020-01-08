@@ -114,7 +114,7 @@ export default {
       }
 
       axios
-        .post(`/school/remain/administrator`, posts)
+        .post(`http://api.dorothy.gsmhs.kr/school/remain/administrator`, posts)
         .then(response => {
           if (response.status === 200) {
             this.admins.push(response.data)
@@ -143,7 +143,7 @@ export default {
     getAdmins: function (year, month, day) {
       return new Promise((resolve) => {
         axios
-          .get(`/school/remain/administrator/${year}/${month}/${day}`)
+          .get(`http://api.dorothy.gsmhs.kr/school/remain/administrator/${year}/${month}/${day}`)
           .then(response => {
             resolve(response.data)
           })
@@ -160,7 +160,7 @@ export default {
         .map(selected => selected.startDate)
 
       axios
-        .delete(`/school/remain/administrator`, { data: deletes })
+        .delete(`http://api.dorothy.gsmhs.kr/school/remain/administrator`, { data: deletes })
         .then(response => {
           this.admins = this.admins
             .filter(admin => !this.selected.includes(admin))

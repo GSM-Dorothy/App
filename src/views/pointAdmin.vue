@@ -208,7 +208,7 @@ export default {
       }
 
       axios
-        .delete(`/user/point_archive`, { data: deletes })
+        .delete(`http://api.dorothy.gsmhs.kr/user/point_archive`, { data: deletes })
         .then(response => {
           this.archives.splice(index, 1)
         })
@@ -242,7 +242,7 @@ export default {
       }
 
       axios
-        .put(`/user/point_archive`, puts)
+        .put(`http://api.dorothy.gsmhs.kr/user/point_archive`, puts)
         .then(response => {
           let archive = {
             date: date,
@@ -265,7 +265,7 @@ export default {
     getStudents () {
       return new Promise((resolve) => {
         axios
-          .get(`/user/students`)
+          .get(`http://api.dorothy.gsmhs.kr/user/students`)
           .then(response => {
             resolve(response.data)
           })
@@ -284,7 +284,7 @@ export default {
       let _number = this.selectedStudentNumber
 
       axios
-        .get(`/user/point_archive/${_grade}/${_class}/${_number}`)
+        .get(`http://api.dorothy.gsmhs.kr/user/point_archive/${_grade}/${_class}/${_number}`)
         .then(response => {
           this.archives = response.data
         })

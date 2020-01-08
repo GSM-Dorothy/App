@@ -92,7 +92,7 @@ export default {
   methods: {
     getArchives: function () {
       return new Promise((resolve) => {
-        axios.get(`/user/point_archive`)
+        axios.get(`http://api.dorothy.gsmhs.kr/user/point_archive`)
           .then(response => {
             resolve(response.data)
           })

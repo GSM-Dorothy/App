@@ -96,7 +96,7 @@ export default {
       let month = this.currentDate.getMonth() + 1
       let day = this.currentDate.getDate()
 
-      axios.get(`/school/meal/${year}/${month}/${day}`)
+      axios.get(`http://api.dorothy.gsmhs.kr/school/meal/${year}/${month}/${day}`)
         .then((response) => {
           this.meals = response.data
         })
@@ -111,7 +111,7 @@ export default {
       let month = this.currentDate.getMonth() + 1
       let day = this.currentDate.getDate()
 
-      axios.get(`/school/meal/${year}/${month}/${day}`)
+      axios.get(`http://api.dorothy.gsmhs.kr/school/meal/${year}/${month}/${day}`)
         .then((response) => {
           this.meals = response.data
         })
@@ -126,7 +126,7 @@ export default {
       let month = this.currentDate.getMonth() + 1
       let day = this.currentDate.getDate()
 
-      axios.get(`/school/meal/${year}/${month}/${day}`)
+      axios.get(`http://api.dorothy.gsmhs.kr/school/meal/${year}/${month}/${day}`)
         .then((response) => {
           this.meals = response.data
         })
@@ -138,7 +138,7 @@ export default {
     let month = this.currentDate.getMonth() + 1
     let day = this.currentDate.getDate()
 
-    axios.get(`/school/meal/${year}/${month}/${day}`)
+    axios.get(`http://api.dorothy.gsmhs.kr/school/meal/${year}/${month}/${day}`)
       .then((response) => {
         this.meals = response.data
       })
