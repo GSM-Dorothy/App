@@ -1,0 +1,26 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Dorothy Server",
+  "main": "main.js",
+  "repository": "https://github.com/DorothyHana/App.git",
+  "author": "Hana <momenthana@kakao.com>",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@koa/cors": "2",
+    "crypto-random-string": "^3.0.1",
+    "dotenv": "^8.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "koa": "^2.11.0",
+    "koa-bodyparser": "^4.2.1",
+    "koa-router": "^7.4.0",
+    "lodash": "^4.17.15",
+    "mongoose": "^5.8.1",
+    "node-school-kr": "^2.2.2"
+  },
+  "scripts": {
+    "serve:mac": "NODE_PATH=./ nodemon main.js",
+    "serve:win": "set NODE_PATH=./&& nodemon main.js"
+  }
+}

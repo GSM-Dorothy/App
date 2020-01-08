@@ -1,0 +1,3 @@
+exports.STUDENT = 'STUDENT'
+exports.ADMINISTRATOR = 'ADMINISTRATOR'
+exports.DEVICE = 'DEVICE'
