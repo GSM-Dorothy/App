@@ -257,10 +257,10 @@ export default {
     },
     deleteStudentCodes: function () {
       let deletes = this.selectedStudent
-        .map(admin => admin.code)
+        .map(student => student.code)
 
       axios
-        .delete(`http://api.dorothy.gsmhs.kr/auth/code`, deletes)
+        .delete(`http://api.dorothy.gsmhs.kr/auth/code`, { data: deletes })
         .then(response => {
           this.students = this.students
             .filter(student => !this.selectedStudent.includes(student))
